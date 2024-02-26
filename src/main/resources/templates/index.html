@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Página Principal</title>
+</head>
+<body>
+<div class="container">
+    {{#welcome}}
+    <h1>Welcome!</h1>
+    {{/welcome}}
+
+    <h1>Albums</h1>
+    <ul class="album-list">
+        {{#albums}}
+        <li class="album-item">
+            <a href="/album/{{id}}"><img src="/album/{{id}}/image" alt="{{title}}"></a>
+            <div class="album-info">
+                <h2>{{title}}</h2>
+                <h3>{{artist}}</h3>
+                <p>Released in {{year}}</p>
+            </div>
+        </li>
+        {{/albums}}
+        {{^albums}}
+        <li>No albums yet</li>
+        {{/albums}}
+    </ul>
+
+    <br>
+
+    <a href="/album/new" class="button">New Album</a>
+</div>
+</body>
+</html>

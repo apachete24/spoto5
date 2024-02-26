@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{album.title}} {{album.artist}}</title>
+    <link rel="stylesheet" type="text/css" href="style2.css">
+</head>
+<title>{{album.title}}</title>
+<body>
+<div class="">
+    <h1>Album Details</h1>
+    <div class="album-info">
+        <p>Artist: {{album.artist}}</p>
+        <p>Title: {{album.title}}</p>
+        <p>Year: {{album.year}}</p>
+        <p>Description: {{album.text}}</p>
+    </div>
+    <div class="album-image">
+        <img src="/album/{{album.id}}/image" alt="Album Image">
+    </div>
+    <div class="album-actions">
+        <a href="/album/{{album.id}}/delete" class="button delete">Delete album</a>
+        <a href="/" class="button">Back</a>
+    </div>
+</div>
+</body>
+</html>
