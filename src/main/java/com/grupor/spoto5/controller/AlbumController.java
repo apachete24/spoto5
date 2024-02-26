@@ -42,9 +42,8 @@ public class AlbumController {
     @GetMapping("/album/new")
     public String newAlbumForm(Model model) {
 
-        model.addAttribute("user", userSession.getUser());
-
         return "new_album";
+
     }
 
     @PostMapping("/album/new")
@@ -53,8 +52,6 @@ public class AlbumController {
         albumService.save(album);
 
         imageService.saveImage(ALBUMS_FOLDER, album.getId(), image);
-
-        userSession.setUser(album.getArtist());
 
         return "saved_album";
     }
@@ -76,6 +73,8 @@ public class AlbumController {
 
     @GetMapping("album/{id}/delete")
     public String deleteAlbum(Model model, @PathVariable long id) throws IOException {
+
+        model.addAttribute(albumService.findById(id));
 
         albumService.deleteById(id);
 
