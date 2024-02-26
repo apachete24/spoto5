@@ -1,10 +1,10 @@
 package com.grupor.spoto5.controller;
 
 import jakarta.servlet.http.HttpSession;
-import org.example.pagina_prueba.model.Album;
-import org.example.pagina_prueba.service.AlbumService;
-import org.example.pagina_prueba.service.ImageService;
-import org.example.pagina_prueba.service.UserSession;
+import com.grupor.spoto5.model.Album;
+import com.grupor.spoto5.service.AlbumService;
+import com.grupor.spoto5.service.ImageService;
+import com.grupor.spoto5.service.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
