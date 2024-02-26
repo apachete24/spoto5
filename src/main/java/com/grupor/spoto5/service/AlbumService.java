@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class AlbumService {
 
     private ConcurrentMap<Long, Album> albums = new ConcurrentHashMap<>();
-    private AtomicLong newtId = new AtomicLong();
+    private AtomicLong nextId = new AtomicLong();
 
     public AlbumService() {
         save(new Album("Nico Miseria", "Tercer Verano del Amor", 2019,  "aaaaaaaaaa"));
@@ -32,7 +32,7 @@ public class AlbumService {
     }
     public void save(Album album) {
 
-        long id = newtId.getAndIncrement();
+        long id = nextId.getAndIncrement();
 
         album.setId(id);
 

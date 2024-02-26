@@ -6,33 +6,28 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<div class="container">
+
     <h1>Add Album</h1>
     <form action="/album/new" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="artist">Artist:</label>
-            <input type="text" name="artist" id="artist" value="{{#artist}}{{.}}{{/artist}}">
-        </div>
-        <div class="form-group">
-            <label for="title">Title:</label>
-            <input type="text" name="title" id="title">
-        </div>
-        <div class="form-group">
-            <label for="year">Year:</label>
-            <input type="number" name="year" id="year">
-        </div>
-        <div class="form-group">
-            <label for="text">Description:</label>
-            <textarea name="text" id="text" rows="5" cols="40"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="image">Image:</label>
-            <input type="file" name="image" id="image" accept=".jpg, .jpeg">
-        </div>
-        <div class="form-actions">
+
+            <p>Artist:</p>
+            <input type="text" name="artist">
+
+            <p>Title:</p>
+            <input type="text" name="title">
+
+            <p>Year:</p>
+            <input type="number" name="year">
+
+            <p>Description:</p>
+            <textarea name="text" rows="5" cols="40"></textarea>
+
+            <p>Image:</p>
+            <input type="file" name="image" accept=".jpg, .jpeg">
+
             <input type="submit" value="Save" class="button">
             <a href="/" class="button">Cancel</a>
-        </div>
+
     </form>
 </div>
 </body>

@@ -1,5 +1,9 @@
 package com.grupor.spoto5.model;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Album {
 
     private Long id;
@@ -8,6 +12,10 @@ public class Album {
     private String title;
     private Integer year;
     private String text;
+
+    private ConcurrentMap <Long, Comment> comments = new ConcurrentHashMap<>();
+
+    private AtomicLong nextId = new AtomicLong();
 
     public Album() {
 

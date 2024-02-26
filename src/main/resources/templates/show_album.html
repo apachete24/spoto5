@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>{{album.title}} {{album.artist}}</title>
-    <link rel="stylesheet" type="text/css" href="style2.css">
 </head>
 <title>{{album.title}}</title>
 <body>
@@ -22,6 +22,24 @@
         <a href="/album/{{album.id}}/delete" class="button delete">Delete album</a>
         <a href="/" class="button">Back</a>
     </div>
+
+    <h1>Add Comment</h1>
+
+    <form action="/album/new" method="post" enctype="multipart/form-data">
+
+        <p>User:</p>
+        <input type="text" name="user">
+
+        <p>Score:</p>
+        <input type="number" name="year">
+
+        <p>Comment:</p>
+        <textarea name="text" rows="5" cols="40"></textarea>
+
+        <input type="submit" value="Save" class="button">
+        <a href="/" class="button">Cancel</a>
+
+    </form>
 </div>
 </body>
 </html>
