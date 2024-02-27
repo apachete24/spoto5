@@ -7,7 +7,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Album {
 
     private Long id;
-
     private String artist;
     private String title;
     private Integer year;
@@ -27,6 +26,10 @@ public class Album {
         this.title = title;
         this.year = year;
         this.text = text;
+    }
+
+    public void addComment (Comment comment) {
+        this.comments.put(comment.getId(), comment);
     }
 
     public Long getId() {

@@ -1,5 +1,7 @@
 package com.grupor.spoto5.controller;
 
+import com.grupor.spoto5.model.Comment;
+import com.grupor.spoto5.service.CommentService;
 import jakarta.servlet.http.HttpSession;
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.service.AlbumService;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.List;
 
 @Controller
 public class AlbumController {
@@ -26,21 +29,20 @@ public class AlbumController {
     private AlbumService albumService;
 
     @Autowired
-    private UserSession userSession;
-
-    @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private CommentService
+
     @GetMapping("/")
-    public String showAlbums(Model model, HttpSession session) {
+    public String showAlbums(Model model) {
         model.addAttribute("albums", albumService.findAll());
-        model.addAttribute("welcome", session.isNew());
 
         return "index";
     }
 
     @GetMapping("/album/new")
-    public String newAlbumForm(Model model) {
+    public String newAlbumForm() {
 
         return "new_album";
 
