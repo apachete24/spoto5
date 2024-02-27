@@ -17,6 +17,7 @@ public class AlbumService {
     public AlbumService() {
         save(new Album("Nico Miseria", "Tercer Verano del Amor", 2019,  "aaaaaaaaaa"));
         save(new Album("Cruz Cafuné", "Me Muevo con Dios", 2023,  "goated"));
+        save(new Album("Hoke", "BBO", 2021, "Olimpico"));
     }
 
     public Collection<Album> findAll() {
