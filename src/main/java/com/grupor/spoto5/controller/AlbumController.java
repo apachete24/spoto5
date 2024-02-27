@@ -31,9 +31,6 @@ public class AlbumController {
     @Autowired
     private ImageService imageService;
 
-    @Autowired
-    private CommentService
-
     @GetMapping("/")
     public String showAlbums(Model model) {
         model.addAttribute("albums", albumService.findAll());
