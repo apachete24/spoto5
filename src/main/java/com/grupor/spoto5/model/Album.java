@@ -1,5 +1,6 @@
 package com.grupor.spoto5.model;
 
+import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -13,8 +14,6 @@ public class Album {
     private String text;
 
     private ConcurrentMap <Long, Comment> comments = new ConcurrentHashMap<>();
-
-    private AtomicLong nextId = new AtomicLong();
 
     public Album() {
 
@@ -69,6 +68,14 @@ public class Album {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Collection<Comment> getComments() {
+        return comments.values();
+    }
+
+    public void setComments(ConcurrentMap<Long, Comment> comments) {
+        this.comments = comments;
     }
 
     @Override

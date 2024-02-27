@@ -1,5 +1,7 @@
 package com.grupor.spoto5.controller;
 
+import com.grupor.spoto5.model.Album;
+import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
 import com.grupor.spoto5.service.UserSession;
@@ -21,10 +23,27 @@ public class CommentController {
     @Autowired
     private UserSession userSession;
 
+    @Autowired
+    private AlbumService albumService;
+
     @GetMapping("/album/{id}")
     public String showComments(Model model, @PathVariable long id) {
+        Album album = albumService.findById(id);
+        model.addAttribute(album.getComments());
+        return "show_album";
+    }
 
+    @PostMapping("/album/{idAlbum}")
+    public String addComment(Model model, @PathVariable long idAlbum) {
+        Comment comment = new Comment();
+        commentService.saveComment(comment);
+        return "album/{idAlbum}";
+    }
 
+    @GetMapping("album/{idAlbum}/comment/{idComment}/delete")
+    public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment){
+
+        return "album/{idAlbum}";
     }
 
 
