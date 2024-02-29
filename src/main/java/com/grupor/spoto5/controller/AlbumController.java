@@ -45,6 +45,16 @@ public class AlbumController {
 
     }
 
+    @GetMapping("/album/{id}")
+    public String showAlbum(Model model, @PathVariable long id) {
+
+        Album album = albumService.findById(id);
+
+        model.addAttribute("album", album);
+
+        return "show_album";
+    }
+
     @PostMapping("/album/new")
     public String newAlbum(Model model, Album album, MultipartFile image) throws IOException {
 
@@ -55,15 +65,7 @@ public class AlbumController {
         return "saved_album";
     }
 
-    @GetMapping("/album/{id}")
-    public String showAlbum(Model model, @PathVariable long id) {
 
-        Album album = albumService.findById(id);
-
-        model.addAttribute("album", album);
-
-        return "show_album";
-    }
     @GetMapping ("/album/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable int id) throws MalformedURLException {
 
