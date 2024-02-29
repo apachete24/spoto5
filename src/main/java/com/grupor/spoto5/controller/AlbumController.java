@@ -27,9 +27,9 @@ public class AlbumController {
 
     @Autowired
     private AlbumService albumService;
-
     @Autowired
     private ImageService imageService;
+
 
     @GetMapping("/")
     public String showAlbums(Model model) {
