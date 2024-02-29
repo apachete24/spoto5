@@ -1,5 +1,6 @@
 package com.grupor.spoto5.model;
 
+
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -27,35 +28,35 @@ public class Album {
         this.text = text;
     }
 
-    public void addComment (Comment comment) {
-        this.comments.put(comment.getId(), comment);
-    }
 
+// Getters
     public Long getId() {
         return id;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
     public String getArtist() {
         return artist;
-    }
-
-    public void setArtist(String artist) {
-        this.artist = artist;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public Integer getYear() {
         return year;
+    }
+
+
+// Setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setYear(Integer year) {
@@ -68,6 +69,12 @@ public class Album {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+
+
+    public void addComment (Comment comment) {
+        this.comments.put(comment.getId(), comment);
     }
 
     public Collection<Comment> getComments() {

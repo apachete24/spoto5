@@ -25,13 +25,13 @@ public class CommentController {
 
     @Autowired
     private AlbumService albumService;
-
+/*
     @GetMapping("/album/{id}")
     public String showComments(Model model, @PathVariable long id) {
         Album album = albumService.findById(id);
         model.addAttribute(album.getComments());
         return "show_album";
-    }
+    }*/
 
     @PostMapping("/album/{idAlbum}")
     public String addComment(Model model, @PathVariable long idAlbum) {
