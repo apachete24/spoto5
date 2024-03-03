@@ -1,5 +1,6 @@
 package com.grupor.spoto5.service;
 
+import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.Comment;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class CommentService {
 
-    private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
+    AlbumService albumService;
 
     private AtomicLong nextId = new AtomicLong();
 
@@ -19,22 +20,22 @@ public class CommentService {
 
     }
 
-    public Collection<Comment> findAll () {
-        return comments.values();
+    public Comment findById (long idAlbum, long idComment) {
+        return albumService.findById(idAlbum).getComments().get(idComment);
     }
 
-    public Comment findById (long id) {
-        return comments.get(id);
+    public Collection<Comment> findAll (Long id) {
+        Album album = albumService.findById(id);
+        return album.getComments().values();
     }
 
-    public void deleteById (long id) {
-        this.comments.remove(id);
+    public void deleteById (long idAlbum, long idComment) {
+        albumService.findById(idAlbum).deleteComment(findById(idAlbum, idComment));
     }
 
-    public void saveComment(Comment comment) {
-
+    public void save(long idAlbum, Comment comment) {
         long id = nextId.getAndIncrement();
-
         comment.setId(id);
+        albumService.findById(idAlbum).addComment(comment);
     }
 }

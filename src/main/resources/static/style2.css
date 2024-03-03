@@ -2,79 +2,76 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #333;
-    color: #fff;
+    background-color: rgba(49, 47, 47, 0.37);
 }
 
-.container {
+.album-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px auto;
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    background-color: #444;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.page-title {
-    font-size: 3rem;
+.album-details {
+    flex-basis: 30%;
+    margin-right: 2%;
+}
+
+.album-details h1 {
+    font-size: 24px;
     margin-top: 0;
-    margin-bottom: 2rem;
-    color: #fff;
-    text-align: center;
+    margin-bottom: 20px;
 }
 
-.album-info {
-    padding: 1rem;
-    text-align: center;
-}
-
-.album-info-item {
-    font-size: 1.2rem;
-    margin-top: 0;
-    color: #ddd;
-}
-
-.album-info-value {
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: #fff;
-}
-
-.album-image {
-    margin: 2rem 0;
-    text-align: center;
-}
-
-.album-image img {
-    width: 50%;
-    height: auto;
+.album-info p {
+    margin-bottom: 10px;
 }
 
 .album-actions {
+    margin-top: 30px;
+}
+
+.album-actions a {
+    margin-right: 10px;
+}
+
+.album-image {
+    flex-basis: 35%;
+    margin-right: 2%;
+}
+
+.album-image img {
+    max-width: 100%;
+    height: auto;
+}
+
+.comments-section {
+    flex-basis: 35%;
+}
+
+.comments-section h1 {
+    font-size: 24px;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.comments-section form {
     display: flex;
-    justify-content: center;
-    margin-top: 2rem;
+    flex-direction: column;
+    margin-bottom: 20px;
 }
 
-.button {
-    display: inline-block;
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    margin-top: 2rem;
-    transition: background-color 0.3s ease-in-out;
-    margin: 0 1rem;
+.comments-section form input[type="text"],
+.comments-section form textarea,
+.comments-section form input[type="number"] {
+    margin-bottom: 10px;
 }
 
-.button:hover {
-    background-color: #3e8e41;
-}
-
-.delete {
-    background-color: #F44336;
-}
-
-.delete:hover {
-    background-color: #da190b;
+.comments-section form input[type="submit"],
+.comments-section form a {
+    margin-top: 10px;
 }

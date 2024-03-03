@@ -1,45 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="style2.css">
     <title>{{album.title}} {{album.artist}}</title>
 </head>
-<title>{{album.title}}</title>
+
 <body>
-<div class="">
-    <h1>Album Details</h1>
-    <div class="album-info">
-        <p>Artist: {{album.artist}}</p>
-        <p>Title: {{album.title}}</p>
-        <p>Year: {{album.year}}</p>
-        <p>Description: {{album.text}}</p>
+<div class="album-container">
+
+    <div class="album-details">
+        <h1>Album Details</h1>
+        <div class="album-info">
+            <p>Artist: {{album.artist}}</p>
+            <p>Title: {{album.title}}</p>
+            <p>Year: {{album.year}}</p>
+            <p>Description: {{album.text}}</p>
+        </div>
+        <div class="album-actions">
+            <a href="/album/{{album.id}}/delete" class="button delete">Delete album</a>
+            <a href="/" class="button">Back</a>
+        </div>
     </div>
+
     <div class="album-image">
         <img src="/album/{{album.id}}/image" alt="Album Image">
     </div>
-    <div class="album-actions">
-        <a href="/album/{{album.id}}/delete" class="button delete">Delete album</a>
-        <a href="/" class="button">Back</a>
+
+    <div class="comments-section">
+
+        {{#comments}}
+        <li class="album-item">
+            <a href="/album/{{id}}"><img src="/album/{{id}}/image" alt="{{title}}"></a>
+            <div class="album-info">
+                <h2>{{user}}</h2>
+                <h3>{{score}}</h3>
+                <p>{{text}}</p>
+            </div>
+        </li>
+        {{/comments}}
+        {{^comments}}
+        <li>No comments yet</li>
+        {{/comments}}
+        <h1>Add Comment</h1>
+        <form action="/album/{id}/new/comment" method="post">
+            <p>User:</p>
+            <input type="text" name="user" value="{{#user}}{{.}}{{/user}}">
+
+            <p>Score:</p>
+            <input type="number" name="score">
+
+            <p>Comment:</p>
+            <textarea name="text" rows="5" cols="40"></textarea>
+
+            <input type="submit" value="Save" class="button">
+            <a href="/" class="button">Cancel</a>
+        </form>
     </div>
 
-    <h1>Add Comment</h1>
-
-    <form action="/album/new/comment" method="post" enctype="multipart/form-data">
-
-        <p>User:</p>
-        <input type="text" name="user">
-
-        <p>Score:</p>
-        <input type="number" name="score">
-
-        <p>Comment:</p>
-        <textarea name="text" rows="5" cols="40"></textarea>
-
-        <input type="submit" value="Save" class="button">
-        <a href="/" class="button">Cancel</a>
-
-    </form>
 </div>
 </body>
+
 </html>

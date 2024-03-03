@@ -1,6 +1,7 @@
 package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.Album;
+import com.grupor.spoto5.model.Comment;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -35,6 +36,7 @@ public class AlbumService {
     public void deleteById (long id) {
         this.albums.remove(id);
     }
+
     public void save(Album album) {
 
         long id = nextId.getAndIncrement();
@@ -43,7 +45,5 @@ public class AlbumService {
 
         this.albums.put(id, album);
     }
-
-
 
 }

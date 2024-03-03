@@ -10,14 +10,10 @@ public class Comment {
 
     private String text;
 
-    public Comment () {
 
-    }
-
-    public Comment (String user, Integer mark, String text) {
-        super();
+    public Comment (String user, Integer score, String text) {
         this.user = user;
-        this.score = mark;
+        this.score = score;
         this.text = text;
     }
 
@@ -37,12 +33,12 @@ public class Comment {
         this.user = user;
     }
 
-    public Integer getMark() {
+    public Integer getScore() {
         return score;
     }
 
-    public void setMark(Integer mark) {
-        this.score = mark;
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
     public String getText() {

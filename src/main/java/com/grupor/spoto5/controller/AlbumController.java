@@ -18,7 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ConcurrentMap;
 
 @Controller
 public class AlbumController {
@@ -26,7 +28,14 @@ public class AlbumController {
     private static final String ALBUMS_FOLDER = "albums";
 
     @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private UserSession userSession;
+
+    @Autowired
     private AlbumService albumService;
+
     @Autowired
     private ImageService imageService;
 
@@ -52,7 +61,25 @@ public class AlbumController {
 
         model.addAttribute("album", album);
 
+        // model.addAttribute("comments", commentService.findAll(id));
+
         return "show_album";
+    }
+
+    @PostMapping("/album/{id}/new/comment")
+    public String newComment(Model model, Comment comment, @PathVariable long id) {
+
+        commentService.save(id, comment);
+
+        return "redirect:/album/" + id;
+    }
+
+    @GetMapping("album/{idAlbum}/delete/comment/{idComment}")
+    public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment) {
+
+        commentService.deleteById(idAlbum, idComment);
+
+        return "/album/{id}";
     }
 
     @PostMapping("/album/new")
@@ -83,5 +110,6 @@ public class AlbumController {
 
         return "deleted_album";
     }
+
 
 }

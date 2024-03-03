@@ -71,18 +71,16 @@ public class Album {
         this.text = text;
     }
 
-
+    public ConcurrentMap<Long, Comment> getComments() {
+        return comments;
+    }
 
     public void addComment (Comment comment) {
         this.comments.put(comment.getId(), comment);
     }
 
-    public Collection<Comment> getComments() {
-        return comments.values();
-    }
-
-    public void setComments(ConcurrentMap<Long, Comment> comments) {
-        this.comments = comments;
+    public void deleteComment (Comment comment) {
+        this.comments.remove(comment.getId(), comment);
     }
 
     @Override
