@@ -1,12 +1,15 @@
 package com.grupor.spoto5.model;
 
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Album {
+
 
     private Long id;
     private String artist;
@@ -14,49 +17,44 @@ public class Album {
     private Integer year;
     private String text;
 
-    private ConcurrentMap <Long, Comment> comments = new ConcurrentHashMap<>();
+    private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
 
     public Album() {
-
     }
 
     public Album(String artist, String title, Integer year, String text) {
-        super();
         this.artist = artist;
         this.title = title;
         this.year = year;
         this.text = text;
     }
 
-
-// Getters
     public Long getId() {
         return id;
     }
-    public String getArtist() {
-        return artist;
-    }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-
-// Setters
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getArtist() {
+        return artist;
     }
 
     public void setArtist(String artist) {
         this.artist = artist;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Integer getYear() {
+        return year;
     }
 
     public void setYear(Integer year) {
@@ -71,20 +69,17 @@ public class Album {
         this.text = text;
     }
 
-    public ConcurrentMap<Long, Comment> getComments() {
-        return comments;
-    }
-
-    public void addComment (Comment comment) {
+    public void addComment(Comment comment) {
         this.comments.put(comment.getId(), comment);
     }
 
-    public void deleteComment (Comment comment) {
-        this.comments.remove(comment.getId(), comment);
+    public void deleteComment(Long commentId) {
+        this.comments.remove(commentId);
     }
 
-    @Override
-    public String toString() {
-        return "Post [id="+id+", artist=" + artist + ", title=" + title + ", year=" + year + ", text=" + text + "]";
+    // Resto del código...
+
+    public ConcurrentMap<Long, Comment> getComments() {
+        return comments;
     }
 }

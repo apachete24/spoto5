@@ -1,17 +1,16 @@
 package com.grupor.spoto5.model;
 
 public class Comment {
-
     private Long id;
-
     private String user;
-
-    private Integer score;
-
+    private int score;
     private String text;
 
+    public Comment() {
+    }
 
-    public Comment (String user, Integer score, String text) {
+    public Comment (String user, int score, String text) {
+        super();
         this.user = user;
         this.score = score;
         this.text = text;
@@ -21,32 +20,33 @@ public class Comment {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getUser() {
         return user;
     }
 
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public Integer getScore() {
+    public int getScore() {
         return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
     }
 
     public String getText() {
         return text;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public void setText(String text) {
         this.text = text;
     }
+
 
 }

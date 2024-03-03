@@ -1,8 +1,6 @@
 package com.grupor.spoto5.controller;
 
 import com.grupor.spoto5.model.Comment;
-import com.grupor.spoto5.service.CommentService;
-import jakarta.servlet.http.HttpSession;
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.ImageService;
@@ -18,17 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ConcurrentMap;
 
 @Controller
 public class AlbumController {
 
     private static final String ALBUMS_FOLDER = "albums";
-
-    @Autowired
-    private CommentService commentService;
 
     @Autowired
     private UserSession userSession;
@@ -39,48 +31,26 @@ public class AlbumController {
     @Autowired
     private ImageService imageService;
 
-
     @GetMapping("/")
     public String showAlbums(Model model) {
         model.addAttribute("albums", albumService.findAll());
-
         return "index";
-    }
-
-    @GetMapping("/album/new")
-    public String newAlbumForm() {
-
-        return "new_album";
-
     }
 
     @GetMapping("/album/{id}")
     public String showAlbum(Model model, @PathVariable long id) {
-
         Album album = albumService.findById(id);
-
         model.addAttribute("album", album);
-
-        // model.addAttribute("comments", commentService.findAll(id));
-
+        model.addAttribute("comments", album.getComments().values());
         return "show_album";
     }
 
-    @PostMapping("/album/{id}/new/comment")
-    public String newComment(Model model, Comment comment, @PathVariable long id) {
 
-        commentService.save(id, comment);
-
-        return "redirect:/album/" + id;
+    @GetMapping("/album/new")
+    public String newAlbumForm() {
+        return "new_album";
     }
 
-    @GetMapping("album/{idAlbum}/delete/comment/{idComment}")
-    public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment) {
-
-        commentService.deleteById(idAlbum, idComment);
-
-        return "/album/{id}";
-    }
 
     @PostMapping("/album/new")
     public String newAlbum(Model model, Album album, MultipartFile image) throws IOException {
@@ -92,24 +62,31 @@ public class AlbumController {
         return "saved_album";
     }
 
-
-    @GetMapping ("/album/{id}/image")
+    @GetMapping("/album/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable int id) throws MalformedURLException {
-
         return imageService.createResponseFromImage(ALBUMS_FOLDER, id);
     }
 
-    @GetMapping("album/{id}/delete")
+    @GetMapping("/album/{id}/delete")
     public String deleteAlbum(Model model, @PathVariable long id) throws IOException {
-
         model.addAttribute(albumService.findById(id));
-
         albumService.deleteById(id);
-
         imageService.deleteImage(ALBUMS_FOLDER, id);
 
         return "deleted_album";
     }
 
 
+
+    @PostMapping("/album/{id}/comment")
+    public String newComment(Model model, Comment comment, @PathVariable long id) {
+        albumService.addComment(id, comment);
+        return "redirect:/album/" + id;
+    }
+
+    @GetMapping("/album/{idAlbum}/delete/comment/{idComment}")
+    public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment) {
+        albumService.deleteComment(idAlbum, idComment);
+        return "redirect:/album/" + idAlbum;
+    }
 }
