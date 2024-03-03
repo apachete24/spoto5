@@ -40,6 +40,7 @@ public class AlbumController {
     @GetMapping("/album/{id}")
     public String showAlbum(Model model, @PathVariable long id) {
         Album album = albumService.findById(id);
+        model.addAttribute("user", userSession.getUser());
         model.addAttribute("album", album);
         model.addAttribute("comments", album.getComments().values());
         return "show_album";
@@ -80,6 +81,7 @@ public class AlbumController {
 
     @PostMapping("/album/{id}/comment")
     public String newComment(Model model, Comment comment, @PathVariable long id) {
+        userSession.setUser(comment.getUser());
         albumService.addComment(id, comment);
         return "redirect:/album/" + id;
     }
