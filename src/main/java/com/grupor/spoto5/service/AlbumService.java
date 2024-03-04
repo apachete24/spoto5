@@ -26,7 +26,7 @@ public class AlbumService {
         return albums.values();
     }
 
-    public Album findById(long id) {
+    public Album findById(Long id) {
         return albums.get(id);
     }
 
@@ -40,22 +40,19 @@ public class AlbumService {
         albums.put(id, album);
     }
 
+    public Album updateAlbum(long id, Album updatedAlbum) {
+        Album existingAlbum = findById(id);
 
+        if (existingAlbum != null) {
+            existingAlbum.setTitle(updatedAlbum.getTitle());
+            existingAlbum.setArtist(updatedAlbum.getArtist());
+            existingAlbum.setYear(updatedAlbum.getYear());
+            existingAlbum.setText(updatedAlbum.getText());
 
-    public void addComment(long albumId, Comment comment) {
-        Album album = findById(albumId);
-        if (album != null) {
-            long commentId = nextId.getAndIncrement();
-            comment.setId(commentId);
-            album.addComment(comment);
+            return existingAlbum;
+        } else {
+
+            return null;
         }
     }
-
-    public void deleteComment(long albumId, long commentId) {
-        Album album = findById(albumId);
-        if (album != null) {
-            album.deleteComment(commentId);
-        }
-    }
-
 }

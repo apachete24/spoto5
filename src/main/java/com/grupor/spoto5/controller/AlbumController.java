@@ -76,20 +76,23 @@ public class AlbumController {
         return "deleted_album";
     }
 
+    @GetMapping("/album/{id}/edit")
+    public String updateAlbum(Model model, @PathVariable long id) {
+        model.addAttribute(albumService.findById(id));
+
+        return "new_album";
+    }
 
     /*
-    @PostMapping("/album/{id}/comment")
-    public String newComment(Model model, Comment comment, @PathVariable long id) {
-        userSession.setUser(comment.getUser());
-        albumService.addComment(id, comment);
-        return "redirect:/album/" + id;
-    }
+    @PostMapping("/album/{id}/edit")
+    public String updateAlbum(Model model, @PathVariable long id, Album updatedAlbum) {
+        Album updated = albumService.updateAlbum(id, updatedAlbum);
 
-    @GetMapping("/album/{idAlbum}/delete/comment/{idComment}")
-    public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment) {
-        albumService.deleteComment(idAlbum, idComment);
-        return "redirect:/album/" + idAlbum;
+        if (updated != null) {
+            return "redirect:/album/" + id;
+        } else {
+            return "error";
+        }
     }
     */
-
 }

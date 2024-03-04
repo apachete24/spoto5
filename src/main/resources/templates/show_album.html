@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="style2.css">
+    <link rel="stylesheet" type="text/css" href="/css/style2.css">
     <title>{{album.title}} {{album.artist}}</title>
 </head>
 
@@ -18,25 +18,32 @@
             <p><strong>Year:</strong> {{album.year}}</p>
             <p><strong>Description:</strong> {{album.text}}</p>
         </div>
+        <div class="album-image">
+            <img src="/album/{{album.id}}/image" alt="Album Image">
+        </div>
         <div class="album-actions">
             <a href="/album/{{album.id}}/delete" class="button delete">Delete album</a>
+            <a href="/album/{{album.id}}/edit" class="button edit">Edit</a>
             <a href="/" class="button">Back</a>
+            <button class="button favorite">Add to Favorites</button>
         </div>
     </div>
 
-    <div class="album-image">
-        <img src="/album/{{album.id}}/image" alt="Album Image">
-    </div>
+    <p>
 
     <div class="comments-section">
         {{#comments}}
         <div class="comment-item">
             <div class="comment-info">
-                <h2>{{user}}</h2>
-                <h3>{{score}}</h3>
-                <p>{{text}}</p>
+                <ul>
+                    <li>
+                        <strong>Username</strong>: {{user}} <br>
+                        <strong>Score</strong>: {{score}} <br>
+                        <strong>Review</strong>: {{text}} <br>
+                        <a href="/album/{{album.id}}/delete/comment/{{id}}" class="button delete">Delete comment</a>
+                    </li>
+                </ul>
             </div>
-            <a href="/album/{{album.id}}/delete/comment/{{id}}" class="button delete">Delete comment</a>
         </div>
         {{/comments}}
         {{^comments}}
@@ -44,10 +51,9 @@
         {{/comments}}
     </div>
 
-    <!-- Formulario fuera del bloque de comentarios -->
     <h1>Add Comment</h1>
     <form action="/album/{{album.id}}/comment" method="post">
-        <label for="user">User:</label>
+        <label for="user">Username:</label>
         <input type="text" id="user" name="user" value="{{#user}}{{.}}{{/user}}" required>
 
         <label for="score">Score:</label>
@@ -59,7 +65,6 @@
         <button type="submit" class="button">Save</button>
         <a href="/album/{{album.id}}" class="button cancel">Cancel</a>
     </form>
-
 </div>
 </body>
 

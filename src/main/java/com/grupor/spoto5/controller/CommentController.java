@@ -30,13 +30,13 @@ public class CommentController {
     @PostMapping("/{id}/comment")
     public String newComment(Model model, Comment comment, @PathVariable long id) {
         userSession.setUser(comment.getUser());
-        albumService.addComment(id, comment);
+        commentService.addComment(id, comment);
         return "redirect:/album/" + id;
     }
 
     @GetMapping("/{idAlbum}/delete/comment/{idComment}")
     public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment) {
-        albumService.deleteComment(idAlbum, idComment);
+        commentService.deleteComment(idAlbum, idComment);
         return "redirect:/album/" + idAlbum;
     }
 }

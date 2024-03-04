@@ -9,19 +9,20 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class CommentService {
 
-    AlbumService albumService;
+    private AlbumService albumService;
 
     private AtomicLong nextId = new AtomicLong();
 
-    public CommentService() {
+    public CommentService(AlbumService albumService) {
 
+        this.albumService = albumService;
     }
 
-    /*
+
     public void addComment(long albumId, Comment comment) {
         Album album = albumService.findById(albumId);
         if (album != null) {
-            long commentId = nextId.getAndIncrement();
+            Long commentId = nextId.getAndIncrement();
             comment.setId(commentId);
             album.addComment(comment);
         }
@@ -33,5 +34,5 @@ public class CommentService {
             album.deleteComment(commentId);
         }
     }
-    */
+
 }
