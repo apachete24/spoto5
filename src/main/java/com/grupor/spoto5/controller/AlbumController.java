@@ -1,6 +1,5 @@
 package com.grupor.spoto5.controller;
 
-import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.ImageService;
@@ -78,7 +77,7 @@ public class AlbumController {
     }
 
 
-
+    /*
     @PostMapping("/album/{id}/comment")
     public String newComment(Model model, Comment comment, @PathVariable long id) {
         userSession.setUser(comment.getUser());
@@ -91,4 +90,6 @@ public class AlbumController {
         albumService.deleteComment(idAlbum, idComment);
         return "redirect:/album/" + idAlbum;
     }
+    */
+
 }

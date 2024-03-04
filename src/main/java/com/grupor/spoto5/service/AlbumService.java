@@ -40,6 +40,8 @@ public class AlbumService {
         albums.put(id, album);
     }
 
+
+
     public void addComment(long albumId, Comment comment) {
         Album album = findById(albumId);
         if (album != null) {
@@ -55,6 +57,5 @@ public class AlbumService {
             album.deleteComment(commentId);
         }
     }
-
 
 }
