@@ -2,6 +2,7 @@ package com.grupor.spoto5.controller;
 
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.service.AlbumService;
+import com.grupor.spoto5.service.CommentService;
 import com.grupor.spoto5.service.ImageService;
 import com.grupor.spoto5.service.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -30,6 +32,9 @@ public class AlbumController {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private CommentService commentService;
+
     @GetMapping("/")
     public String showAlbums(Model model) {
         model.addAttribute("albums", albumService.findAll());
@@ -41,7 +46,7 @@ public class AlbumController {
         Album album = albumService.findById(id);
         model.addAttribute("user", userSession.getUser());
         model.addAttribute("album", album);
-        model.addAttribute("comments", album.getComments().values());
+        model.addAttribute("comments", commentService.getComments(id));
         return "show_album";
     }
 
@@ -83,16 +88,15 @@ public class AlbumController {
         return "new_album";
     }
 
-    /*
-    @PostMapping("/album/{id}/edit")
+
+    @PutMapping("/album/{id}/edit")
     public String updateAlbum(Model model, @PathVariable long id, Album updatedAlbum) {
         Album updated = albumService.updateAlbum(id, updatedAlbum);
-
         if (updated != null) {
             return "redirect:/album/" + id;
         } else {
             return "error";
         }
     }
-    */
+
 }

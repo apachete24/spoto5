@@ -4,6 +4,7 @@ import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.Comment;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
@@ -18,6 +19,9 @@ public class CommentService {
         this.albumService = albumService;
     }
 
+    public Collection<Comment> getComments(long albumId) {
+        return albumService.findById(albumId).getComments().values();
+    }
 
     public void addComment(long albumId, Comment comment) {
         Album album = albumService.findById(albumId);
