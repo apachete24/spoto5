@@ -6,13 +6,11 @@ import com.grupor.spoto5.service.CommentService;
 import com.grupor.spoto5.service.ImageService;
 import com.grupor.spoto5.service.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -83,20 +81,22 @@ public class AlbumController {
 
     @GetMapping("/album/{id}/edit")
     public String updateAlbum(Model model, @PathVariable long id) {
-        model.addAttribute(albumService.findById(id));
+        Album album = albumService.findById(id);
 
-        return "new_album";
+        model.addAttribute("album", album);
+
+        return "edit_album";
     }
 
 
-    @PutMapping("/album/{id}/edit")
-    public String updateAlbum(Model model, @PathVariable long id, Album updatedAlbum) {
-        Album updated = albumService.updateAlbum(id, updatedAlbum);
-        if (updated != null) {
-            return "redirect:/album/" + id;
-        } else {
-            return "error";
+    @PostMapping("/album/{id}/edit")
+    public String updateAlbum(@PathVariable Long id, Album updatedAlbum, MultipartFile image) throws IOException {
+        if (image != null && !image.isEmpty()) {
+            imageService.saveImage(ALBUMS_FOLDER, id, image);
         }
+        albumService.updateAlbum(id, updatedAlbum);
+        return "redirect:/album/" + id;
     }
+
 
 }
