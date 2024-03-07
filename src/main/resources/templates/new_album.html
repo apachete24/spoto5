@@ -8,27 +8,28 @@
 <body>
 
     <h1>Add Album</h1>
+
     <form action="/album/new" method="post" enctype="multipart/form-data">
 
-            <p>Artist:</p>
-            <input type="text" name="artist">
+        <p>Artist:</p>
+        <input type="text" name="artist" placeholder="Artist name" required>
 
-            <p>Title:</p>
-            <input type="text" name="title">
+        <p>Title:</p>
+        <input type="text" name="title" placeholder="Album title" required>
 
-            <p>Year:</p>
-            <input type="number" name="year">
+        <p>Year:</p>
+        <input type="number" name="year" placeholder="Release year (4 digits)" required>
 
-            <p>Description:</p>
-            <textarea name="text" rows="5" cols="40"></textarea>
+        <p>Description:</p>
+        <textarea name="text" rows="5" cols="40" placeholder="Provide a brief description of the album" required></textarea>
 
-            <p>Image:</p>
-            <input type="file" name="image" accept=".jpg, .jpeg">
+        <p>Image:</p>
+        <input type="file" name="image" accept=".jpg, .jpeg" required>
 
-            <input type="submit" value="Save" class="button">
-            <a href="/" class="button">Cancel</a>
+        <input type="submit" value="Save" class="button">
+        <a href="/" class="button">Cancel</a>
 
     </form>
-</div>
+
 </body>
 </html>

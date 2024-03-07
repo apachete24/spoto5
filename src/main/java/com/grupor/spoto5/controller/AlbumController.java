@@ -42,10 +42,14 @@ public class AlbumController {
     @GetMapping("/album/{id}")
     public String showAlbum(Model model, @PathVariable long id) {
         Album album = albumService.findById(id);
-        model.addAttribute("user", userSession.getUser());
-        model.addAttribute("album", album);
-        model.addAttribute("comments", commentService.getComments(id));
-        return "show_album";
+        if (album != null) {
+            model.addAttribute("user", userSession.getUser());
+            model.addAttribute("album", album);
+            model.addAttribute("comments", commentService.getComments(id));
+            return "show_album";
+        } else {
+            return "error";
+        }
     }
 
 

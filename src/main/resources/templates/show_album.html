@@ -24,8 +24,8 @@
         <div class="album-actions">
             <a href="/album/{{album.id}}/delete" class="button delete">Delete album</a>
             <a href="/album/{{album.id}}/edit" class="button edit">Edit</a>
+            <a href="/" class="button favorite">Add to Favorites</a>
             <a href="/" class="button">Back</a>
-            <button class="button favorite">Add to Favorites</button>
         </div>
     </div>
 
@@ -53,17 +53,16 @@
 
     <h1>Add Comment</h1>
     <form action="/album/{{album.id}}/comment" method="post">
-        <label for="user">Username:</label>
+        <p>Username:</p>
         <input type="text" id="user" name="user" value="{{#user}}{{.}}{{/user}}" required>
 
-        <label for="score">Score:</label>
+        <p>Score:</p>
         <input type="number" id="score" name="score" required>
 
-        <label for="text">Comment:</label>
+        <p>Comment:</p>
         <textarea id="text" name="text" rows="5" cols="40" required></textarea>
 
         <button type="submit" class="button">Save</button>
-        <a href="/album/{{album.id}}" class="button cancel">Cancel</a>
     </form>
 </div>
 </body>
