@@ -18,10 +18,10 @@
         <input type="text" name="title" placeholder="Album title" required>
 
         <p>Year:</p>
-        <input type="number" name="year" placeholder="Release year (4 digits)" required>
+        <input type="number" name="year" placeholder="Release year (Valid year)" min="1000" max="2024" required>
 
         <p>Description:</p>
-        <textarea name="text" rows="5" cols="40" placeholder="Provide a brief description of the album" required></textarea>
+        <textarea name="text" rows="5" cols="40" placeholder="Provide a brief description of the album"></textarea>
 
         <p>Image:</p>
         <input type="file" name="image" accept=".jpg, .jpeg" required>

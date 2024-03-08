@@ -19,13 +19,13 @@
         <input type="text" id="title" name="title" value="{{#album.title}}{{.}}{{/album.title}}" required><br>
 
         <p>Year:</p>
-        <input type="number" id="year" name="year" value="{{#album.year}}{{.}}{{/album.year}}" required><br>
+        <input type="number" id="year" name="year" value="{{#album.year}}{{.}}{{/album.year}}" min="1000" max="2024" required><br>
 
         <p>Comment:</p>
         <textarea id="text" name="text" rows="5" cols="40">{{#album.text}}{{.}}{{/album.text}}</textarea><br>
 
         <p>Image:</p>
-        <input type="file" id="image" name="image" accept=".jpg, .jpeg" value="/album/{{album.id}}/image" required><br>
+        <input type="file" id="image" name="image" accept=".jpg, .jpeg" value="/album/{{album.id}}/image"><br>
 
         <input type="submit" value="Save" class="button">
         <a href="/album/{{album.id}}" class="button">Cancel</a>
