@@ -19,6 +19,11 @@ public class CommentService {
         this.albumService = albumService;
     }
 
+    public Collection<Comment> getComments() {
+        return albumService.findAll().stream()
+                .flatMap(album -> album.getComments().values().stream())
+                .toList();
+    }
     public Collection<Comment> getComments(long albumId) {
         return albumService.findById(albumId).getComments().values();
     }

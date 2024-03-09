@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/albums")
 public class AlbumRESTController{
 
 
@@ -25,13 +25,13 @@ public class AlbumRESTController{
     @Autowired
     private ImageService images;
 
-    @GetMapping("/albums")
+    @GetMapping("/")
     public Collection<Album> getAlbums() {
         return albums.findAll();
 
     }
 
-    @GetMapping("/albums/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Album> getAlbum(@PathVariable long id){
 
         Album album = albums.findById(id);
@@ -43,7 +43,7 @@ public class AlbumRESTController{
         
     }
 
-    @PostMapping("/albums")
+    @PostMapping("/")
     public ResponseEntity<Album> createAlbum(@RequestBody Album album) {
 
         albums.save(album);
@@ -53,13 +53,12 @@ public class AlbumRESTController{
     }
 
 
-    @PutMapping("/albums/{id}") // NOT WORKING PROPERLY
+    @PutMapping("/{id}")
     public ResponseEntity<Album> updateAlbum(@PathVariable long id, @RequestBody Album newAlbum) {
 
         Album album = albums.findById(id);
 
         if (album != null) {
-
             newAlbum.setId(id);
             albums.save(newAlbum);
 
@@ -70,7 +69,7 @@ public class AlbumRESTController{
         }
     }
 
-    @DeleteMapping("/albums/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Album> deleteAlbum(@PathVariable long id) {
 
         Album album = albums.findById(id);
@@ -84,10 +83,7 @@ public class AlbumRESTController{
     }
 
 
-
-
-
-
+// Operations with album images
 
 
 }
