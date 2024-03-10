@@ -8,7 +8,9 @@ import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,10 +45,11 @@ public class AlbumRESTController{
         
     }
 
-    @PostMapping("/")
-    public ResponseEntity<Album> createAlbum(@RequestBody Album album) {
+    @PostMapping("")
+    public ResponseEntity<Album> createAlbum(@RequestBody Album album) throws IOException {
 
         albums.save(album);
+        // images.saveImage("albums", album.getId(), imageFile); I don't know if the image and the JSON data can be sent in the same request
         URI location = fromCurrentRequest().path("/{id}").buildAndExpand(album.getId()).toUri();
 
         return ResponseEntity.created(location).body(album);
@@ -70,12 +73,13 @@ public class AlbumRESTController{
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Album> deleteAlbum(@PathVariable long id) {
+    public ResponseEntity<Album> deleteAlbum(@PathVariable long id) throws IOException {
 
         Album album = albums.findById(id);
 
         if (album != null) {
             albums.deleteById(id);
+            images.deleteImage("albums", id);
             return ResponseEntity.ok(album);
         } else {
             return ResponseEntity.notFound().build();
@@ -85,5 +89,40 @@ public class AlbumRESTController{
 
 // Operations with album images
 
+    @GetMapping("/{id}/image")
+    public ResponseEntity<Object> downloadImage(@PathVariable long id) throws IOException {
+
+        if (albums.findById(id)!=null) {
+            return images.createResponseFromImage("albums", id);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/{id}/image")
+    public ResponseEntity<Object> uploadImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {
+
+        if (albums.findById(id)!=null) {
+            images.saveImage("albums", id, imageFile);
+
+            return ResponseEntity.ok().build();
+
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}/image")
+    public ResponseEntity<Object> deleteImage(@PathVariable long id) throws IOException {
+
+        if (albums.findById(id)!=null) {
+            images.deleteImage("albums", id);
+
+            return ResponseEntity.ok().build();
+
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 }
