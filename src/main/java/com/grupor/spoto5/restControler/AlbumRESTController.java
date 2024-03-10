@@ -25,7 +25,7 @@ public class AlbumRESTController{
     @Autowired
     private ImageService images;
 
-    @GetMapping("/")
+    @GetMapping("")
     public Collection<Album> getAlbums() {
         return albums.findAll();
 

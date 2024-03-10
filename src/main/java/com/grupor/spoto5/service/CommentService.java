@@ -28,6 +28,16 @@ public class CommentService {
         return albumService.findById(albumId).getComments().values();
     }
 
+    public Comment getComment(long id){
+        for (Comment comment : getComments()) {
+            if (comment.getId() == id) {
+                return comment;
+            }
+        }
+        return null;
+
+    }
+
     public void addComment(long albumId, Comment comment) {
         Album album = albumService.findById(albumId);
         if (album != null) {
@@ -43,5 +53,7 @@ public class CommentService {
             album.deleteComment(commentId);
         }
     }
+
+
 
 }

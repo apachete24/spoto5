@@ -4,6 +4,7 @@ package com.grupor.spoto5.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -18,7 +19,6 @@ public class Album {
     private String text;
 
     private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
-
     public Album() {
     }
 
@@ -69,6 +69,14 @@ public class Album {
         this.text = text;
     }
 
+    // Comments
+    public ConcurrentMap<Long, Comment> getComments() {
+        return comments;
+    }
+
+    public Comment getComment(Long commentId) {
+        return this.comments.get(commentId);
+    }
     public void addComment(Comment comment) {
         this.comments.put(comment.getId(), comment);
     }
@@ -79,7 +87,5 @@ public class Album {
 
     // Resto del código...
 
-    public ConcurrentMap<Long, Comment> getComments() {
-        return comments;
-    }
+
 }
