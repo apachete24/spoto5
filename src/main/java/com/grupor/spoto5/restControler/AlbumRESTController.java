@@ -144,13 +144,16 @@ public class AlbumRESTController{
             return ResponseEntity.notFound().build();
         }
     }
-
+    // Add user to album favs
     @PostMapping("/{id}/userFavorites/{userId}")
     public ResponseEntity<Object> addAlbumFavorite(@PathVariable long id, @PathVariable long userId) throws IOException {
 
         Album album = albums.findById(id);
         User user = users.findById(userId);
         if (album != null && user != null) {
+            if(album.isUserFav(userId) && user.isAlbumFav(id)){ // if favorite already exists
+                return ResponseEntity.ok(user);
+            }
             // Add user to album favs
             album.addUserFav(userId);
             // Add album to user favs
@@ -163,7 +166,7 @@ public class AlbumRESTController{
         }
 
     }
-
+    // Remove user from album favs
     @DeleteMapping("/{id}/userFavorites/{userId}")
     public ResponseEntity<Object> deleteAlbumFavorite(@PathVariable long id, @PathVariable long userId) throws IOException {
 
@@ -172,7 +175,14 @@ public class AlbumRESTController{
         // If album and user don't exist or user is not in album favs
         if ( (album == null || user == null) || !(album.isUserFav(userId) && user.isAlbumFav(id)) ) {
 
+            return ResponseEntity.notFound().build();
 
+        } else{
+            // Remove user from album favs
+            album.removeUserFav(userId);
+            // Remove album from user favs
+            user.removeAlbumFav(id);
+            return ResponseEntity.ok(album.getUserFavs());
         }
     }
 
