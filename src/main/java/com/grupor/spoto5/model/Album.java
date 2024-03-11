@@ -11,17 +11,19 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Album {
 
-
+    // Atributes
     private Long id;
     private String artist;
     private String title;
     private Integer year;
     private String text;
-
     private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
+    private ArrayList<Long> userFavs = new ArrayList<>();
+
+    // Constructor
     public Album() {
     }
-
+    // Constructor
     public Album(String artist, String title, Integer year, String text) {
         this.artist = artist;
         this.title = title;
@@ -85,7 +87,27 @@ public class Album {
         this.comments.remove(commentId);
     }
 
-    // Resto del código...
+    // UserFavs
+    public ArrayList<Long> getUserFavs() {
+        return userFavs;
+    }
+
+    public void setUserFavs(ArrayList<Long> userFavs) {
+        this.userFavs = userFavs;
+    }
+
+    public void addUserFav(Long userId) {
+        userFavs.add(userId);
+    }
+
+    public void removeUserFav(Long userId) {
+        userFavs.remove(userId);
+    }
+
+    public boolean isUserFav(Long userId) {
+        return userFavs.contains(userId);
+    }
+
 
 
 }
