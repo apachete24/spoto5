@@ -1,6 +1,7 @@
 package com.grupor.spoto5.controller;
 
 import com.grupor.spoto5.model.Comment;
+import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
 import com.grupor.spoto5.service.UserSession;
@@ -26,17 +27,38 @@ public class CommentController {
     @Autowired
     private CommentService commentService;
 
-
+    /*
     @PostMapping("/{id}/comment")
     public String newComment(Model model, Comment comment, @PathVariable long id) {
-        userSession.setUser(comment.getUser());
+        userSession.setUser(comment.getUsername());
         commentService.addComment(id, comment);
         return "redirect:/album/" + id;
     }
+    */
 
+    @PostMapping("/{id}/comment")
+    public String newComment(Comment comment, @PathVariable long id) {
+        userSession.setUser(comment.getUsername());
+        Album album = albumService.findById(id).orElseThrow();
+
+        comment.setAlbum(album);
+
+        commentService.addComment(comment);
+
+        return "redirect:/album/" + id;
+    }
+
+    /*
     @GetMapping("/{idAlbum}/delete/comment/{idComment}")
     public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment) {
         commentService.deleteComment(idAlbum, idComment);
         return "redirect:/album/" + idAlbum;
     }
+    */
+    @GetMapping("/{idAlbum}/delete/comment/{idComment}")
+    public String deleteComment(@PathVariable long idAlbum, @PathVariable long idComment) {
+        commentService.deleteComment(idComment);
+        return "redirect:/album/" + idAlbum;
+    }
+
 }

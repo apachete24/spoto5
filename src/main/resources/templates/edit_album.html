@@ -18,8 +18,8 @@
         <p>Title:</p>
         <input type="text" id="title" name="title" value="{{#album.title}}{{.}}{{/album.title}}" required><br>
 
-        <p>Year:</p>
-        <input type="number" id="year" name="year" value="{{#album.year}}{{.}}{{/album.year}}" min="1000" max="2024" required><br>
+        <p>Release Year:</p>
+        <input type="number" id="release_year" name="release_year" value="{{#album.release_year}}{{.}}{{/album.release_year}}" min="1000" max="2024" required><br>
 
         <p>Comment:</p>
         <textarea id="text" name="text" rows="5" cols="40">{{#album.text}}{{.}}{{/album.text}}</textarea><br>

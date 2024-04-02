@@ -30,7 +30,7 @@ public class AlbumRESTController{
     private ImageService images;
     @Autowired
     private UserService users;
-
+    /*
     // Get all albums
     @GetMapping("")
     public Collection<Album> getAlbums() {
@@ -186,5 +186,5 @@ public class AlbumRESTController{
         }
     }
 
-
+    */
 }

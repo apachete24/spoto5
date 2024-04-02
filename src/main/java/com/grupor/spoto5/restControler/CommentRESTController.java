@@ -18,7 +18,7 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @RequestMapping("/api")
 public class CommentRESTController {
 
-
+    /*
     @Autowired
     private CommentService comments;
     @Autowired
@@ -96,6 +96,6 @@ public class CommentRESTController {
     }
 
 
-
+    */
 
 }

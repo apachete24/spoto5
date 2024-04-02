@@ -15,7 +15,7 @@
         <div class="album-info">
             <p><strong>Artist:</strong> {{album.artist}}</p>
             <p><strong>Title:</strong> {{album.title}}</p>
-            <p><strong>Year:</strong> {{album.year}}</p>
+            <p><strong>Year:</strong> {{album.release_year}}</p>
             <p><strong>Description:</strong> {{album.text}}</p>
         </div>
         <div class="album-image">
@@ -37,7 +37,7 @@
             <div class="comment-info">
                 <ul>
                     <li>
-                        <strong>Username</strong>: {{user}} <br>
+                        <strong>Username</strong>: {{username}} <br>
                         <strong>Score</strong>: {{score}} <br>
                         <strong>Review</strong>: {{text}} <br>
                         <a href="/album/{{album.id}}/delete/comment/{{id}}" class="button delete">Delete comment</a>
@@ -54,7 +54,7 @@
     <h1>Add Comment</h1>
     <form action="/album/{{album.id}}/comment" method="post">
         <p>Username:</p>
-        <input type="text" id="user" name="user" value="{{#user}}{{.}}{{/user}}" required>
+        <input type="text" id="username" name="username" value="{{#username}}{{.}}{{/username}}" required>
 
         <p>Score:</p>
         <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>

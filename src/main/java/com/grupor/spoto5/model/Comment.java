@@ -1,17 +1,29 @@
 package com.grupor.spoto5.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
+@Entity
 public class Comment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private String user;
+    private String username;
     private int score;
     private String text;
+
+    @ManyToOne
+    @JsonIgnore
+    private Album album;
+
 
     public Comment() {
     }
 
-    public Comment (String user, int score, String text) {
+    public Comment (String username, int score, String text) {
         super();
-        this.user = user;
+        this.username = username;
         this.score = score;
         this.text = text;
     }
@@ -20,8 +32,8 @@ public class Comment {
         return id;
     }
 
-    public String getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
     public int getScore() {
@@ -36,8 +48,8 @@ public class Comment {
         this.id = id;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public void setUsername(String user) {
+        this.username = user;
     }
 
     public void setScore(int score) {
@@ -46,6 +58,14 @@ public class Comment {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Album getAlbum() {
+        return album;
+    }
+
+    public void setAlbum (Album album) {
+        this.album = album;
     }
 
 

@@ -1,33 +1,49 @@
 package com.grupor.spoto5.model;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
+import java.sql.Blob;
+import java.util.List;
+
+
+@Entity
 public class Album {
 
     // Atributes
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String artist;
     private String title;
-    private Integer year;
+    private Integer release_year;
+    @Column(columnDefinition = "TEXT")
     private String text;
-    private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
-    private ArrayList<Long> userFavs = new ArrayList<>();
+
+    private String image;
+
+
+
+    @OneToMany(mappedBy="album", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
+    // private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
+
+
+    // private ArrayList<Long> userFavs = new ArrayList<>();
+
 
     // Constructor
     public Album() {
+
     }
     // Constructor
-    public Album(String artist, String title, Integer year, String text) {
+    public Album(String artist, String title, Integer release_year, String text) {
         this.artist = artist;
         this.title = title;
-        this.year = year;
+        this.release_year = release_year;
         this.text = text;
     }
 
@@ -35,9 +51,11 @@ public class Album {
         return id;
     }
 
+
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getArtist() {
         return artist;
@@ -55,12 +73,12 @@ public class Album {
         this.title = title;
     }
 
-    public Integer getYear() {
-        return year;
+    public Integer getRelease_year() {
+        return release_year;
     }
 
-    public void setYear(Integer year) {
-        this.year = year;
+    public void setRelease_year(Integer release_year) {
+        this.release_year = release_year;
     }
 
     public String getText() {
@@ -72,21 +90,42 @@ public class Album {
     }
 
     // Comments
-    public ConcurrentMap<Long, Comment> getComments() {
+    public List<Comment> getComments() {
         return comments;
     }
 
+    public void setComments (List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    /*
     public Comment getComment(Long commentId) {
         return this.comments.get(commentId);
     }
+    */
+
     public void addComment(Comment comment) {
-        this.comments.put(comment.getId(), comment);
+        //this.comments.put(comment.getId(), comment);
+        comments.add(comment);
+        comment.setAlbum(this);
     }
 
-    public void deleteComment(Long commentId) {
-        this.comments.remove(commentId);
+    public void deleteComment(Comment comment) {
+        //this.comments.remove(commentId);
+        comments.remove(comment);
+        comment.setAlbum(null);
     }
 
+
+    /*
     // UserFavs
     public ArrayList<Long> getUserFavs() {
         return userFavs;
@@ -107,7 +146,7 @@ public class Album {
     public boolean isUserFav(Long userId) {
         return userFavs.contains(userId);
     }
-
+    */
 
 
 }
