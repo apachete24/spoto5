@@ -21,19 +21,14 @@ public class Album {
     private Integer release_year;
     @Column(columnDefinition = "TEXT")
     private String text;
-
     private String image;
 
+    @ManyToMany
+    private List<User> userFavs;
 
 
     @OneToMany(mappedBy="album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
-
-    // private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
-
-
-    // private ArrayList<Long> userFavs = new ArrayList<>();
-
 
     // Constructor
     public Album() {

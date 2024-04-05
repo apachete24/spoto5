@@ -1,20 +1,34 @@
 package com.grupor.spoto5.model;
 
-import java.util.ArrayList;
+import jakarta.persistence.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+
+@Entity
 public class User {
 
+
+    // Atributes
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idUser;
     private String userName;
-    private ArrayList<Long> albumFavs = new ArrayList<>();
+    // Favorites albums
+    @ManyToMany (mappedBy = "user")
+    private List<Album> albumFavs;
 
 
+    // Constructors
     public User() {
     }
 
     public User(String userName) {
         this.userName = userName;
     }
+
 
     // Getters
     public Long getId() {
@@ -25,7 +39,7 @@ public class User {
         return userName;
     }
 
-    public ArrayList<Long> getAlbumFavs() {
+    public List<Album> getAlbumFavs() {
         return albumFavs;
     }
 
@@ -38,20 +52,16 @@ public class User {
         this.userName = userName;
     }
 
-    public void setAlbumFavs(ArrayList<Long> albumFavs) {
-        this.albumFavs = albumFavs;
+    public void addAlbumFav(Album newAlbum) {
+        albumFavs.add(newAlbum);
     }
 
-    public void addAlbumFav(Long albumId) {
-        albumFavs.add(albumId);
+    public void removeAlbumFav(Album album) {
+        albumFavs.remove(album);
     }
 
-    public void removeAlbumFav(Long albumId) {
-        albumFavs.remove(albumId);
-    }
-
-    public boolean isAlbumFav(Long albumId) {
-        return albumFavs.contains(albumId);
+    public boolean isAlbumFav(Album album) {
+        return albumFavs.contains(album);
     }
 
 
