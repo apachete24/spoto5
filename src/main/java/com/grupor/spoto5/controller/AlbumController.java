@@ -5,6 +5,7 @@ import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
 import com.grupor.spoto5.service.ImageService;
 import com.grupor.spoto5.service.UserSession;
+import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -18,9 +19,12 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
 @Controller
 public class AlbumController {
@@ -40,8 +44,10 @@ public class AlbumController {
     private CommentService commentService;
 
     @GetMapping("/")
-    public String showAlbums(Model model) {
-        model.addAttribute("albums", albumService.findAll());
+    public String showAlbums(Model model, @RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to) {
+
+        model.addAttribute("albums", albumService.findAll(from, to));
+
         return "index";
     }
 
@@ -79,12 +85,17 @@ public class AlbumController {
 
 
     @PostMapping("/album/new")
-    public String newAlbum(Album album, MultipartFile image) throws IOException {
+    public String newAlbum(Album album, @RequestParam MultipartFile image) throws IOException {
 
-        albumService.save(album, image);
+        URI location = fromCurrentRequest().build().toUri();
 
+        album.setImage(location.toString());
+        album.setImageFile(BlobProxy.generateProxy(image.getInputStream(), image.getSize()));
+        albumService.save(album);
+        
         return "saved_album";
     }
+
 
     @GetMapping("/album/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable int id) throws SQLException {
@@ -102,6 +113,9 @@ public class AlbumController {
         }
     }
 
+
+    
+
     @GetMapping("/album/{id}/delete")
     public String deleteAlbum(Model model, @PathVariable long id) throws IOException {
         // model.addAttribute(albumService.findById(id));
@@ -114,11 +128,16 @@ public class AlbumController {
 
     @GetMapping("/album/{id}/edit")
     public String updateAlbum(Model model, @PathVariable long id) {
-        Optional<Album> album = albumService.findById(id);
 
-        model.addAttribute("album", album);
+        Optional<Album> optionalAlbum = albumService.findById(id);
 
-        return "edit_album";
+        if (optionalAlbum.isPresent()) {
+            Album album = optionalAlbum.get();
+            model.addAttribute("album", album);
+            return "edit_album";
+        } else {
+            return "error";
+        }
     }
 
 

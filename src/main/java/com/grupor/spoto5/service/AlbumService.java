@@ -1,20 +1,20 @@
 package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.Album;
-import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.repository.AlbumRepository;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Blob;
+
+import java.io.IOException;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicLong;
+import jakarta.persistence.EntityManager;
+
 
 @Service
 public class AlbumService {
@@ -24,6 +24,9 @@ public class AlbumService {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private EntityManager entityManager;
 
     // private ConcurrentMap<Long, Album> albums = new ConcurrentHashMap<>();
     // private AtomicLong nextId = new AtomicLong();
@@ -42,9 +45,18 @@ public class AlbumService {
 
 
 
-    public Collection<Album> findAll() {
+    @SuppressWarnings("unchecked")
+    public List<Album> findAll(Integer from, Integer to) {
         // return albums.values();
-        return albumRepository.findAll();
+        String query = "SELECT * FROM album";
+        if ( (from != null && to != null)) {
+            query += " WHERE";
+        }
+        if (from != null && to != null) {
+            query += " release_year BETWEEN " + from + " AND " + to;
+        }
+        //return albumRepository.findAll();
+        return (List<Album>) entityManager.createNativeQuery(query, Album.class).getResultList();
     }
 
     /*
@@ -77,18 +89,34 @@ public class AlbumService {
     }
     */
 
+    /*
     public void save(Album album, MultipartFile image) {
 
         if (image != null && !image.isEmpty()) {
             String path = this.imageService.createImage(image);
             album.setImage(path);
-        } else {
-            // Set a default image path if no image uploaded
-            album.setImage("no-image.png");
         }
 
         albumRepository.save(album);
     }
+    */
+    /*
+    public void save (Album album, MultipartFile image) throws IOException{
+        String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+        if (fileName.contains((".."))) {
+            System.out.println("not a valid file");
+            return; // Si el nombre del archivo es inválido, no continuamos con el proceso
+        }
+        String base64Image = Base64.getEncoder().encodeToString(image.getBytes());
+        album.setImage(base64Image); // Guardamos la imagen codificada en base64 como una cadena en el álbum
+        albumRepository.save(album);
+    }
+    */
+
+    public void save (Album album) {
+        albumRepository.save(album);
+    }
+    
     /*
     public void save(Album album, MultipartFile imageField) {
 
@@ -101,20 +129,22 @@ public class AlbumService {
         albumRepository.save(album);
     }
     */
+
     /*
     public void updateAlbum(Long id, Album updatedAlbum) {
-        Album existingAlbum = findById(id);
-        if (existingAlbum != null) {
+        Optional<Album> existingAlbum = findById(id);
+        if (existingAlbum.isPresent()) {
+            Album al = existingAlbum.get();
+            al.setArtist(updatedAlbum.getArtist());
+            al.setTitle(updatedAlbum.getTitle());
+            al.setRelease_year(updatedAlbum.getRelease_year());
+            al.setText(updatedAlbum.getText());
 
-            existingAlbum.setArtist(updatedAlbum.getArtist());
-            existingAlbum.setTitle(updatedAlbum.getTitle());
-            existingAlbum.setRelease_year(updatedAlbum.getRelease_year());
-            existingAlbum.setText(updatedAlbum.getText());
-
-            save(existingAlbum);
+            albumRepository.save(al);
         }
     }
     */
+
 
     public void updateAlbum (Album updatedAlbum) {
         Album album = albumRepository.findById(updatedAlbum.getId()).orElseThrow();

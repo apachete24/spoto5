@@ -26,6 +26,10 @@ public class Album {
 
 
 
+    @Lob
+    @JsonIgnore
+    private Blob imageFile;
+
     @OneToMany(mappedBy="album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
@@ -106,6 +110,14 @@ public class Album {
         this.image = image;
     }
 
+    public Blob getImageFile() {
+        return imageFile;
+    }
+
+    public void setImageFile(Blob imageFile) {
+        this.imageFile = imageFile;
+    }
+    
     /*
     public Comment getComment(Long commentId) {
         return this.comments.get(commentId);
@@ -123,6 +135,7 @@ public class Album {
         comments.remove(comment);
         comment.setAlbum(null);
     }
+
 
 
     /*

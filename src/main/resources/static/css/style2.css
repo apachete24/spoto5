@@ -1,14 +1,21 @@
+/* Reset general */
 body, h1, p, ul, li {
     margin: 0;
     padding: 0;
 }
 
+/* Estilos generales del cuerpo */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #333;
     color: #fff;
 }
 
+/* Fondo oscuro */
+.dark-bg {
+    background-color: #333; /* Fondo oscuro */
+}
+
+/* Contenedor principal del álbum */
 .album-container {
     max-width: 800px;
     margin: 20px auto;
@@ -17,74 +24,150 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Detalles del álbum */
 .album-details {
     margin-bottom: 20px;
 }
 
+/* Información del álbum */
 .album-info p {
     margin-bottom: 10px;
 }
 
+/* Imagen del álbum */
 .album-image img {
     max-width: 100%;
     height: auto;
 }
 
+/* Acciones del álbum */
 .album-actions {
     margin-top: 20px;
 }
 
+/* Botones */
 .button {
     display: inline-block;
     padding: 10px 20px;
     margin-right: 10px;
     text-decoration: none;
     color: #fff;
-    background-color: #808080;
     border-radius: 5px;
     cursor: pointer;
 }
 
+/* Botón eliminar */
 .button.delete {
     background-color: #ff5555;
 }
 
+/* Botón favorito */
 .button.favorite {
     background-color: #ffd700;
 }
 
+/* Botón editar */
 .button.edit {
     background-color: #4caf50;
 }
 
+/* Botón de cancelar */
 .button.cancel {
     background-color: #808080;
 }
 
+/* Sección de comentarios */
 .comments-section {
     margin-top: 20px;
+    background-color: #555;
+    border: 1px solid #ffd700;
+    padding: 10px;
 }
 
+/* Ítem de comentario */
 .comment-item {
     margin-bottom: 20px;
     border-bottom: 1px solid #ccc;
     padding-bottom: 10px;
 }
 
+/* Información del comentario */
 .comment-info li {
     list-style: none;
     margin-bottom: 10px;
 }
 
+/* Enlaces en la información del comentario */
 .comment-info a {
     text-decoration: none;
     color: #fff;
 }
 
+/* Mensaje si no hay comentarios */
 .no-comment {
     color: #808080;
 }
 
+/* Títulos */
 h1 {
     margin-top: 20px;
+}
+
+/* Sección para agregar comentarios */
+.add-comment {
+    max-width: 800px;
+    margin: 20px auto;
+    background-color: rgba(120, 111, 111, 0.37);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el editor Quill */
+.ql-editor {
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #333;
+    border-radius: 5px;
+    padding: 10px;
+    min-height: 200px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+}
+
+/* Estilo de selección del editor Quill */
+.ql-editor ::selection {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+/* Estilos de los botones de la barra de herramientas Quill */
+.ql-toolbar button {
+    background-color: #e0f2e0;
+    color: #4caf50;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 10px;
+    margin: 0 3px;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+/* Iconos de los botones de la barra de herramientas Quill */
+.ql-toolbar button svg {
+    fill: #4caf50;
+}
+
+/* Estilo al pasar el ratón por encima de los botones de la barra de herramientas Quill */
+.ql-toolbar button:hover {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+/* Estilo para botones de la barra de herramientas Quill cuando están activos */
+.ql-toolbar button.ql-active {
+    background-color: #4caf50;
+    color: #fff;
 }

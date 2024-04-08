@@ -10,6 +10,20 @@
 <div class="container">
 
     <h1>Spoto5</h1>
+
+    <form class="row" action="/">
+        <div class="col">
+            <input name="from" type="number" class="form-control" placeholder="From year">
+        </div>
+        <div class="col">
+            <input name="to" type="number" class="form-control" placeholder="To year">
+        </div>
+        <div class="col">
+            <input class="btn btn-outline-primary" type="submit" value="Search">
+        </div>
+
+    </form>
+
     <ul class="album-list">
         {{#albums}}
         <li class="album-item">
