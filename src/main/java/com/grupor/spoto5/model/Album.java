@@ -24,8 +24,6 @@ public class Album {
 
     private String image;
 
-
-
     @Lob
     @JsonIgnore
     private Blob imageFile;

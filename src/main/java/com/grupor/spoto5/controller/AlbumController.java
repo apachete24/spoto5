@@ -87,12 +87,16 @@ public class AlbumController {
     @PostMapping("/album/new")
     public String newAlbum(Album album, @RequestParam MultipartFile image) throws IOException {
 
+        /*
         URI location = fromCurrentRequest().build().toUri();
 
         album.setImage(location.toString());
         album.setImageFile(BlobProxy.generateProxy(image.getInputStream(), image.getSize()));
         albumService.save(album);
-        
+        */
+        String file = imageService.createImage(image);
+        album.setImage(file);
+        albumService.save(album);
         return "saved_album";
     }
 
@@ -114,7 +118,7 @@ public class AlbumController {
     }
 
 
-    
+
 
     @GetMapping("/album/{id}/delete")
     public String deleteAlbum(Model model, @PathVariable long id) throws IOException {

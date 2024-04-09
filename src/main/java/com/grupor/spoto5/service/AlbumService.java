@@ -44,8 +44,6 @@ public class AlbumService {
     */
 
 
-
-    @SuppressWarnings("unchecked")
     public List<Album> findAll(Integer from, Integer to) {
         // return albums.values();
         String query = "SELECT * FROM album";
@@ -100,6 +98,7 @@ public class AlbumService {
         albumRepository.save(album);
     }
     */
+
     /*
     public void save (Album album, MultipartFile image) throws IOException{
         String fileName = StringUtils.cleanPath(image.getOriginalFilename());
