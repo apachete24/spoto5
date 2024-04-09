@@ -1,15 +1,19 @@
 package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.User;
+import com.grupor.spoto5.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class UserService {
 
-    private AtomicLong nextId = new AtomicLong();
-    private ConcurrentMap<Long, User> users = new ConcurrentHashMap<>();
+    @Autowired
+    private UserRepository userRepository;
 
 
     public UserService() {
@@ -22,31 +26,22 @@ public class UserService {
 
 
     public void save(User user) {
-        if(user.getId() == null) {
-            user.setId(nextId.getAndIncrement());
-        }
-        this.users.put(user.getId(), user);
+        userRepository.save(user);
     }
 
-    public User findById(Long id) {
-        return users.get(id);
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
-    public User findByUserName(String userName) {
-        for(User user : users.values()) {
-            if(user.getUserName().equals(userName)) {
-                return user;
-            }
-        }
-        return null;
+    public void deleteById(long id) {
+        userRepository.deleteById(id);
     }
 
-    public void delete(Long id) {
-        users.remove(id);
-    }
-
-    public void update(User user) {
-        users.put(user.getId(), user);
+    public void update(User updatedUser) {
+        User user = userRepository.findById(updatedUser.getId()).orElseThrow();
+        user.setUserName(updatedUser.getUserName());
+        user.getAlbumFavs().forEach(updatedUser::addAlbumFav);
+        userRepository.save(user);
     }
 
 
