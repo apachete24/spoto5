@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/css/style2.css">
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <title>{{album.title}} {{album.artist}}</title>
 </head>
 
-<body class="dark-bg">
+<body>
 <div class="album-container">
 
     <div class="album-details">
@@ -30,6 +29,8 @@
         </div>
     </div>
 
+    <p>
+
     <div class="comments-section">
         {{#comments}}
         <div class="comment-item">
@@ -38,7 +39,7 @@
                     <li>
                         <strong>Username</strong>: {{username}} <br>
                         <strong>Score</strong>: {{score}} <br>
-                        <strong>Review</strong>: {{{text}}} <br>
+                        <strong>Review</strong>: {{text}} <br>
                         <a href="/album/{{album.id}}/delete/comment/{{id}}" class="button delete">Delete comment</a>
                     </li>
                 </ul>
@@ -50,36 +51,20 @@
         {{/comments}}
     </div>
 
-</div>
-<div class="add-comment">
-    <h2>Add Comment</h2>
+    <h1>Add Comment</h1>
     <form action="/album/{{album.id}}/comment" method="post">
-        <div class="input-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="{{#username}}{{.}}{{/username}}" required>
-        </div>
-        <div class="input-group">
-            <label for="score">Score:</label>
-            <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>
-        </div>
-        <div class="input-group">
-            <label for="text">Comment:</label>
-            <div id="editor-container"></div>
-            <input type="hidden" id="text" name="text" value="">
-        </div>
+        <p>Username:</p>
+        <input type="text" id="username" name="username" value="{{#username}}{{.}}{{/username}}" required>
+
+        <p>Score:</p>
+        <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>
+
+        <p>Comment:</p>
+        <textarea id="text" name="text" rows="5" cols="40" required></textarea>
+
         <button type="submit" class="button">Save</button>
     </form>
 </div>
 </body>
-
-<script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
-<script>
-    var quill = new Quill('#editor-container', {
-        theme: 'snow'
-    });
-    quill.on('text-change', function () {
-        document.getElementById('text').value = quill.root.innerHTML;
-    });
-</script>
 
 </html>

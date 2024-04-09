@@ -87,3 +87,34 @@ h1 {
 .button:hover {
     background-color: #3e8e41;
 }
+
+#editor-container {
+    margin-bottom: 20px;
+}
+
+/* Estilo para los botones del formulario */
+.button {
+    display: inline-block;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-top: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: #45a049;
+}
+
+/* Estilo para el enlace "Cancel" */
+.button.cancel {
+    background-color: #f44336;
+}
+
+.button.cancel:hover {
+    background-color: #d32f2f;
+}

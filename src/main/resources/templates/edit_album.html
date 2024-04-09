@@ -4,34 +4,46 @@
     <meta charset="UTF-8">
     <title>EDIT ALBUM</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 
 <body>
 
-    <h1>Edit Album</h1>
+<h1>Edit Album</h1>
 
-    <form action="/album/{{album.id}}/edit" method="post" enctype="multipart/form-data">
+<form action="/album/{{album.id}}/edit" method="post" enctype="multipart/form-data">
 
-        <p>Artist:</p>
-        <input type="text" id="artist" name="artist" value="{{#album.artist}}{{.}}{{/album.artist}}" required><br>
+    <p>Artist:</p>
+    <input type="text" id="artist" name="artist" value="{{#album.artist}}{{.}}{{/album.artist}}" required><br>
 
-        <p>Title:</p>
-        <input type="text" id="title" name="title" value="{{#album.title}}{{.}}{{/album.title}}" required><br>
+    <p>Title:</p>
+    <input type="text" id="title" name="title" value="{{#album.title}}{{.}}{{/album.title}}" required><br>
 
-        <p>Release Year:</p>
-        <input type="number" id="release_year" name="release_year" value="{{#album.release_year}}{{.}}{{/album.release_year}}" min="1000" max="2024" required><br>
+    <p>Release Year:</p>
+    <input type="number" id="release_year" name="release_year" value="{{#album.release_year}}{{.}}{{/album.release_year}}" min="1000" max="2024" required><br>
 
-        <p>Comment:</p>
-        <textarea id="text" name="text" rows="5" cols="40">{{#album.text}}{{.}}{{/album.text}}</textarea><br>
+    <p>Description:</p>
+    <div id="editor-container" style="height: 200px;">{{#album.text}}{{.}}{{/album.text}}</div>
+    <input type="hidden" id="text" name="text" value="{{#album.text}}{{.}}{{/album.text}}" placeholder="Provide a brief description of the album">
 
-        <p>Image:</p>
-        <input type="file" id="image" name="image" accept=".jpg, .jpeg" value="/album/{{album.id}}/image"><br>
+    <p>Image:</p>
+    <input type="file" id="image" name="image" accept=".jpg, .jpeg" value="/album/{{album.id}}/image"><br>
 
-        <input type="submit" value="Save" class="button">
-        <a href="/album/{{album.id}}" class="button">Cancel</a>
+    <input type="submit" value="Save" class="button">
+    <a href="/album/{{album.id}}" class="button cancel">Cancel</a>
 
-    </form>
+</form>
 
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+<script>
+    var quill = new Quill('#editor-container', {
+        theme: 'snow'
+    });
+    quill.on('text-change', function () {
+        document.getElementById('text').value = quill.root.innerHTML;
+    });
+</script>
 
 </html>

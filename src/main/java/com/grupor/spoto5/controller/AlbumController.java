@@ -85,19 +85,14 @@ public class AlbumController {
 
 
     @PostMapping("/album/new")
-    public String newAlbum(Album album, @RequestParam MultipartFile image) throws IOException {
+    public String newAlbum(Album album, @RequestParam MultipartFile albumImage) throws IOException {
 
-        /*
-        URI location = fromCurrentRequest().build().toUri();
-
-        album.setImage(location.toString());
-        album.setImageFile(BlobProxy.generateProxy(image.getInputStream(), image.getSize()));
-        albumService.save(album);
-        */
-        String file = imageService.createImage(image);
+        album.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
+        String file = imageService.createImage(albumImage);
         album.setImage(file);
         albumService.save(album);
         return "saved_album";
+
     }
 
 
@@ -121,11 +116,21 @@ public class AlbumController {
 
 
     @GetMapping("/album/{id}/delete")
-    public String deleteAlbum(Model model, @PathVariable long id) throws IOException {
+    public String deleteAlbum(@PathVariable long id) throws SQLException {
         // model.addAttribute(albumService.findById(id));
-        imageService.deleteImage(albumService.findById(id).get().getImage());
-        albumService.deleteById(id);
-
+        Optional <Album> al = albumService.findById(id);
+        if (al.isPresent()) {
+            Album album = al.get();
+            if (album.getImage() != null) {
+                imageService.deleteImage(album.getImage());
+            }
+            if (album.getImageFile() != null) {
+                album.getImageFile().free();
+            }
+            albumService.deleteById(id);
+        } else {
+            return "error";
+        }
         return "deleted_album";
     }
 

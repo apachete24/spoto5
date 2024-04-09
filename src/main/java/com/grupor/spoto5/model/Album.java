@@ -1,12 +1,10 @@
 package com.grupor.spoto5.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Blob;
 import java.util.List;
-
 
 @Entity
 public class Album {
