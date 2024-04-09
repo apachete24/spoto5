@@ -118,3 +118,8 @@ h1 {
 .button.cancel:hover {
     background-color: #d32f2f;
 }
+
+#current-image {
+    max-width: 300px; /* Cambia el valor de acuerdo al tamaño máximo que desees */
+    height: auto;
+}

@@ -23,7 +23,7 @@
     <input type="number" id="release_year" name="release_year" value="{{#album.release_year}}{{.}}{{/album.release_year}}" min="1000" max="2024" required><br>
 
     <p>Description:</p>
-    <div id="editor-container" style="height: 200px;">{{album.text}}</div>
+    <div id="editor-container" style="height: 200px;">{{{album.text}}}</div>
     <input type="hidden" id="text" name="text" value="{{{album.text}}}" placeholder="Provide a brief description of the album">
 
     <p>Current Image:</p>
