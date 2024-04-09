@@ -89,10 +89,7 @@ public class AlbumController {
     @PostMapping("/album/new")
     public String newAlbum(Album album, @RequestParam MultipartFile albumImage) throws IOException {
 
-        album.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
-        String file = imageService.createImage(albumImage);
-        album.setImage(file);
-        albumService.save(album);
+        albumService.save(album, albumImage);
         return "saved_album";
 
     }

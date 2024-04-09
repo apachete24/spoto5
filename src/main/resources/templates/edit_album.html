@@ -24,7 +24,7 @@
 
     <p>Description:</p>
     <div id="editor-container" style="height: 200px;">{{album.text}}</div>
-    <input type="hidden" id="text" name="text" value="{{album.text}}" placeholder="Provide a brief description of the album">
+    <input type="hidden" id="text" name="text" value="{{{album.text}}}" placeholder="Provide a brief description of the album">
 
     <p>Current Image:</p>
     <img id="current-image" src="/album/{{album.id}}/image" alt="Current Album Image"><br>
