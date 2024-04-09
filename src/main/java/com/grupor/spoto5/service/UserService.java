@@ -16,7 +16,9 @@ public class UserService {
     private UserRepository userRepository;
 
 
-    public UserService() {
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
         // Initialize with some users
        save(new User("user1"));
        save(new User("user2"));
@@ -37,12 +39,13 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
+    /*
     public void update(User updatedUser) {
         User user = userRepository.findById(updatedUser.getId()).orElseThrow();
         user.setUserName(updatedUser.getUserName());
         user.getAlbumFavs().forEach(updatedUser::addAlbumFav);
         userRepository.save(user);
     }
-
+    */
 
 }

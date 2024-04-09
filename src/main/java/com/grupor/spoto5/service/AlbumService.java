@@ -1,16 +1,12 @@
 package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.Album;
+import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.repository.AlbumRepository;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-
-import java.io.IOException;
-import java.util.Base64;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import jakarta.persistence.EntityManager;
@@ -28,6 +24,7 @@ public class AlbumService {
     @Autowired
     private EntityManager entityManager;
 
+
     // private ConcurrentMap<Long, Album> albums = new ConcurrentHashMap<>();
     // private AtomicLong nextId = new AtomicLong();
 
@@ -43,18 +40,19 @@ public class AlbumService {
     }
     */
 
-
     public List<Album> findAll(Integer from, Integer to) {
-        // return albums.values();
         String query = "SELECT * FROM album";
-        if ( (from != null && to != null)) {
-            query += " WHERE";
-        }
         if (from != null && to != null) {
-            query += " release_year BETWEEN " + from + " AND " + to;
+            query += " WHERE release_year BETWEEN :fromYear AND :toYear";
         }
-        //return albumRepository.findAll();
-        return (List<Album>) entityManager.createNativeQuery(query, Album.class).getResultList();
+
+        Query nativeQuery = entityManager.createNativeQuery(query, Album.class);
+        if (from != null && to != null) {
+            nativeQuery.setParameter("fromYear", from);
+            nativeQuery.setParameter("toYear", to);
+        }
+
+        return (List<Album>) nativeQuery.getResultList();
     }
 
     /*
@@ -129,25 +127,36 @@ public class AlbumService {
     }
     */
 
-    /*
+
     public void updateAlbum(Long id, Album updatedAlbum) {
+
         Optional<Album> existingAlbum = findById(id);
         if (existingAlbum.isPresent()) {
             Album al = existingAlbum.get();
-            al.setArtist(updatedAlbum.getArtist());
-            al.setTitle(updatedAlbum.getTitle());
-            al.setRelease_year(updatedAlbum.getRelease_year());
-            al.setText(updatedAlbum.getText());
+            if (! al.getArtist().equals(updatedAlbum.getArtist())) {
+                al.setArtist(updatedAlbum.getArtist());
+            } else if (! al.getRelease_year().equals(updatedAlbum.getRelease_year())) {
+                al.setRelease_year(updatedAlbum.getRelease_year());
+            } else if (! al.getTitle().equals(updatedAlbum.getTitle())) {
+                al.setTitle(updatedAlbum.getTitle());
+            } else if (! al.getText().equals(updatedAlbum.getText())) {
+                al.setText(updatedAlbum.getText());
+            }
 
+            if (updatedAlbum.getImage() != null && !updatedAlbum.getImage().isEmpty()) {
+                al.setImage(updatedAlbum.getImage());
+            } else if (updatedAlbum.getImageFile() != null) {
+                al.setImageFile(updatedAlbum.getImageFile());
+            }
+
+            if (updatedAlbum.getComments() != null) {
+                for (Comment comment : updatedAlbum.getComments()) {
+                    al.addComment(comment);
+                }
+            }
             albumRepository.save(al);
+
         }
     }
-    */
 
-
-    public void updateAlbum (Album updatedAlbum) {
-        Album album = albumRepository.findById(updatedAlbum.getId()).orElseThrow();
-        album.getComments().forEach(updatedAlbum::addComment);
-        albumRepository.save(updatedAlbum);
-    }
 }

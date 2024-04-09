@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
@@ -65,6 +66,7 @@ public class AlbumController {
         }
     }
     */
+
     @GetMapping("/album/{id}")
     public String showAlbum(Model model, @PathVariable long id) {
         Optional<Album> album = albumService.findById(id);
@@ -143,34 +145,25 @@ public class AlbumController {
         if (optionalAlbum.isPresent()) {
             Album album = optionalAlbum.get();
             model.addAttribute("album", album);
+
+            // Agrega el nombre del archivo de imagen al modelo
+            model.addAttribute("imageFileName", album.getImage());
+
             return "edit_album";
         } else {
             return "error";
         }
     }
 
-
-
-    /*
     @PostMapping("/album/{id}/edit")
-    public String updateAlbum(@PathVariable Long id, Album updatedAlbum, MultipartFile image) throws IOException {
-        if (image != null && !image.isEmpty()) {
-            imageService.saveImage(ALBUMS_FOLDER, id, image);
+    public String updateAlbum(@PathVariable Long id, Album updatedAlbum, MultipartFile albumImage) throws IOException {
+        if (albumImage != null && !albumImage.isEmpty()) {
+            String fileImage = imageService.createImage(albumImage);
+            updatedAlbum.setImage(fileImage);
+            updatedAlbum.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
         }
         albumService.updateAlbum(id, updatedAlbum);
         return "redirect:/album/" + id;
     }
-    */
 
-    /*
-    @PostMapping("/album/{id}/edit")
-    public String updateAlbum(@PathVariable Long id, Album updatedAlbum, MultipartFile image) throws IOException {
-        if (image != null && !image.isEmpty()) {
-            imageService.saveImage(ALBUMS_FOLDER, id, image);
-        }
-        updatedAlbum.setId(id);
-        albumService.updateAlbum(updatedAlbum);
-        return "redirect:/album/" + id;
-    }
-    */
 }

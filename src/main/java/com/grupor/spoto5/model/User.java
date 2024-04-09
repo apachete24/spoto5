@@ -17,9 +17,11 @@ public class User {
     private Long idUser;
     private String userName;
     // Favorites albums
+
+    /*
     @ManyToMany (mappedBy = "user")
     private List<Album> albumFavs;
-
+    */
 
     // Constructors
     public User() {
@@ -39,9 +41,11 @@ public class User {
         return userName;
     }
 
+    /*
     public List<Album> getAlbumFavs() {
         return albumFavs;
     }
+    */
 
     // Setters
     public void setId(Long idUser) {
@@ -52,9 +56,10 @@ public class User {
         this.userName = userName;
     }
 
+    /*
     public void addAlbumFav(Album newAlbum) {
         albumFavs.add(newAlbum);
-    }
+
 
     public void removeAlbumFav(Album album) {
         albumFavs.remove(album);
@@ -63,6 +68,6 @@ public class User {
     public boolean isAlbumFav(Album album) {
         return albumFavs.contains(album);
     }
-
+    */
 
 }

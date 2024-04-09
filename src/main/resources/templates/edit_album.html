@@ -23,11 +23,14 @@
     <input type="number" id="release_year" name="release_year" value="{{#album.release_year}}{{.}}{{/album.release_year}}" min="1000" max="2024" required><br>
 
     <p>Description:</p>
-    <div id="editor-container" style="height: 200px;">{{#album.text}}{{.}}{{/album.text}}</div>
-    <input type="hidden" id="text" name="text" value="{{#album.text}}{{.}}{{/album.text}}" placeholder="Provide a brief description of the album">
+    <div id="editor-container" style="height: 200px;">{{album.text}}</div>
+    <input type="hidden" id="text" name="text" value="{{album.text}}" placeholder="Provide a brief description of the album">
 
-    <p>Image:</p>
-    <input type="file" id="image" name="image" accept=".jpg, .jpeg" value="/album/{{album.id}}/image"><br>
+    <p>Current Image:</p>
+    <img id="current-image" src="/album/{{album.id}}/image" alt="Current Album Image"><br>
+
+    <p>Upload New Image:</p>
+    <input type="file" id="image" name="albumImage" accept=".jpg, .jpeg, .png"><br>
 
     <input type="submit" value="Save" class="button">
     <a href="/album/{{album.id}}" class="button cancel">Cancel</a>
@@ -43,6 +46,19 @@
     });
     quill.on('text-change', function () {
         document.getElementById('text').value = quill.root.innerHTML;
+    });
+
+    // Obtener el campo de entrada de archivo
+    var fileInput = document.getElementById('image');
+    // Escuchar el evento 'change' en el campo de entrada de archivo
+    fileInput.addEventListener('change', function(event) {
+        // Obtener el archivo seleccionado
+        var file = event.target.files[0];
+        // Crear un objeto de URL para el archivo seleccionado
+        var imageURL = URL.createObjectURL(file);
+        // Obtener la imagen actual y establecer su src en la URL del archivo seleccionado
+        var currentImage = document.getElementById('current-image');
+        currentImage.src = imageURL;
     });
 </script>
 

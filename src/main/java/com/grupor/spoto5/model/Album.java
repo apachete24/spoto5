@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -29,6 +30,11 @@ public class Album {
     @OneToMany(mappedBy="album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
+    /*
+    @ManyToMany
+    private List<User> userFavs;
+    */
+
     // private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
 
 
@@ -37,7 +43,7 @@ public class Album {
 
     // Constructor
     public Album() {
-
+        this.comments = new ArrayList<Comment>();
     }
     // Constructor
     public Album(String artist, String title, Integer release_year, String text) {
@@ -45,6 +51,7 @@ public class Album {
         this.title = title;
         this.release_year = release_year;
         this.text = text;
+        this.comments = new ArrayList<Comment>();
     }
 
     public Long getId() {

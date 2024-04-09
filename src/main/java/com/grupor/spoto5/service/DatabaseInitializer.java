@@ -37,6 +37,8 @@ public class DatabaseInitializer {
         album8.setImage("azulejos de corales.jpg");
         Album album9 = new Album("Kaydy Cain", "3 Sentimientos", 2009,  "Como todos bien sabéis, su carrera se inició como D. Gómez siendo miembro de uno de los colectivos más representativos del panorama como Corredores de Bloque, ahora convertido en Takers. El artista madrileño afincado en Barcelona, ha decidido publicar en su cuenta de Bandcamp toda su discografía en solitario, desde sus inicios hasta la citada anteriormente con Cookin Soul. En resumen, podemos encontrar desde '3 Sentimientos', de donde rescataron hace no mucho el remix de 'El infierno de tu gloria' con Marko Italia, hasta clásicos como 'Trvp Jinxx' publicada en 2003 o 'Música pa vacilar' de 2012, pasando por el resto de trabajos que han hecho que Kaydy Cain aka D. Gómez sea uno de los artistas más activos a nivel nacional.");
         album9.setImage("3 Sentimientos.jpg");
+        Album album10 = new Album("Test", "aaaaaaaa", 2024, "aaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        album10.setImage("no-image.png");
 
         albumService.save(album1);
         albumService.save(album2);
@@ -47,6 +49,7 @@ public class DatabaseInitializer {
         albumService.save(album7);
         albumService.save(album8);
         albumService.save(album9);
+        albumService.save(album10);
 
     }
 
