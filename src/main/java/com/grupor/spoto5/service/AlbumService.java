@@ -1,6 +1,7 @@
 package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.Album;
+import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.AlbumRepository;
 import jakarta.persistence.Query;
 import org.hibernate.engine.jdbc.BlobProxy;
@@ -105,6 +106,12 @@ public class AlbumService {
             albumRepository.save(al);
 
         }
+    }
+
+    public void addAlbumToFavorites(User user, Album album) {
+        user.getAlbumFavs().add(album);
+        album.getUserFavs().add(user);
+        albumRepository.save(album);
     }
 
 }
