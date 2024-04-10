@@ -37,10 +37,10 @@ public class Album {
     @OneToMany(mappedBy="album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
 
-    /*
+
     @ManyToMany
     private List<User> userFavs;
-    */
+
 
     // private ConcurrentMap<Long, Comment> comments = new ConcurrentHashMap<>();
 
