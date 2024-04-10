@@ -2,6 +2,7 @@ package com.grupor.spoto5.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Blob;
 import java.util.ArrayList;
@@ -26,6 +27,12 @@ public class Album {
     @Lob
     @JsonIgnore
     private Blob imageFile;
+
+    private String videoPath;
+
+    @Transient
+    @JsonIgnore
+    private MultipartFile videoFile;
 
     @OneToMany(mappedBy="album", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
@@ -139,7 +146,21 @@ public class Album {
         comment.setAlbum(null);
     }
 
+    public String getVideoPath() {
+        return videoPath;
+    }
 
+    public void setVideoPath(String videoPath) {
+        this.videoPath = videoPath;
+    }
+
+    public MultipartFile getVideoFile() {
+        return videoFile;
+    }
+
+    public void setVideoFile(MultipartFile videoFile) {
+        this.videoFile = videoFile;
+    }
 
     /*
     // UserFavs

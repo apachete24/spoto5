@@ -26,6 +26,9 @@ public class AlbumService {
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private VideoService videoService;
+
 
     public List<Album> findAll(Integer from, Integer to) {
         String query = "SELECT * FROM album";
@@ -54,10 +57,16 @@ public class AlbumService {
 
 
 
-    public void save (Album album, MultipartFile albumImage) throws IOException {
-        album.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
-        String file = imageService.createImage(albumImage);
-        album.setImage(file);
+    public void save(Album album, MultipartFile albumImage, MultipartFile albumVideo) throws IOException {
+        if (albumImage != null && !albumImage.isEmpty()) {
+            album.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
+            String fileImage = imageService.createImage(albumImage);
+            album.setImage(fileImage);
+        }
+        if (albumVideo != null && !albumVideo.isEmpty()) {
+            String fileVideo = videoService.createVideo(albumVideo);
+            album.setVideoPath(fileVideo);
+        }
         albumRepository.save(album);
     }
 
@@ -85,6 +94,12 @@ public class AlbumService {
                 al.setImage(updatedAlbum.getImage());
             } if (updatedAlbum.getImageFile() != null) {
                 al.setImageFile(updatedAlbum.getImageFile());
+            }
+
+            if (updatedAlbum.getVideoPath() != null && !updatedAlbum.getVideoPath().isEmpty()) {
+                al.setVideoPath(updatedAlbum.getVideoPath());
+            } if (updatedAlbum.getVideoFile() != null) {
+                al.setVideoFile(updatedAlbum.getVideoFile());
             }
 
             albumRepository.save(al);

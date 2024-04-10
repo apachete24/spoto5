@@ -32,6 +32,15 @@
     <p>Upload New Image:</p>
     <input type="file" id="image" name="albumImage" accept=".jpg, .jpeg, .png"><br>
 
+    <p>Current Video:</p>
+    <video id="current-video" width="320" height="240" controls>
+        <source src="/album/{{album.id}}/video" type="video/mp4">
+        Your browser does not support the video tag.
+    </video><br>
+
+    <p>Upload New Video:</p>
+    <input type="file" id="video" name="albumVideo" accept=".mp4, .avi, .mov, .mkv"><br>
+
     <input type="submit" value="Save" class="button">
     <a href="/album/{{album.id}}" class="button cancel">Cancel</a>
 

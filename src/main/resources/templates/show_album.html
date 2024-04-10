@@ -21,6 +21,14 @@
         <div class="album-image">
             <img src="/album/{{album.id}}/image" alt="Album Image">
         </div>
+
+        <div class="album-video">
+            <video width="320" height="240" controls>
+                <source src="/album/{{album.id}}/video" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
         <div class="album-actions">
             <a href="/album/{{album.id}}/delete" class="button delete">Delete album</a>
             <a href="/album/{{album.id}}/edit" class="button edit">Edit</a>
