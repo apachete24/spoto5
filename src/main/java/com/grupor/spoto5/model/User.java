@@ -18,10 +18,10 @@ public class User {
     private String userName;
     // Favorites albums
 
-    /*
-    @ManyToMany (mappedBy = "user")
+
+    @ManyToMany (mappedBy = "userFavs")
     private List<Album> albumFavs;
-    */
+
 
     // Constructors
     public User() {
@@ -41,11 +41,7 @@ public class User {
         return userName;
     }
 
-    /*
-    public List<Album> getAlbumFavs() {
-        return albumFavs;
-    }
-    */
+
 
     // Setters
     public void setId(Long idUser) {
