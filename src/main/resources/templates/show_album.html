@@ -72,6 +72,17 @@
 
         <button type="submit" class="button">Save</button>
     </form>
+    <form action="/album/{id}/like" method="post">
+        <label for="userIds">Selecciona usuarios que den me gusta:</label><br>
+        <select name="userIds" id="userIds" multiple>
+            <!-- Aquí debes iterar sobre la lista de usuarios disponibles -->
+            <option value="userId1">User 1</option>
+            <option value="userId2">User 2</option>
+            <option value="userId3">User 3</option>
+            <option value="userId4">User 4</option>
+        </select><br><br>
+        <input type="submit" value="Me gusta">
+    </form>
 </div>
 </body>
 

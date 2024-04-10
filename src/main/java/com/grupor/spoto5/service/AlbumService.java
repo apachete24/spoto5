@@ -3,7 +3,9 @@ package com.grupor.spoto5.service;
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.AlbumRepository;
+import com.grupor.spoto5.repository.UserRepository;
 import jakarta.persistence.Query;
+import jakarta.transaction.Transactional;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +31,9 @@ public class AlbumService {
 
     @Autowired
     private VideoService videoService;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     public List<Album> findAll(Integer from, Integer to) {
@@ -119,5 +124,17 @@ public class AlbumService {
         album.getUserFavs().remove(user);
         albumRepository.save(album);
     }
+
+    @Transactional
+    public void addUsersToFavorites(Long albumId, List<Long> userIds) {
+        Optional<Album> optionalAlbum = albumRepository.findById(albumId);
+        if (optionalAlbum.isPresent()) {
+            Album album = optionalAlbum.get();
+            List<User> users = userRepository.findAllById(userIds);
+            album.getUserFavs().addAll(users);
+            albumRepository.save(album);
+        }
+    }
+
 
 }

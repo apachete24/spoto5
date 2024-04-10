@@ -167,4 +167,11 @@ public class AlbumController {
         return "redirect:/album/" + id;
     }
 
+    @PostMapping("/album/{id}/like")
+    public String likeAlbum(@PathVariable Long id, @RequestParam("userIds") List<Long> userIds) {
+        albumService.addUsersToFavorites(id, userIds);
+        return "redirect:/album/" + id;
+    }
+
+
 }
