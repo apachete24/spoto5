@@ -114,4 +114,10 @@ public class AlbumService {
         albumRepository.save(album);
     }
 
+    public void removeAlbumFromFavorites(User user, Album album) {
+        user.getAlbumFavs().remove(album);
+        album.getUserFavs().remove(user);
+        albumRepository.save(album);
+    }
+
 }

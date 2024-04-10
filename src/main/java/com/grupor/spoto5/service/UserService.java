@@ -60,6 +60,12 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void removeUserFromAlbumFavorites(User user, Album album) {
+        album.getUserFavs().remove(user);
+        user.getAlbumFavs().remove(album);
+        userRepository.save(user);
+    }
+
     /*
     public void update(User updatedUser) {
         User user = userRepository.findById(updatedUser.getId()).orElseThrow();
