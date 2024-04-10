@@ -1,10 +1,8 @@
 package com.grupor.spoto5.restControler;
 import com.grupor.spoto5.model.User;
-import  com.grupor.spoto5.service.AlbumService;
+import com.grupor.spoto5.service.*;
 import  com.grupor.spoto5.model.Album;
 
-import com.grupor.spoto5.service.ImageService;
-import com.grupor.spoto5.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
@@ -23,77 +22,97 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @RequestMapping("/api/albums")
 public class AlbumRESTController{
 
+    @Autowired
+    private UserSession userSession;
 
     @Autowired
-    private AlbumService albums;
+    private UserService userService;
+
     @Autowired
-    private ImageService images;
+    private AlbumService albumService;
+
     @Autowired
-    private UserService users;
-    /*
-    // Get all albums
+    private ImageService imageService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private VideoService videoService;
+
+    // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("")
-    public Collection<Album> getAlbums() {
-        return albums.findAll();
+    public Collection<Album> getAlbums(Model model, @RequestBody(required = false) Integer from, @RequestBody(required = false) Integer to) {
+
+        return albumService.findAll(from, to);
 
     }
+
+
     // Get album by id
     @GetMapping("/{id}")
     public ResponseEntity<Album> getAlbum(@PathVariable long id){
-
-        Album album = albums.findById(id);
-        if (album != null) {
-            return ResponseEntity.ok(album);
-        } else {
+        Optional<Album> album = albumService.findById(id);
+        if (album.isPresent()) { // album found
+            return ResponseEntity.ok(album.get());
+        } else { // album not found
             return ResponseEntity.notFound().build();
         }
-        
     }
 
     // Create album
     @PostMapping("")
     public ResponseEntity<Album> createAlbum(@RequestBody Album album) throws IOException {
 
-        albums.save(album);
-        // images.saveImage("albums", album.getId(), imageFile); I don't know if the image and the JSON data can be sent in the same request
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(album.getId()).toUri();
+        albumService.save(album);
+        if (album.getId() != null) { // if it was created successfully
+            return ResponseEntity.ok(album);
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
 
-        return ResponseEntity.created(location).body(album);
     }
 
     // Update album
     @PutMapping("/{id}")
     public ResponseEntity<Album> updateAlbum(@PathVariable long id, @RequestBody Album newAlbum) {
 
-        Album album = albums.findById(id);
+        Optional<Album> album = albumService.findById(id);
+        if (album.isPresent()) {
+            album.get().setArtist(newAlbum.getArtist());
+            album.get().setTitle(newAlbum.getTitle());
+            album.get().setRelease_year(newAlbum.getRelease_year());
+            album.get().setText(newAlbum.getText());
+            try {
+                albumService.save(album.get());
+            } catch (IOException e) { // 500 internall error
+                throw new RuntimeException(e);
+            }
+            // Saved successfully
+            return ResponseEntity.ok(album.get());
 
-        if (album != null) {
-            newAlbum.setId(id);
-            albums.save(newAlbum);
-
-            return ResponseEntity.ok(newAlbum);
-
-        } else {
+        } else { // album not found
             return ResponseEntity.notFound().build();
         }
     }
+
+
+
 
     // Delete album
     @DeleteMapping("/{id}")
     public ResponseEntity<Album> deleteAlbum(@PathVariable long id) throws IOException {
 
-        Album album = albums.findById(id);
-
-        if (album != null) {
-            albums.deleteById(id);
-            images.deleteImage("albums", id);
-            return ResponseEntity.ok(album);
+        Optional<Album> album = albumService.findById(id);
+        if (album.isPresent()) {
+            albumService.deleteById(id);
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-
+/*
 // Operations with album images
     @GetMapping("/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable long id) throws IOException {
@@ -185,6 +204,6 @@ public class AlbumRESTController{
             return ResponseEntity.ok(album.getUserFavs());
         }
     }
+*/
 
-    */
 }

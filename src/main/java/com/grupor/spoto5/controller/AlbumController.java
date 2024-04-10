@@ -48,6 +48,7 @@ public class AlbumController {
     @Autowired
     private VideoService videoService;
 
+    // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("/")
     public String showAlbums(Model model, @RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to) {
 
@@ -56,6 +57,7 @@ public class AlbumController {
         return "index";
     }
 
+    // Get album by id
     @GetMapping("/album/{id}")
     public String showAlbum(Model model, @PathVariable long id) {
         Optional<Album> album = albumService.findById(id);

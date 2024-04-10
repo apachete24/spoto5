@@ -35,8 +35,6 @@ public class AlbumService {
     @Autowired
     private VideoService videoService;
 
-    @Autowired
-    private UserRepository userRepository;
 
 
     public List<Album> findAll(Integer from, Integer to) {
