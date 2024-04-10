@@ -1,10 +1,12 @@
 package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.User;
+import com.grupor.spoto5.repository.AlbumRepository;
 import com.grupor.spoto5.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -15,7 +17,8 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-
+    @Autowired
+    private AlbumRepository albumRepository;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -38,6 +41,18 @@ public class UserService {
     public void deleteById(long id) {
         userRepository.deleteById(id);
     }
+
+    public List<User> findByIds(List<Long> ids) { return userRepository.findAllById(ids);}
+
+    public boolean exist(long id) {
+        return userRepository.existsById(id);
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+
 
     /*
     public void update(User updatedUser) {

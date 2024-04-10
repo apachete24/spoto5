@@ -2,6 +2,7 @@ package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.repository.AlbumRepository;
+import com.grupor.spoto5.repository.UserRepository;
 import jakarta.persistence.Query;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class AlbumService {
 
     @Autowired
     private EntityManager entityManager;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     public List<Album> findAll(Integer from, Integer to) {
