@@ -1,6 +1,7 @@
 package com.grupor.spoto5.controller;
 
 import com.grupor.spoto5.model.Album;
+import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.service.*;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class AlbumController {
     private UserSession userSession;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private AlbumService albumService;
 
     @Autowired
@@ -59,6 +63,8 @@ public class AlbumController {
             model.addAttribute("user", userSession.getUser());
             model.addAttribute("album", album.get());
             model.addAttribute("comments", commentService.getComments(id));
+            List<User> users = userService.findAll();
+            model.addAttribute("users", users);
             return "show_album";
         } else {
             return "error";
@@ -166,5 +172,12 @@ public class AlbumController {
         albumService.updateAlbum(id, updatedAlbum);
         return "redirect:/album/" + id;
     }
+
+    @PostMapping("/album/{id}/like")
+    public String likeAlbum(@PathVariable Long id, @RequestParam("userIds") List<Long> userIds) {
+        albumService.addUsersToFavorites(id, userIds);
+        return "redirect:/album/" + id;
+    }
+
 
 }

@@ -72,6 +72,16 @@
 
         <button type="submit" class="button">Save</button>
     </form>
+    <form action="/album/{id}/like" method="post">
+        <label for="userIds">Selecciona usuarios que den me gusta:</label><br>
+        <select name="userIds" id="userIds" multiple>
+            {{#users}}
+            <option value="{{id}}">{{userName}}</option>
+            {{/users}}
+        </select><br><br>
+        <input type="submit" value="Me gusta">
+    </form>
+
 </div>
 </body>
 

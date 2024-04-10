@@ -162,6 +162,16 @@ public class Album {
         this.videoFile = videoFile;
     }
 
+
+
+    public List<User> getUserFavs() {
+        return userFavs;
+    }
+
+    public void setUserFavs(List<User> userFavs) {
+        this.userFavs = userFavs;
+    }
+
     /*
     // UserFavs
     public ArrayList<Long> getUserFavs() {

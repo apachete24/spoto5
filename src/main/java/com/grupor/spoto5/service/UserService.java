@@ -1,5 +1,6 @@
 package com.grupor.spoto5.service;
 
+import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.AlbumRepository;
 import com.grupor.spoto5.repository.UserRepository;
@@ -53,6 +54,17 @@ public class UserService {
     }
 
 
+    public void addUserToAlbumFavorites(User user, Album album) {
+        album.getUserFavs().add(user);
+        user.getAlbumFavs().add(album);
+        userRepository.save(user);
+    }
+
+    public void removeUserFromAlbumFavorites(User user, Album album) {
+        album.getUserFavs().remove(user);
+        user.getAlbumFavs().remove(album);
+        userRepository.save(user);
+    }
 
     /*
     public void update(User updatedUser) {
