@@ -29,6 +29,7 @@ public class AlbumService {
     @Autowired
     private EntityManager entityManager;
 
+
     @Autowired
     private UserRepository userRepository;
 
@@ -126,16 +127,18 @@ public class AlbumService {
         albumRepository.save(album);
     }
 
-    @Transactional
     public void addUsersToFavorites(Long albumId, List<Long> userIds) {
-        Optional<Album> optionalAlbum = albumRepository.findById(albumId);
-        if (optionalAlbum.isPresent()) {
-            Album album = optionalAlbum.get();
+        Optional<Album> albumOptional = albumRepository.findById(albumId);
+        if (albumOptional.isPresent()) {
+            Album album = albumOptional.get();
             List<User> users = userRepository.findAllById(userIds);
-            album.getUserFavs().addAll(users);
-            albumRepository.save(album);
+            for (User user : users) {
+                user.getAlbumFavs().add(album);
+            }
+            userRepository.saveAll(users);
         }
     }
+
 
 
 }
