@@ -52,6 +52,14 @@ public class User {
         this.userName = userName;
     }
 
+    public List<Album> getAlbumFavs() {
+        return albumFavs;
+    }
+
+    public void setAlbumFavs(List<Album> albumFavs) {
+        this.albumFavs = albumFavs;
+    }
+
     /*
     public void addAlbumFav(Album newAlbum) {
         albumFavs.add(newAlbum);
