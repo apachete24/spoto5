@@ -1,4 +1,5 @@
 package com.grupor.spoto5.restControler;
+import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.service.*;
 import  com.grupor.spoto5.model.Album;
@@ -113,6 +114,17 @@ public class AlbumRESTController{
         }
     }
 
+    // Get comments
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<Collection<Comment>> getComments(@PathVariable long id) {
+
+        Optional<Album> album = albumService.findById(id);
+        if (album.isPresent()) {
+            return ResponseEntity.ok(album.get().getComments());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 // Operations with album images
 

@@ -16,44 +16,22 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class CommentService {
 
-    // private AlbumService albumService;
-
     private CommentRepository commentRepository;
-
     private AlbumService albumService;
 
-    // private AtomicLong nextId = new AtomicLong();
 
     public CommentService (CommentRepository commentRepository, AlbumService albumService) {
         this.albumService = albumService;
         this.commentRepository = commentRepository;
     }
 
-    /*
-    public CommentService(AlbumService albumService) {
 
-        this.albumService = albumService;
-    }
-    */
-
-    /*
-    public Collection<Comment> getComments() {
-        return albumService.findAll().stream()
-                .flatMap(album -> album.getComments().values().stream())
-                .toList();
-    }
-    */
-
+    // Get all comments
     public Collection<Comment> getComments () {
         return commentRepository.findAll();
     }
 
-    /*
-    public Collection<Comment> getComments(long albumId) {
-        return albumService.findById(albumId).getComments().values();
-    }
-    */
-
+    // Get comments by album
     public List<Comment> getComments(long albumId) {
 
         Optional<Album> albumOptional = albumService.findById(albumId);
@@ -66,32 +44,14 @@ public class CommentService {
         }
     }
 
-    /*
-    public Comment getComment(long id){
-        for (Comment comment : getComments()) {
-            if (comment.getId() == id) {
-                return comment;
-            }
-        }
-        return null;
-    }
-    */
 
+    // Get comment by id
     public Optional<Comment> getComment (long id) {
         return commentRepository.findById(id);
     }
 
-    /*
-    public void addComment(long albumId, Comment comment) {
-        Album album = albumService.findById(albumId);
-        if (album != null) {
-            Long commentId = nextId.getAndIncrement();
-            comment.setId(commentId);
-            album.addComment(comment);
-        }
-    }
-    */
 
+    // New comment
     public void addComment (Comment comment) {
 
         // validate userName
@@ -110,14 +70,8 @@ public class CommentService {
         this.commentRepository.save(comment);
     }
 
-    /*
-    public void deleteComment(long albumId, long commentId) {
-        Album album = albumService.findById(albumId);
-        if (album != null) {
-            album.deleteComment(commentId);
-        }
-    }
-    */
+
+    // Remove comment
     public void deleteComment (long commentId) {
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
         if (optionalComment.isPresent()) {
@@ -126,6 +80,8 @@ public class CommentService {
             throw new IllegalArgumentException("Comment with id " + commentId + " not found");        }
     }
 
+
+    // Find comments by id
     public List<Comment> findByIds(List<Long> ids) {
 
         if (ids == null || ids.isEmpty()) {
