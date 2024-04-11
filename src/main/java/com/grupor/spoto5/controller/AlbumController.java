@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -191,9 +192,24 @@ public class AlbumController {
     }
 
     @PostMapping("/album/{id}/like")
-    public String likeAlbum(@PathVariable Long id, @RequestParam("userIds") List<Long> userIds) {
-        albumService.addUsersToFavorites(id, userIds);
-        return "redirect:/album/" + id;
+    public String likeAlbum(@PathVariable Long id, @RequestParam("userIds") List<Long> userIds, RedirectAttributes redirectAttributes) {
+        Optional<Album> albumOptional = albumService.findById(id);
+        if (albumOptional.isPresent()) {
+            Album album = albumOptional.get();
+            for (Long userId : userIds) {
+                Optional<User> userOptional = userService.findById(userId);
+                if (userOptional.isPresent()) {
+                    User user = userOptional.get();
+                    userService.addUserToAlbumFavorites(user, album); // Agregar el álbum a los favoritos del usuario
+                }
+            }
+            redirectAttributes.addFlashAttribute("message", "Album added to favorites successfully");
+            return "redirect:/album/" + id;
+        } else {
+            // Manejar el error cuando el álbum no se encuentra
+            return "redirect:/error";
+        }
     }
+
 
 }

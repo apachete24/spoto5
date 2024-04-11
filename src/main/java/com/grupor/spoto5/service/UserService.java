@@ -4,6 +4,8 @@ import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.AlbumRepository;
 import com.grupor.spoto5.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,11 +56,27 @@ public class UserService {
     }
 
 
+    @Transactional
     public void addUserToAlbumFavorites(User user, Album album) {
-        album.getUserFavs().add(user);
-        user.getAlbumFavs().add(album);
-        userRepository.save(user);
+        // Verificar si el usuario y el álbum existen
+        Optional<User> existingUser = userRepository.findById(user.getId());
+        Optional<Album> existingAlbum = albumRepository.findById(album.getId());
+
+        if (existingUser.isPresent() && existingAlbum.isPresent()) {
+            // Agregar el usuario a los favoritos del álbum
+            album.getUserFavs().add(user);
+            // Agregar el álbum a los favoritos del usuario
+            user.getAlbumFavs().add(album);
+
+            // Guardar los cambios en la base de datos
+            userRepository.save(user);
+            albumRepository.save(album);
+        } else {
+            throw new EntityNotFoundException("User or album not found");
+        }
     }
+
+
 
     public void removeUserFromAlbumFavorites(User user, Album album) {
         album.getUserFavs().remove(user);
