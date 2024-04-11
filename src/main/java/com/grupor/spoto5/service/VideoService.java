@@ -11,7 +11,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
-import org.springframework.core.io.Resource; // Asegúrate de importar la clase correcta
+import org.springframework.core.io.Resource;
 
 
 @Service
@@ -50,7 +50,6 @@ public class VideoService {
         }
     }
 
-
     public void deleteVideo(String videoName) {
         try {
             VIDEOS_FOLDER.resolve(videoName).toFile().delete();
@@ -58,4 +57,5 @@ public class VideoService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't delete local video");
         }
     }
+
 }

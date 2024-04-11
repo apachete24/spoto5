@@ -129,13 +129,17 @@ public class AlbumController {
         Optional <Album> al = albumService.findById(id);
         if (al.isPresent()) {
             Album album = al.get();
-            if (album.getImage() != null) {
+            if (album.getImage() != null && !album.getImage().isEmpty()) {
                 imageService.deleteImage(album.getImage());
             }
             if (album.getImageFile() != null) {
                 album.getImageFile().free();
             }
+            if (album.getVideoPath() != null && !album.getVideoPath().isEmpty()) {
+                videoService.deleteVideo(album.getVideoPath());
+            }
             albumService.deleteById(id);
+
         } else {
             return "error";
         }
@@ -180,7 +184,5 @@ public class AlbumController {
         albumService.addUsersToFavorites(id, userIds);
         return "redirect:/album/" + id;
     }
-
-
 
 }

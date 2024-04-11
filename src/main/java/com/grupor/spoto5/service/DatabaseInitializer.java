@@ -1,7 +1,9 @@
 package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.Album;
+import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.repository.AlbumRepository;
+import com.grupor.spoto5.repository.CommentRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -31,6 +33,10 @@ public class DatabaseInitializer {
 
     @Autowired
     private VideoService videoService;
+    @Autowired
+    private CommentRepository commentRepository;
+    @Autowired
+    private CommentService commentService;
 
     @PostConstruct
     public void init() throws IOException, SQLException {
@@ -94,6 +100,54 @@ public class DatabaseInitializer {
         albumService.save(album8);
         albumService.save(album9);
         albumService.save(album10);
+
+        Comment comment1 = new Comment("Rodri", 100, "Great Album");
+        comment1.setAlbum(album1);
+        commentService.addComment(comment1);
+
+        Comment comment2 = new Comment("Diego", 90, "Niceeee");
+        comment2.setAlbum(album1);
+        commentService.addComment(comment2);
+
+        Comment comment3 = new Comment("Mario", 95, "Sounds good");
+        comment3.setAlbum(album1);
+        commentService.addComment(comment3);
+
+        Comment comment4 = new Comment("Rodri", 100, "922 928");
+        comment4.setAlbum(album2);
+        commentService.addComment(comment4);
+
+        Comment comment5 = new Comment("Diego", 100, "Fantastic");
+        comment5.setAlbum(album2);
+        commentService.addComment(comment5);
+
+        Comment comment6 = new Comment("Mario", 100, "Album of the year");
+        comment6.setAlbum(album2);
+        commentService.addComment(comment6);
+
+        Comment comment7 = new Comment("Rodri", 100, "Timeless");
+        comment7.setAlbum(album5);
+        commentService.addComment(comment7);
+
+        Comment comment8 = new Comment("Diego", 70, "Nice Album");
+        comment8.setAlbum(album8);
+        commentService.addComment(comment8);
+
+        Comment comment9 = new Comment("Mario", 100, "Great Album");
+        comment9.setAlbum(album8);
+        commentService.addComment(comment9);
+
+        Comment comment10 = new Comment("Rodri", 100, "Great Album");
+        comment10.setAlbum(album9);
+        commentService.addComment(comment10);
+
+        Comment comment11 = new Comment("Diego", 100, "Great Album");
+        comment11.setAlbum(album4);
+        commentService.addComment(comment11);
+
+        Comment comment12 = new Comment("Mario", 100, "Rookie");
+        comment12.setAlbum(album3);
+        commentService.addComment(comment12);
 
     }
 

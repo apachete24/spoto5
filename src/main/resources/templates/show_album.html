@@ -72,8 +72,9 @@
 
         <button type="submit" class="button">Save</button>
     </form>
+
     <form action="/album/{id}/like" method="post">
-        <label for="userIds">Selecciona usuarios que den me gusta:</label><br>
+        <label for="userIds">Select users to add this album to favorites:</label><br>
         <select name="userIds" id="userIds" multiple>
             {{#users}}
             <option value="{{id}}">{{userName}}</option>
