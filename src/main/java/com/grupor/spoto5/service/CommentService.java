@@ -3,6 +3,7 @@ package com.grupor.spoto5.service;
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.repository.CommentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,14 +17,12 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class CommentService {
 
+    @Autowired
     private CommentRepository commentRepository;
+    @Autowired
     private AlbumService albumService;
 
 
-    public CommentService (CommentRepository commentRepository, AlbumService albumService) {
-        this.albumService = albumService;
-        this.commentRepository = commentRepository;
-    }
 
 
     // Get all comments
