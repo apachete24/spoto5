@@ -48,13 +48,13 @@ public class AlbumService {
 
         String query = "SELECT * FROM album";
         if (from != null && to != null) {
-            query += " WHERE release_year BETWEEN :fromYear AND :toYear";
+            query += " WHERE release_year BETWEEN ? AND ?";
         }
 
         Query nativeQuery = entityManager.createNativeQuery(query, Album.class);
         if (from != null && to != null) {
-            nativeQuery.setParameter("fromYear", from);
-            nativeQuery.setParameter("toYear", to);
+            nativeQuery.setParameter(1, from);
+            nativeQuery.setParameter(2, to);
         }
 
         return (List<Album>) nativeQuery.getResultList();
