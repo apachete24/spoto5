@@ -201,16 +201,24 @@ public class AlbumController {
                 Optional<User> userOptional = userService.findById(userId);
                 if (userOptional.isPresent()) {
                     User user = userOptional.get();
-                    userService.addUserToAlbumFavorites(user, album); // Agregar el álbum a los favoritos del usuario
+                    // Verificar si el usuario ya ha marcado este álbum como favorito
+                    if (user.getAlbumFavs().contains(album)) {
+                        // Si ya lo ha marcado, eliminarlo de la lista de favoritos
+                        userService.removeUserFromAlbumFavorites(user, album);
+                    } else {
+                        // Si no lo ha marcado, agregarlo a la lista de favoritos
+                        userService.addUserToAlbumFavorites(user, album);
+                    }
                 }
             }
-            redirectAttributes.addFlashAttribute("message", "Album added to favorites successfully");
+            redirectAttributes.addFlashAttribute("message", "Action performed successfully");
             return "redirect:/album/" + id;
         } else {
             // Manejar el error cuando el álbum no se encuentra
             return "redirect:/error";
         }
     }
+
 
 
     @GetMapping("/users")
