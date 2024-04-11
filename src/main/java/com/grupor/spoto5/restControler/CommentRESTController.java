@@ -51,7 +51,7 @@ public class CommentRESTController {
 
 
     // Get comments by album
-    @GetMapping("/albums/{albumId}")
+    @GetMapping("/albums/{albumId}/comments")
     public ResponseEntity<Collection<Comment>> getComments(@PathVariable long albumId) {
 
         Optional<Album> album = albumService.findById(albumId);
@@ -64,52 +64,57 @@ public class CommentRESTController {
 
 
 
-    /*
     // Add comment to album
     @PostMapping("/albums/{albumId}/comments")
     public ResponseEntity<Comment> addComment(@PathVariable long albumId, @RequestBody Comment comment) {
-        comments.addComment(albumId, comment);
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(comment.getId()).toUri();
 
-        return ResponseEntity.created(location).body(comment);
-    }
-
-    // Delete comment
-    @DeleteMapping("/albums/{albumId}/comments/{commentId}")
-    public ResponseEntity<Comment> deleteComment(@PathVariable long albumId, @PathVariable long commentId) {
-
-        Album album = albums.findById(albumId);
-        if (album != null) {
-           Comment comment = album.getComment(commentId);
-           if (comment != null) {
-               // If album and comment exists
-               comments.deleteComment(albumId, commentId);
-               return ResponseEntity.ok(comment);
-           }
+        Optional<Album> album = albumService.findById(albumId);
+        if (album.isPresent()) {
+            comment.setAlbum(album.get());
+            commentService.addComment(comment);
+            URI location = fromCurrentRequest().path("/{id}").buildAndExpand(comment.getId()).toUri();
+            return ResponseEntity.created(location).body(comment);
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        // if comment or album does not exist
-        return ResponseEntity.notFound().build();
+    }
+
+
+    // Delete comment by id
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Comment> deleteComment(@PathVariable long commentId) {
+
+        Optional<Comment> comment = commentService.getComment(commentId);
+        if (comment.isPresent()) {
+            commentService.deleteComment(commentId);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
 
     }
+
 
     // Update comment
-    @PutMapping("/albums/{albumId}/comments/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable long albumId, @PathVariable long commentId, @RequestBody Comment newComment) {
-        Album album = albums.findById(albumId);
-        if (album != null) {
-            Comment comment = album.getComment(commentId);
-            if (comment != null) {
-                newComment.setId(commentId);
-                // pending of review and improvement
-                comments.deleteComment(albumId, commentId);
-                comments.addComment(albumId, newComment);
-                return ResponseEntity.ok(newComment);
-            }
+    @PutMapping("/{commentId}")
+    public ResponseEntity<Comment> updateComment(@PathVariable long commentId, @RequestBody Comment updatedComment) {
+
+        Optional<Comment> comment = commentService.getComment(commentId);
+
+        if (comment.isPresent()) {
+            // User is not allowed to change the username and id comment
+            updatedComment.setId(commentId);
+            updatedComment.setUsername(comment.get().getUsername());
+            commentService.addComment(updatedComment);
+
+            return ResponseEntity.ok(updatedComment);
+
+        } else {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
 
-    */
+
 
 }
