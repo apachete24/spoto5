@@ -149,6 +149,13 @@ public class DatabaseInitializer {
         comment12.setAlbum(album3);
         commentService.addComment(comment12);
 
+        Comment comment13 = new Comment("a", 1, "a");
+        comment13.setAlbum(album10);
+        commentService.addComment(comment13);
+
+        Comment comment14 = new Comment("b", 2, "b");
+        comment14.setAlbum(album10);
+        commentService.addComment(comment14);
     }
 
     public static Blob createBlobFromFile(File file) throws IOException, SQLException {

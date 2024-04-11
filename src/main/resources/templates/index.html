@@ -40,6 +40,12 @@
         {{/albums}}
     </ul>
 
+    {{#errorMessage}}
+    <div class="error-message">
+        {{errorMessage}}
+    </div>
+    {{/errorMessage}}
+
     <br>
 
     <a href="/album/new" class="button">Add Album</a>

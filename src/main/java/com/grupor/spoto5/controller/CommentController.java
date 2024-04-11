@@ -37,15 +37,22 @@ public class CommentController {
     */
 
     @PostMapping("/{id}/comment")
-    public String newComment(Comment comment, @PathVariable long id) {
-        userSession.setUser(comment.getUsername());
-        Album album = albumService.findById(id).orElseThrow();
+    public String newComment(Comment comment, @PathVariable long id, Model model) {
 
-        comment.setAlbum(album);
+        try {
 
-        commentService.addComment(comment);
+            userSession.setUser(comment.getUsername());
+            Album album = albumService.findById(id).orElseThrow();
+            comment.setAlbum(album);
+            commentService.addComment(comment);
+            return "redirect:/album/" + id;
 
-        return "redirect:/album/" + id;
+        } catch (IllegalArgumentException ex) {
+
+            model.addAttribute("error", ex.getMessage());
+            return "error";
+
+        }
     }
 
     /*
@@ -55,9 +62,14 @@ public class CommentController {
         return "redirect:/album/" + idAlbum;
     }
     */
+
     @GetMapping("/{idAlbum}/delete/comment/{idComment}")
     public String deleteComment(@PathVariable long idAlbum, @PathVariable long idComment) {
-        commentService.deleteComment(idComment);
+        try {
+            commentService.deleteComment(idComment);
+        } catch (IllegalArgumentException ex) {
+            return "redirect:/error";
+        }
         return "redirect:/album/" + idAlbum;
     }
 

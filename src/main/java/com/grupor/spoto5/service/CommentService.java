@@ -93,6 +93,20 @@ public class CommentService {
     */
 
     public void addComment (Comment comment) {
+
+        // validate userName
+        if (comment.getUsername() == null || comment.getUsername().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be empty.");
+        }
+        // validate Score
+        if (comment.getScore() < 0 || comment.getScore() > 100) {
+            throw new IllegalArgumentException("Score must be between 0 and 100.");
+        }
+        // Validate Text
+        if (comment.getText() == null || comment.getText().isEmpty()) {
+            throw new IllegalArgumentException("Comment text cannot be empty.");
+        }
+        // If comment is valid
         this.commentRepository.save(comment);
     }
 
@@ -105,10 +119,24 @@ public class CommentService {
     }
     */
     public void deleteComment (long commentId) {
-        this.commentRepository.deleteById(commentId);
+        Optional<Comment> optionalComment = commentRepository.findById(commentId);
+        if (optionalComment.isPresent()) {
+            commentRepository.deleteById(commentId);
+        } else {
+            throw new IllegalArgumentException("Comment with id " + commentId + " not found");        }
     }
 
     public List<Comment> findByIds(List<Long> ids) {
+
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("IDs cannot be empty.");
+        }
+
+        if (ids.stream().anyMatch(id -> id <= 0)) {
+            throw new IllegalArgumentException("IDs must be greater than 0");
+        }
+
         return commentRepository.findAllById(ids);
     }
+
 }

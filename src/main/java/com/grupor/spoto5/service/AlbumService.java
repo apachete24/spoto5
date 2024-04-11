@@ -4,6 +4,7 @@ import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.AlbumRepository;
 import com.grupor.spoto5.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.hibernate.engine.jdbc.BlobProxy;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import jakarta.persistence.EntityManager;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 
@@ -39,6 +41,11 @@ public class AlbumService {
 
 
     public List<Album> findAll(Integer from, Integer to) {
+
+        if (from != null && to != null && from > to) {
+            throw new IllegalArgumentException("Initial year must be greater than or equal to Final year");
+        }
+
         String query = "SELECT * FROM album";
         if (from != null && to != null) {
             query += " WHERE release_year BETWEEN :fromYear AND :toYear";
@@ -55,6 +62,9 @@ public class AlbumService {
 
 
     public Optional<Album> findById (long id) {
+        if (id <= 0) {
+            throw new IllegalArgumentException("Invalid album id: " + id);
+        }
         return albumRepository.findById(id);
     }
 
@@ -66,11 +76,28 @@ public class AlbumService {
 
 
     public void save(Album album, MultipartFile albumImage, MultipartFile albumVideo) throws IOException {
+
+        if (album.getArtist().isEmpty()) {
+            throw new IllegalArgumentException("Artist name cannot be empty");
+        }
+
+        if (album.getTitle().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+
+        if (album.getRelease_year() < 1000 || album.getRelease_year() > 2024) {
+            throw new IllegalArgumentException("Year must be between 1000 and 2024");
+        }
+
         if (albumImage != null && !albumImage.isEmpty()) {
-            album.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
             String fileImage = imageService.createImage(albumImage);
+            if (!StringUtils.hasText(fileImage) || !isImageFormatValid(fileImage)) {
+                throw new IllegalArgumentException("Invalid image format");
+            }
+            album.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
             album.setImage(fileImage);
         }
+
         if (albumVideo != null && !albumVideo.isEmpty()) {
             String fileVideo = videoService.createVideo(albumVideo);
             album.setVideoPath(fileVideo);
@@ -78,13 +105,30 @@ public class AlbumService {
         albumRepository.save(album);
     }
 
+
     public void save (Album album) throws  IOException {
+        if (album.getArtist().isEmpty()) {
+            throw new IllegalArgumentException("Artist name cannot be empty");
+        }
+
+        if (album.getTitle().isEmpty()) {
+            throw new IllegalArgumentException("Title cannot be empty");
+        }
+
+        if (album.getRelease_year() < 1000 || album.getRelease_year() > 2024) {
+            throw new IllegalArgumentException("Year must be between 1000 and 2024");
+        }
+
         albumRepository.save(album);
     }
 
     public void updateAlbum(Long id, Album updatedAlbum) {
 
         Optional<Album> existingAlbum = findById(id);
+
+        if (!existingAlbum.isPresent()) {
+            throw new EntityNotFoundException("Album not found");
+        }
 
         if (existingAlbum.isPresent()) {
             Album al = existingAlbum.get();
@@ -139,6 +183,17 @@ public class AlbumService {
         }
     }
 
-
+    private boolean isImageFormatValid(String fileName) {
+        String extension = StringUtils.getFilenameExtension(fileName);
+        if (extension != null) {
+            String[] allowedExtensions = {"jpg", "jpeg", "gif", "png"};
+            for (String ext : allowedExtensions) {
+                if (ext.equalsIgnoreCase(extension)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
 }

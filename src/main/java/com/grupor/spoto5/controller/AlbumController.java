@@ -52,23 +52,34 @@ public class AlbumController {
     @GetMapping("/")
     public String showAlbums(Model model, @RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to) {
 
-        model.addAttribute("albums", albumService.findAll(from, to));
-
+        try {
+            List <Album> albums = albumService.findAll(from, to);
+            model.addAttribute("albums", albums);
+        } catch (IllegalArgumentException ex) {
+            String errorMessage = "Invalid range: " + ex.getMessage();
+            model.addAttribute("errorMessage", errorMessage);
+        }
+        //model.addAttribute("albums", albumService.findAll(from, to));
         return "index";
     }
 
     // Get album by id
     @GetMapping("/album/{id}")
     public String showAlbum(Model model, @PathVariable long id) {
-        Optional<Album> album = albumService.findById(id);
-        if (album.isPresent()) {
-            model.addAttribute("user", userSession.getUser());
-            model.addAttribute("album", album.get());
-            model.addAttribute("comments", commentService.getComments(id));
-            List<User> users = userService.findAll();
-            model.addAttribute("users", users);
-            return "show_album";
-        } else {
+        try {
+            Optional<Album> album = albumService.findById(id);
+            if (album.isPresent()) {
+                model.addAttribute("user", userSession.getUser());
+                model.addAttribute("album", album.get());
+                model.addAttribute("comments", commentService.getComments(id));
+                List<User> users = userService.findAll();
+                model.addAttribute("users", users);
+                return "show_album";
+            } else {
+                return "error";
+            }
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("errorMessage", ex.getMessage());
             return "error";
         }
     }

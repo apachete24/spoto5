@@ -9,6 +9,8 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+
     private String username;
     private int score;
     private String text;
