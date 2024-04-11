@@ -49,6 +49,7 @@ public class AlbumController {
     @Autowired
     private VideoService videoService;
 
+
     // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("/")
     public String showAlbums(Model model, @RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to) {
@@ -209,6 +210,14 @@ public class AlbumController {
             // Manejar el error cuando el álbum no se encuentra
             return "redirect:/error";
         }
+    }
+
+
+    @GetMapping("/users")
+    public String showUsers(Model model) {
+        List<User> users = userService.findAll();
+        model.addAttribute("users", users);
+        return "users"; // Aquí debes tener una vista llamada "users.html" para mostrar los usuarios como botones
     }
 
 
