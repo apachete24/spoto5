@@ -26,9 +26,9 @@ public class VideoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The file is not a valid video format");
         }
 
-        String fileName = "video_" + UUID.randomUUID() + "_" + originalName;
+        //String fileName = "video_" + UUID.randomUUID() + "_" + originalName;
 
-        Path videoPath = VIDEOS_FOLDER.resolve(fileName);
+        Path videoPath = VIDEOS_FOLDER.resolve(originalName);
 
         try {
             multiPartFile.transferTo(videoPath);
@@ -37,7 +37,7 @@ public class VideoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't save video locally", ex);
         }
 
-        return fileName;
+        return originalName;
     }
 
 
