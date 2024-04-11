@@ -108,10 +108,8 @@ public class AlbumService {
             album.setVideoPath(fileVideo);
         }
 
-        /*
         String escapedText = HtmlUtils.htmlEscape(album.getText());
         album.setText(escapedText);
-        */
 
         albumRepository.save(album);
     }
@@ -135,9 +133,6 @@ public class AlbumService {
             throw new IllegalArgumentException("Year must be between 1000 and 2024");
         }
 
-        String escapedText = HtmlUtils.htmlEscape(album.getText());
-        album.setText(escapedText);
-
         albumRepository.save(album);
 
     }
@@ -159,9 +154,10 @@ public class AlbumService {
             } if (! al.getTitle().equals(updatedAlbum.getTitle()) && updatedAlbum.getTitle() != null && !updatedAlbum.getTitle().isEmpty()) {
                 al.setTitle(updatedAlbum.getTitle());
             }
-
-            String escapedText = HtmlUtils.htmlEscape(updatedAlbum.getText() != null ? updatedAlbum.getText() : al.getText());
-            al.setText(escapedText);
+            if (! updatedAlbum.getText().equals(al.getText())) {
+                String escapedText = HtmlUtils.htmlEscape(updatedAlbum.getText());
+                al.setText(escapedText);
+            }
 
             if (updatedAlbum.getImage() != null && !updatedAlbum.getImage().isEmpty()) {
                 al.setImage(updatedAlbum.getImage());
