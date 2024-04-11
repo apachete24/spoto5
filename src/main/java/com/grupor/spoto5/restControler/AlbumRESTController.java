@@ -5,6 +5,8 @@ import  com.grupor.spoto5.model.Album;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -98,7 +100,6 @@ public class AlbumRESTController{
 
 
 
-
     // Delete album
     @DeleteMapping("/{id}")
     public ResponseEntity<Album> deleteAlbum(@PathVariable long id) throws IOException {
@@ -112,13 +113,17 @@ public class AlbumRESTController{
         }
     }
 
-/*
+
 // Operations with album images
+
     @GetMapping("/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable long id) throws IOException {
 
-        if (albums.findById(id)!=null) {
-            return images.createResponseFromImage("albums", id);
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()){
+            Album album = isAlbum.get();
+            Resource poster = imageService.getImage(album.getImage());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpg").body(poster);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -127,28 +132,37 @@ public class AlbumRESTController{
     @PostMapping("/{id}/image")
     public ResponseEntity<Object> uploadImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {
 
-        if (albums.findById(id)!=null) {
-            images.saveImage("albums", id, imageFile);
-
-            return ResponseEntity.ok().build();
-
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()) {
+            Album album = isAlbum.get();
+            String imageName = imageService.createImage(imageFile);
+            album.setImage(imageName);
+            albumService.save(album);
+            URI location = fromCurrentRequest().path("/{id}").buildAndExpand(album.getId()).toUri();
+            return ResponseEntity.created(location).body(album);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
+
+    // Delete album image
     @DeleteMapping("/{id}/image")
     public ResponseEntity<Object> deleteImage(@PathVariable long id) throws IOException {
 
-        if (albums.findById(id)!=null) {
-            images.deleteImage("albums", id);
-
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()) {
+            Album album = isAlbum.get();
+            imageService.deleteImage(album.getImage());
+            album.setImage(null);
+            albumService.save(album);
             return ResponseEntity.ok().build();
-
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
+    /*
 
     // Operations with album favorites
 
