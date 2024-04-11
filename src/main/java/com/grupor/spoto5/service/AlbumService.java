@@ -17,6 +17,7 @@ import java.util.Optional;
 import jakarta.persistence.EntityManager;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.HtmlUtils;
 
 
 @Service
@@ -89,6 +90,10 @@ public class AlbumService {
             throw new IllegalArgumentException("Year must be between 1000 and 2024");
         }
 
+        if (album.getText() == null || album.getText().isEmpty()) {
+            throw new IllegalArgumentException("Text cannot be empty");
+        }
+
         if (albumImage != null && !albumImage.isEmpty()) {
             String fileImage = imageService.createImage(albumImage);
             if (!StringUtils.hasText(fileImage) || !isImageFormatValid(fileImage)) {
@@ -102,11 +107,18 @@ public class AlbumService {
             String fileVideo = videoService.createVideo(albumVideo);
             album.setVideoPath(fileVideo);
         }
+
+        /*
+        String escapedText = HtmlUtils.htmlEscape(album.getText());
+        album.setText(escapedText);
+        */
+
         albumRepository.save(album);
     }
 
 
     public void save (Album album) throws  IOException {
+
         if (album.getArtist().isEmpty()) {
             throw new IllegalArgumentException("Artist name cannot be empty");
         }
@@ -115,11 +127,19 @@ public class AlbumService {
             throw new IllegalArgumentException("Title cannot be empty");
         }
 
+        if (album.getText().isEmpty()) {
+            throw new IllegalArgumentException("Text cannot be empty");
+        }
+
         if (album.getRelease_year() < 1000 || album.getRelease_year() > 2024) {
             throw new IllegalArgumentException("Year must be between 1000 and 2024");
         }
 
+        String escapedText = HtmlUtils.htmlEscape(album.getText());
+        album.setText(escapedText);
+
         albumRepository.save(album);
+
     }
 
     public void updateAlbum(Long id, Album updatedAlbum) {
@@ -132,15 +152,16 @@ public class AlbumService {
 
         if (existingAlbum.isPresent()) {
             Album al = existingAlbum.get();
-            if (! al.getArtist().equals(updatedAlbum.getArtist())) {
+            if (! al.getArtist().equals(updatedAlbum.getArtist()) && !updatedAlbum.getArtist().isEmpty() && updatedAlbum.getArtist()!=null) {
                 al.setArtist(updatedAlbum.getArtist());
-            } if (! al.getRelease_year().equals(updatedAlbum.getRelease_year())) {
+            } if (! al.getRelease_year().equals(updatedAlbum.getRelease_year()) && updatedAlbum.getRelease_year() != null) {
                 al.setRelease_year(updatedAlbum.getRelease_year());
-            } if (! al.getTitle().equals(updatedAlbum.getTitle())) {
+            } if (! al.getTitle().equals(updatedAlbum.getTitle()) && updatedAlbum.getTitle() != null && !updatedAlbum.getTitle().isEmpty()) {
                 al.setTitle(updatedAlbum.getTitle());
-            } if (! al.getText().equals(updatedAlbum.getText())) {
-                al.setText(updatedAlbum.getText());
             }
+
+            String escapedText = HtmlUtils.htmlEscape(updatedAlbum.getText() != null ? updatedAlbum.getText() : al.getText());
+            al.setText(escapedText);
 
             if (updatedAlbum.getImage() != null && !updatedAlbum.getImage().isEmpty()) {
                 al.setImage(updatedAlbum.getImage());
