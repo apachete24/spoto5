@@ -162,62 +162,53 @@ public class AlbumRESTController{
         }
     }
 
-    /*
 
-    // Operations with album favorites
+    // Operations with album videos
 
-    @GetMapping("/{id}/userFavorites")
-    public ResponseEntity<Object> getAlbumFavorites(@PathVariable long id) throws IOException {
+    @GetMapping("/{id}/video")
+    public ResponseEntity<Object> downloadVideo(@PathVariable long id) throws IOException {
 
-        if (albums.findById(id) != null) {
-
-            return ResponseEntity.ok(albums.findById(id).getUserFavs());
-
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()){
+            Album album = isAlbum.get();
+            Resource video = videoService.getVideo(album.getVideoPath());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "video/mp4").body(video);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-    // Add user to album favs
-    @PostMapping("/{id}/userFavorites/{userId}")
-    public ResponseEntity<Object> addAlbumFavorite(@PathVariable long id, @PathVariable long userId) throws IOException {
 
-        Album album = albums.findById(id);
-        User user = users.findById(userId);
-        if (album != null && user != null) {
-            if(album.isUserFav(userId) && user.isAlbumFav(id)){ // if favorite already exists
-                return ResponseEntity.ok(user);
-            }
-            // Add user to album favs
-            album.addUserFav(userId);
-            // Add album to user favs
-            user.addAlbumFav(id);
-            URI location = fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
-            return ResponseEntity.created(location).body(user);
+    @PostMapping("/{id}/video")
+    public ResponseEntity<Object> uploadVideo(@PathVariable long id, @RequestParam MultipartFile videoFile) throws IOException {
 
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()) {
+            Album album = isAlbum.get();
+            String videoPath = videoService.createVideo(videoFile);
+            album.setVideoPath(videoPath);
+            albumService.save(album);
+            URI location = fromCurrentRequest().path("/{id}").buildAndExpand(album.getId()).toUri();
+            return ResponseEntity.created(location).body(album);
         } else {
             return ResponseEntity.notFound().build();
         }
-
     }
-    // Remove user from album favs
-    @DeleteMapping("/{id}/userFavorites/{userId}")
-    public ResponseEntity<Object> deleteAlbumFavorite(@PathVariable long id, @PathVariable long userId) throws IOException {
 
-        Album album = albums.findById(id);
-        User user = users.findById(userId);
-        // If album and user don't exist or user is not in album favs
-        if ( (album == null || user == null) || !(album.isUserFav(userId) && user.isAlbumFav(id)) ) {
+    // Delete album video
+    @DeleteMapping("/{id}/video")
+    public ResponseEntity<Object> deleteVideo(@PathVariable long id) throws IOException {
 
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()) {
+            Album album = isAlbum.get();
+            videoService.deleteVideo(album.getVideoPath());
+            album.setVideoPath(null);
+            albumService.save(album);
+            return ResponseEntity.ok().build();
+        } else {
             return ResponseEntity.notFound().build();
-
-        } else{
-            // Remove user from album favs
-            album.removeUserFav(userId);
-            // Remove album from user favs
-            user.removeAlbumFav(id);
-            return ResponseEntity.ok(album.getUserFavs());
         }
     }
-*/
+
 
 }
