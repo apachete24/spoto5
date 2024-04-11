@@ -220,5 +220,19 @@ public class AlbumController {
         return "users"; // Aquí debes tener una vista llamada "users.html" para mostrar los usuarios como botones
     }
 
+    @GetMapping("/user/{userId}/favorites")
+    public String showUserFavoriteAlbums(@PathVariable Long userId, Model model) {
+        Optional<User> userOptional = userService.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            List<Album> favoriteAlbums = user.getAlbumFavs();
+            model.addAttribute("user", user);
+            model.addAttribute("favoriteAlbums", favoriteAlbums);
+            return "user_favorite_albums";
+        } else {
+            // Manejar el caso en el que el usuario no existe
+            return "error";
+        }
 
+    }
 }

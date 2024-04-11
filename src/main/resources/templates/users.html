@@ -5,17 +5,20 @@
     <title>Users</title>
     <!-- Enlaza tu archivo CSS -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style2.css">
 </head>
 <body>
 <h1>Usuarios</h1>
 <div>
-    <!-- Iterar sobre la lista de usuarios y mostrar cada uno como un botón -->
+    <!-- Itera sobre la lista de usuarios y muestra cada uno como un botón -->
     <ul>
         {{#users}}
         <li>
             <form action="/user/{{id}}" method="get">
                 <button type="submit">{{userName}}</button>
             </form>
+            <!-- Agrega un enlace para ver los álbumes favoritos -->
+            <a href="/user/{{id}}/favorites">Ver álbumes favoritos</a>
         </li>
         {{/users}}
     </ul>
