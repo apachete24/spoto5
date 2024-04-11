@@ -2,22 +2,41 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>User Favorite Albums</title>
-    <!-- Enlaza tu archivo CSS si es necesario -->
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-    <link rel="stylesheet" type="text/css" href="/css/style2.css">
+    <title>User Favorite Albums</title>
 </head>
 <body>
-<h1>{{user.userName}}'s Favorite Albums</h1>
-<ul>
-    {{#favoriteAlbums}}
-    <li>
-        <p><strong>Artist:</strong> {{artist}}</p>
-        <p><strong>Title:</strong> {{title}}</p>
-        <p><strong>Year:</strong> {{release_year}}</p>
-        <!-- Agrega más detalles del álbum si es necesario -->
-    </li>
-    {{/favoriteAlbums}}
-</ul>
+
+<div class="container">
+
+    <h1>User Favorite Albums</h1>
+
+    <ul class="album-list">
+        {{#favoriteAlbums}}
+        <li class="album-item">
+            <a href="/album/{{id}}"><img src="/album/{{id}}/image" alt="{{title}}"></a>
+            <div class="album-info">
+                <h2>{{title}}</h2>
+                <h3>{{artist}}</h3>
+                <p>Released in {{release_year}}</p>
+            </div>
+        </li>
+        {{/favoriteAlbums}}
+        {{^favoriteAlbums}}
+        <li>No favorite albums yet</li>
+        {{/favoriteAlbums}}
+    </ul>
+
+    {{#errorMessage}}
+    <div class="error-message">
+        {{errorMessage}}
+    </div>
+    {{/errorMessage}}
+
+    <br>
+
+    <a href="/" class="button">Back to Home</a>
+
+</div>
 </body>
 </html>
