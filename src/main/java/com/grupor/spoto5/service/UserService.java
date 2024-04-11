@@ -55,22 +55,31 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<Album> getUserAlbums(long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            return user.get().getAlbumFavs();
+        } else {
+            throw new EntityNotFoundException("User not found");
+        }
+    }
 
     @Transactional
     public void addUserToAlbumFavorites(User user, Album album) {
-        // Verificar si el usuario y el álbum existen
+        // Verify if the album and user exist
         Optional<User> existingUser = userRepository.findById(user.getId());
         Optional<Album> existingAlbum = albumRepository.findById(album.getId());
 
         if (existingUser.isPresent() && existingAlbum.isPresent()) {
-            // Agregar el usuario a los favoritos del álbum
+            // Add the user to the album's favorites
             album.getUserFavs().add(user);
-            // Agregar el álbum a los favoritos del usuario
+            // Add the album to the user's favorites
             user.getAlbumFavs().add(album);
 
-            // Guardar los cambios en la base de datos
+            // Saved changes in the database
             userRepository.save(user);
             albumRepository.save(album);
+
         } else {
             throw new EntityNotFoundException("User or album not found");
         }

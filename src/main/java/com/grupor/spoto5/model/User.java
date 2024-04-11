@@ -16,9 +16,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idUser;
     private String userName;
+
     // Favorites albums
-
-
     @ManyToMany (mappedBy = "userFavs")
     private List<Album> albumFavs;
 
@@ -41,6 +40,10 @@ public class User {
         return userName;
     }
 
+    public List<Album> getAlbumFavs() {
+        return albumFavs;
+    }
+
 
 
     // Setters
@@ -50,10 +53,6 @@ public class User {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public List<Album> getAlbumFavs() {
-        return albumFavs;
     }
 
     public void setAlbumFavs(List<Album> albumFavs) {
