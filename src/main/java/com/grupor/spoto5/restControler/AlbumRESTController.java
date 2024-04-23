@@ -45,9 +45,9 @@ public class AlbumRESTController{
 
     // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("")
-    public Collection<Album> getAlbums(Model model, @RequestBody(required = false) Integer from, @RequestBody(required = false) Integer to) {
+    public Collection<Album> getAlbums(Model model, @RequestBody(required = false) Integer from, @RequestBody(required = false) Integer to, @RequestBody(required = false) String artistName) {
 
-        return albumService.findAll(from, to);
+        return albumService.findAll(from, to, artistName);
 
     }
 

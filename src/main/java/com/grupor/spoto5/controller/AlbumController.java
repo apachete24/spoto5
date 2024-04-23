@@ -52,10 +52,10 @@ public class AlbumController {
 
     // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("/")
-    public String showAlbums(Model model, @RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to) {
+    public String showAlbums(Model model, @RequestParam(required = false) Integer from, @RequestParam(required = false) Integer to, @RequestParam(required = false) String artistName) {
 
         try {
-            List <Album> albums = albumService.findAll(from, to);
+            List <Album> albums = albumService.findAll(from, to, artistName);
             model.addAttribute("albums", albums);
         } catch (IllegalArgumentException ex) {
             String errorMessage = "Invalid range: " + ex.getMessage();

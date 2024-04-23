@@ -41,25 +41,39 @@ public class AlbumService {
 
 
 
-    public List<Album> findAll(Integer from, Integer to) {
+    public List<Album> findAll(Integer from, Integer to, String artistName) {
 
         if (from != null && to != null && from > to) {
             throw new IllegalArgumentException("Initial year must be greater than or equal to Final year");
         }
 
         String query = "SELECT * FROM album";
+        boolean hasWhereClause = false; // Flag para determinar si ya hemos añadido una cláusula WHERE
+
         if (from != null && to != null) {
             query += " WHERE release_year BETWEEN ? AND ?";
+            hasWhereClause = true;
+        }
+
+        if (artistName != null && !artistName.isEmpty()) {
+            query += hasWhereClause ? " AND artist = ?" : " WHERE artist = ?";
         }
 
         Query nativeQuery = entityManager.createNativeQuery(query, Album.class);
+
+        int parameterIndex = 1; // Índice para los parámetros de la consulta
         if (from != null && to != null) {
-            nativeQuery.setParameter(1, from);
-            nativeQuery.setParameter(2, to);
+            nativeQuery.setParameter(parameterIndex++, from);
+            nativeQuery.setParameter(parameterIndex++, to);
+        }
+
+        if (artistName != null && !artistName.isEmpty()) {
+            nativeQuery.setParameter(parameterIndex, artistName);
         }
 
         return (List<Album>) nativeQuery.getResultList();
     }
+
 
 
     public Optional<Album> findById (long id) {
