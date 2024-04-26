@@ -2,20 +2,24 @@ package com.grupor.spoto5.model;
 
 import jakarta.persistence.*;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 
-@Entity
+@Entity(name = "USERS")
 public class User {
 
 
     // Atributes
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idUser;
-    private String userName;
+    private Long id;
+
+    private String name;
+
+    private String encodedPassword;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<String> roles;
 
     // Favorites albums
     @ManyToMany (mappedBy = "userFavs")
@@ -26,37 +30,51 @@ public class User {
     public User() {
     }
 
-    public User(String userName) {
-        this.userName = userName;
+    public User(String name) {
+        this.name = name;
     }
 
 
     // Getters
     public Long getId() {
-        return idUser;
+        return id;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
     public List<Album> getAlbumFavs() {
         return albumFavs;
     }
 
+    public String getEncodedPassword() {
+        return encodedPassword;
+    }
 
+    public List<String> getRoles() {
+        return roles;
+    }
 
     // Setters
     public void setId(Long idUser) {
-        this.idUser = idUser;
+        this.id = idUser;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setName(String userName) {
+        this.name = userName;
     }
 
     public void setAlbumFavs(List<Album> albumFavs) {
         this.albumFavs = albumFavs;
+    }
+
+    public void setEncodedPassword(String encodedPassword) {
+        this.encodedPassword = encodedPassword;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
     }
 
     /*
