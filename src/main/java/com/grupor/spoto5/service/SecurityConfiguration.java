@@ -1,4 +1,4 @@
-/*
+
 package com.grupor.spoto5.service;
 
 import org.springframework.context.annotation.Bean;
@@ -16,44 +16,48 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder();
     }
+
     @Bean
     public DaoAuthenticationProvider authenticationProvider() { DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService());
         authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider; }
+        return authProvider;
+    }
+
     @Bean
     public InMemoryUserDetailsManager userDetailsService() { UserDetails user = User.builder()
             .username("user")
             .password(passwordEncoder().encode("pass"))
             .roles("USER")
             .build();
-        return new InMemoryUserDetailsManager(user); }
+        return new InMemoryUserDetailsManager(user);
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
-        http
-                .authorizeHttpRequests(authorize -> authorize
-// PUBLIC PAGES
-                        .requestMatchers("/").permitAll()
-// PRIVATE PAGES
-                        .anyRequest().authenticated())
-                .formLogin(formLogin -> formLogin
-                        .loginPage("/login")
-                        .failureUrl("/loginerror")
-                        .defaultSuccessUrl("/private")
-                        .permitAll()
-                )
+        http.authorizeHttpRequests(authorize -> authorize
+            // PUBLIC PAGES
+            .requestMatchers("/", "/css/**", "/album/*", "/album/*/image", "/album/*/video").permitAll().
+            // PRIVATE PAGE
+            anyRequest().authenticated())
+            .formLogin(formLogin -> formLogin
+                .loginPage("/login")
+                .failureUrl("/loginerror")
+                .defaultSuccessUrl("/private")
+                .permitAll()
+            )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .permitAll()
-                );
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .permitAll()
+            );
 // Disable CSRF at the moment
         http.csrf(csrf -> csrf.disable());
         return http.build();
     }
 }
-*/

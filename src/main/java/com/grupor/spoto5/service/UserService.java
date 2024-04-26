@@ -23,6 +23,7 @@ public class UserService {
     @Autowired
     private AlbumRepository albumRepository;
 
+    /*
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
         // Initialize with some users
@@ -31,7 +32,7 @@ public class UserService {
        save(new User("user3"));
        save(new User("user4"));
     }
-
+    */
 
     public void save(User user) {
         userRepository.save(user);
