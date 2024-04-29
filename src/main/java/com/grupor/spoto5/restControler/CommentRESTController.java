@@ -4,15 +4,12 @@ import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
-import com.grupor.spoto5.service.UserSession;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
@@ -20,9 +17,6 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @RestController
 @RequestMapping("/api/comments")
 public class CommentRESTController {
-
-    @Autowired
-    private UserSession userSession;
 
     @Autowired
     private CommentService commentService;

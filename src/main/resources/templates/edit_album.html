@@ -41,6 +41,8 @@
     <p>Upload New Video:</p>
     <input type="file" id="video" name="albumVideo" accept=".mp4, .avi, .mov, .mkv"><br>
 
+    <input type="hidden" name="_csrf" value="{{token}}"/>
+
     <input type="submit" value="Save" class="button">
     <a href="/album/{{album.id}}" class="button cancel">Cancel</a>
 

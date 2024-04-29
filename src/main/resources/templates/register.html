@@ -66,13 +66,11 @@
     </style>
 </head>
 <body>
-<form action="/login" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username"/>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password"/>
+<form action="/register" method="post">
+    <label>Username:</label><input type="text" name="username" /><br/>
+    <label>Password:</label><input type="password" name="password" /><br/>
+    <input type="submit" value="Create Account" />
     <input type="hidden" name="_csrf" value="{{token}}"/>
-    <input type="submit" value="Sign In"/>
 </form>
 </body>
 </html>

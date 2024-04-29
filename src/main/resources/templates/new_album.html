@@ -31,6 +31,8 @@
     <p>Video:</p>
     <input type="file" name="albumVideo" accept=".mp4, .mov, .avi">
 
+    <input type="hidden" name="_csrf" value="{{token}}"/>
+
     <input type="submit" value="Save" class="button">
     <a href="/" class="button">Cancel</a>
 

@@ -2,11 +2,14 @@ package com.grupor.spoto5.service;
 
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.Comment;
+import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.AlbumRepository;
 import com.grupor.spoto5.repository.CommentRepository;
+import com.grupor.spoto5.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,10 +36,18 @@ public class DatabaseInitializer {
 
     @Autowired
     private VideoService videoService;
+
     @Autowired
     private CommentRepository commentRepository;
+
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostConstruct
     public void init() throws IOException, SQLException {
@@ -100,6 +111,10 @@ public class DatabaseInitializer {
         albumService.save(album8);
         albumService.save(album9);
         albumService.save(album10);
+
+        userRepository.save(new User("admin", passwordEncoder.encode("adminpass"), "USER", "ADMIN"));
+
+        userRepository.save(new User("user", passwordEncoder.encode("pass"), "USER"));
 
         Comment comment1 = new Comment("Rodri", 100, "Great Album");
         comment1.setAlbum(album1);

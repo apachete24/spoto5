@@ -1,11 +1,8 @@
 package com.grupor.spoto5.restControler;
 
 
-import com.grupor.spoto5.service.UserSession;
-import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import com.grupor.spoto5.model.*;
@@ -18,10 +15,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/users")
 public class UserRESTController {
-
-
-    @Autowired
-    private UserSession userSession;
 
     @Autowired
     private UserService userService;

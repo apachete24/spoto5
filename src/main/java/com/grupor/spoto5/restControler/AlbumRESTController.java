@@ -26,9 +26,6 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 public class AlbumRESTController{
 
     @Autowired
-    private UserSession userSession;
-
-    @Autowired
     private UserService userService;
 
     @Autowired

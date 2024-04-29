@@ -4,7 +4,6 @@ import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
-import com.grupor.spoto5.service.UserSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/album")
 public class CommentController {
-
-    @Autowired
-    private UserSession userSession;
 
     @Autowired
     private AlbumService albumService;
@@ -41,7 +37,6 @@ public class CommentController {
 
         try {
 
-            userSession.setUser(comment.getUsername());
             Album album = albumService.findById(id).orElseThrow();
             comment.setAlbum(album);
             commentService.addComment(comment);

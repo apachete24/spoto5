@@ -6,7 +6,11 @@ import com.grupor.spoto5.repository.AlbumRepository;
 import com.grupor.spoto5.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,11 +21,14 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private AlbumRepository albumRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /*
     public UserService(UserRepository userRepository) {
@@ -33,6 +40,20 @@ public class UserService {
        save(new User("user4"));
     }
     */
+
+    public void saveUser (String username, String password) {
+
+        Optional<User> user= userRepository.findByName(username);
+
+        if (user.isEmpty()) {
+            userRepository.save(new User(username, passwordEncoder.encode(password), "USER"));
+        } else {
+            throw new DuplicateKeyException("El nombre de usuario '" + username + "' ya está en uso.");
+        }
+
+    }
+
+
 
     public void save(User user) {
         userRepository.save(user);

@@ -30,8 +30,10 @@ public class User {
     public User() {
     }
 
-    public User(String name) {
+    public User(String name, String encodedPassword, String... roles) {
         this.name = name;
+        this.encodedPassword = encodedPassword;
+        this.roles = List.of(roles);
     }
 
 

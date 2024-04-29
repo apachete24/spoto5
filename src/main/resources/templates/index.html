@@ -11,6 +11,7 @@
 
     <h1>Spoto5</h1>
 
+
     <form class="row" action="/">
         <div class="col">
             <input name="from" type="number" class="form-control" placeholder="From year">
@@ -24,7 +25,6 @@
         <div class="col">
             <input class="btn btn-outline-primary" type="submit" value="Search">
         </div>
-
     </form>
 
     <ul class="album-list">
@@ -49,11 +49,25 @@
     </div>
     {{/errorMessage}}
 
-    <br>
+    <div class="button-container">
+        {{^logged}}
+        <a href="/login" class="button">Login</a>
+        {{/logged}}
+        {{^logged}}
+        <a href="/register" class="button">Register</a>
+        {{/logged}}
+        {{#logged}}
+        <form action="/logout" method="post">
+            <button type="submit">Log Out</button>
+            <input type="hidden" name="_csrf" value="{{token}}">
+        </form>
+        {{/logged}}
 
-    <a href="/album/new" class="button">Add Album</a>
-
-    <a href="/users" class="button">Users</a>
+        {{#admin}}
+        <a href="/newalbum" class="button">Add Album</a>
+        <a href="/users" class="button">Users</a>
+        {{/admin}}
+    </div>
 </div>
 </body>
 </html>

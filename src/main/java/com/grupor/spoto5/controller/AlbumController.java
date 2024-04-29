@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
+import java.security.Principal;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -23,6 +23,7 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import jakarta.servlet.http.HttpServletRequest;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
 
@@ -30,9 +31,6 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 public class AlbumController {
 
     private static final String ALBUMS_FOLDER = "albums";
-
-    @Autowired
-    private UserSession userSession;
 
     @Autowired
     private UserService userService;
@@ -49,6 +47,21 @@ public class AlbumController {
     @Autowired
     private VideoService videoService;
 
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+
+        if(principal != null) {
+
+            model.addAttribute("logged", true);
+            model.addAttribute("userName", principal.getName());
+            model.addAttribute("admin", request.isUserInRole("ADMIN"));
+
+        } else {
+            model.addAttribute("logged", false);
+        }
+    }
 
     // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("/")
@@ -71,7 +84,6 @@ public class AlbumController {
         try {
             Optional<Album> album = albumService.findById(id);
             if (album.isPresent()) {
-                model.addAttribute("user", userSession.getUser());
                 model.addAttribute("album", album.get());
                 model.addAttribute("comments", commentService.getComments(id));
                 List<User> users = userService.findAll();
@@ -86,14 +98,14 @@ public class AlbumController {
         }
     }
 
-    @GetMapping("/album/new")
-    public String newAlbumForm() {
+    @GetMapping("/newalbum")
+    public String newAlbumForm(Model model) {
         return "new_album";
     }
 
 
-    @PostMapping("/album/new")
-    public String newAlbum(Album album, @RequestParam MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
+    @PostMapping("/newalbum")
+    public String newAlbum(Model model, Album album, @RequestParam MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
         albumService.save(album, albumImage, albumVideo);
         return "saved_album";
     }
@@ -101,7 +113,7 @@ public class AlbumController {
 
 
     @GetMapping("/album/{id}/image")
-    public ResponseEntity<Object> downloadImage(@PathVariable int id) throws SQLException {
+    public ResponseEntity<Object> downloadImage(Model model, @PathVariable int id) throws SQLException {
 
         Optional<Album> al = albumService.findById(id);
 
@@ -115,7 +127,7 @@ public class AlbumController {
     }
 
     @GetMapping("/album/{id}/video")
-    public ResponseEntity<Resource> downloadVideo(@PathVariable long id) {
+    public ResponseEntity<Resource> downloadVideo(Model model, @PathVariable long id) {
         Optional<Album> albumOptional = albumService.findById(id);
 
         if (albumOptional.isPresent()) {
@@ -136,8 +148,8 @@ public class AlbumController {
     }
 
 
-    @GetMapping("/album/{id}/delete")
-    public String deleteAlbum(@PathVariable long id) throws SQLException {
+    @GetMapping("/deletealbum/{id}")
+    public String deleteAlbum(Model model, @PathVariable long id) throws SQLException {
 
         Optional <Album> al = albumService.findById(id);
         if (al.isPresent()) {
@@ -160,7 +172,7 @@ public class AlbumController {
     }
 
 
-    @GetMapping("/album/{id}/edit")
+    @GetMapping("/editalbum/{id}")
     public String updateAlbum(Model model, @PathVariable long id) {
 
         Optional<Album> optionalAlbum = albumService.findById(id);
@@ -177,8 +189,8 @@ public class AlbumController {
         }
     }
 
-    @PostMapping("/album/{id}/edit")
-    public String updateAlbum(@PathVariable Long id, Album updatedAlbum, @RequestParam(required = false) MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
+    @PostMapping("/editalbum/{id}")
+    public String updateAlbum(Model model, @PathVariable Long id, Album updatedAlbum, @RequestParam(required = false) MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
         if (albumImage != null && !albumImage.isEmpty()) {
             String fileImage = imageService.createImage(albumImage);
             updatedAlbum.setImage(fileImage);
@@ -193,7 +205,7 @@ public class AlbumController {
     }
 
     @PostMapping("/album/{id}/like")
-    public String likeAlbum(@PathVariable Long id, @RequestParam("userIds") List<Long> userIds, RedirectAttributes redirectAttributes) {
+    public String likeAlbum(Model model, @PathVariable Long id, @RequestParam("userIds") List<Long> userIds, RedirectAttributes redirectAttributes) {
         Optional<Album> albumOptional = albumService.findById(id);
         if (albumOptional.isPresent()) {
             Album album = albumOptional.get();
