@@ -30,17 +30,6 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    /*
-    public UserService(UserRepository userRepository) {
-        this.userRepository = userRepository;
-        // Initialize with some users
-       save(new User("user1"));
-       save(new User("user2"));
-       save(new User("user3"));
-       save(new User("user4"));
-    }
-    */
-
     public void saveUser (String username, String password) {
 
         Optional<User> user= userRepository.findByName(username);

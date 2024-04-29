@@ -1,6 +1,7 @@
 
 package com.grupor.spoto5.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -10,32 +11,29 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+    @Autowired
+    public RepositoryUserDetailsService userDetailsService;
+
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider() { DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService());
+    public DaoAuthenticationProvider authenticationProvider() {
+
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
         authProvider.setPasswordEncoder(passwordEncoder());
+
         return authProvider;
     }
 
-    @Bean
-    public InMemoryUserDetailsManager userDetailsService() { UserDetails user = User.builder()
-            .username("user")
-            .password(passwordEncoder().encode("pass"))
-            .roles("USER")
-            .build();
-        return new InMemoryUserDetailsManager(user);
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,13 +43,10 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
 
                         // PUBLIC PAGES
-
                         .requestMatchers("/", "/album/*", "/album/{id}/image", "/album/{id}/video", "/css/**", "/login", "/logout", "/loginerror", "/register").permitAll()
 
                         // PRIVATE PAGES
-
                         .requestMatchers("/album/{id}/comment", "/album/{id}/delete/comment/", "/album/{id}/comment").hasAnyRole("USER")
-
                         .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum*").hasAnyRole("ADMIN")
                 )
                 .formLogin(formLogin -> formLogin

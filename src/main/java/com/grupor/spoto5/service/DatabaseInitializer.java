@@ -112,9 +112,10 @@ public class DatabaseInitializer {
         albumService.save(album9);
         albumService.save(album10);
 
-        userRepository.save(new User("admin", passwordEncoder.encode("adminpass"), "USER", "ADMIN"));
 
-        userRepository.save(new User("user", passwordEncoder.encode("pass"), "USER"));
+        userRepository.save(new User("admin", passwordEncoder.encode("admin"), "USER", "ADMIN"));
+        userRepository.save(new User("user1", passwordEncoder.encode("user1"), "USER"));
+
 
         Comment comment1 = new Comment("Rodri", 100, "Great Album");
         comment1.setAlbum(album1);

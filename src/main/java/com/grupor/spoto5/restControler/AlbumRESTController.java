@@ -60,7 +60,7 @@ public class AlbumRESTController{
         }
     }
 
-    // Create album
+    // Create album (RESTRICTED to roll admin)
     @PostMapping("")
     public ResponseEntity<Album> createAlbum(@RequestBody Album album) throws IOException {
 
