@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script src="https://kit.fontawesome.com/cce8b43a59.js" crossorigin="anonymous"></script>
     <title>Spoto5</title>
 </head>
 <body>
@@ -51,20 +52,20 @@
 
     <div class="button-container">
         {{^logged}}
-        <a href="/login" class="button">Login</a>
-        <a href="/register" class="button">Register</a>
+        <a href="/login" class="button"><i class="fa-regular fa-user"></i> Login</a>
+        <a href="/register" class="button"><i class="fa-solid fa-user"></i> Register</a>
         {{/logged}}
         {{#logged}}
-        <a href="/user" class="button">{{currentUser}}</a>
+        <a href="/user" class="button"><i class="fa-regular fa-circle-user"></i> {{currentUser}}</a>
         <form action="/logout" method="post">
-            <button type="submit" class="button">Log Out</button>
+            <button type="submit" class="button"><i class="fa-regular fa-user"></i> Log Out</button>
             <input type="hidden" name="_csrf" value="{{token}}">
         </form>
         {{/logged}}
 
         {{#admin}}
         <a href="/newalbum" class="button">Add Album</a>
-        <a href="/adminpage" class="button">Users</a>
+        <a href="/adminpage" class="button"><i class="fa-solid fa-users"></i> Users</a>
         {{/admin}}
     </div>
 </div>

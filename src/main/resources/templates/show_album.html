@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/css/style2.css">
+    <script src="https://kit.fontawesome.com/cce8b43a59.js" crossorigin="anonymous"></script>
     <title>{{album.title}} {{album.artist}}</title>
 </head>
 
@@ -31,10 +32,10 @@
 
         <div class="album-actions">
             {{#admin}}
-            <a href="/deletealbum/{{album.id}}" class="button delete">Delete album</a>
-            <a href="/editalbum/{{album.id}}" class="button edit">Edit</a>
+            <a href="/deletealbum/{{album.id}}" class="button delete"><i class="fas fa-trash"></i> Album</a>
+            <a href="/editalbum/{{album.id}}" class="button edit"><i class="fas fa-pencil-alt"></i> Album</a>
             {{/admin}}
-            <a href="/" class="button">Back</a>
+            <a href="/" class="button"><i class="fas fa-arrow-left"></i> Back</a>
         </div>
     </div>
 
@@ -50,7 +51,8 @@
                         <strong>Score</strong>: {{score}} <br>
                         <strong>Review</strong>: {{text}} <br>
                         {{#logged}}
-                        <a href="/deleteComment/{idAlbum}/comment/{idComment}" class="button delete">Delete comment</a>
+                        <br>
+                        <a href="/deleteComment/{idAlbum}/comment/{idComment}" class="button delete"><i class="fas fa-trash"></i> Comment</a>
                         {{/logged}}
                     </li>
                 </ul>
