@@ -43,7 +43,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
 
                         // PUBLIC PAGES
-                        .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register", "/register").permitAll()
+                        .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register").permitAll()
 
                         // PRIVATE PAGES
                         .requestMatchers("/addcomment/*", "/deleteComment/*", "/user").hasAnyRole("USER")

@@ -32,12 +32,12 @@ public class AlbumService {
     @Autowired
     private EntityManager entityManager;
 
-
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private VideoService videoService;
+
 
     public List<Album> findAll(Integer from, Integer to, String artistName) {
 
@@ -46,7 +46,8 @@ public class AlbumService {
         }
 
         String query = "SELECT * FROM album";
-        boolean hasWhereClause = false; // Flag para determinar si ya hemos añadido una cláusula WHERE
+        boolean hasWhereClause = false; // Flag to determinate if we had added WHERE clause to the query jet
+
 
         if (from != null && to != null) {
             query += " WHERE release_year BETWEEN ? AND ?";
@@ -59,7 +60,7 @@ public class AlbumService {
 
         Query nativeQuery = entityManager.createNativeQuery(query, Album.class);
 
-        int parameterIndex = 1; // Índice para los parámetros de la consulta
+        int parameterIndex = 1; // Index to set parameters in the query
         if (from != null && to != null) {
             nativeQuery.setParameter(parameterIndex++, from);
             nativeQuery.setParameter(parameterIndex++, to);
