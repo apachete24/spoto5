@@ -36,25 +36,28 @@ public class WebSecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChainWeb(HttpSecurity http) throws Exception {
         http.authenticationProvider(authenticationProvider());
 
         http
                 .authorizeHttpRequests(authorize -> authorize
 
-                        // PUBLIC PAGES
-                        .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register").permitAll()
+                    // PUBLIC PAGES
+                    .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register").permitAll()
 
-                        // PRIVATE PAGES
-                        .requestMatchers("/addcomment/*", "/deleteComment/*", "/user").hasAnyRole("USER")
-                        .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage").hasAnyRole("ADMIN")
+
+                    // PRIVATE PAGES
+                    .requestMatchers("/addcomment/*", "/deleteComment/*", "/user").hasAnyRole("USER")
+                    .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage").hasAnyRole("ADMIN")
                 )
+
                 .formLogin(formLogin -> formLogin
-                        .loginPage("/login")
-                        .failureUrl("/loginerror")
-                        .defaultSuccessUrl("/")
-                        .permitAll()
+                    .loginPage("/login")
+                    .failureUrl("/loginerror")
+                    .defaultSuccessUrl("/")
+                    .permitAll()
                 )
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
@@ -62,7 +65,6 @@ public class WebSecurityConfig {
                 );
 
 // Disable CSRF at the moment
-
         return http.build();
     }
 }
