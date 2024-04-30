@@ -52,20 +52,19 @@
     <div class="button-container">
         {{^logged}}
         <a href="/login" class="button">Login</a>
-        {{/logged}}
-        {{^logged}}
         <a href="/register" class="button">Register</a>
         {{/logged}}
         {{#logged}}
+        <a href="/user" class="button">{{currentUser}}</a>
         <form action="/logout" method="post">
-            <button type="submit">Log Out</button>
+            <button type="submit" class="button">Log Out</button>
             <input type="hidden" name="_csrf" value="{{token}}">
         </form>
         {{/logged}}
 
         {{#admin}}
         <a href="/newalbum" class="button">Add Album</a>
-        <a href="/users" class="button">Users</a>
+        <a href="/adminpage" class="button">Users</a>
         {{/admin}}
     </div>
 </div>

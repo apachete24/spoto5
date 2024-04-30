@@ -4,17 +4,16 @@ import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/album")
 public class CommentController {
 
     @Autowired
@@ -22,6 +21,22 @@ public class CommentController {
 
     @Autowired
     private CommentService commentService;
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+
+        if(principal != null) {
+
+            model.addAttribute("logged", true);
+            model.addAttribute("currentUser", principal.getName());
+            model.addAttribute("admin", request.isUserInRole("ADMIN"));
+
+        } else {
+            model.addAttribute("logged", false);
+        }
+    }
 
     /*
     @PostMapping("/{id}/comment")
@@ -32,7 +47,7 @@ public class CommentController {
     }
     */
 
-    @PostMapping("/{id}/comment")
+    @PostMapping("/addcomment/{id}")
     public String newComment(Comment comment, @PathVariable long id, Model model) {
 
         try {
@@ -58,8 +73,8 @@ public class CommentController {
     }
     */
 
-    @GetMapping("/{idAlbum}/delete/comment/{idComment}")
-    public String deleteComment(@PathVariable long idAlbum, @PathVariable long idComment) {
+    @GetMapping("/deleteComment/{idAlbum}/comment/{idComment}")
+    public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment) {
         try {
             commentService.deleteComment(idComment);
         } catch (IllegalArgumentException ex) {

@@ -39,8 +39,6 @@ public class AlbumService {
     @Autowired
     private VideoService videoService;
 
-
-
     public List<Album> findAll(Integer from, Integer to, String artistName) {
 
         if (from != null && to != null && from > to) {

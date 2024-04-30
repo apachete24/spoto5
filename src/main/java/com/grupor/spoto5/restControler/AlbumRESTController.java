@@ -40,6 +40,7 @@ public class AlbumRESTController{
     @Autowired
     private VideoService videoService;
 
+    /*
     // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("")
     public Collection<Album> getAlbums(Model model, @RequestBody(required = false) Integer from, @RequestBody(required = false) Integer to, @RequestBody(required = false) String artistName) {
@@ -159,10 +160,11 @@ public class AlbumRESTController{
     @DeleteMapping("/{id}/image")
     public ResponseEntity<Object> deleteImage(@PathVariable long id) throws IOException {
 
+
         Optional<Album> isAlbum = albumService.findById(id);
         if (isAlbum.isPresent()) {
             Album album = isAlbum.get();
-            imageService.deleteImage(album.getImage());
+            imageService.deleteImage(album.getImage(), isAdmin);
             album.setImage(null);
             albumService.save(album);
             return ResponseEntity.ok().build();
@@ -219,5 +221,5 @@ public class AlbumRESTController{
         }
     }
 
-
+*/
 }

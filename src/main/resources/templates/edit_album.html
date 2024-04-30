@@ -11,7 +11,7 @@
 
 <h1>Edit Album</h1>
 
-<form action="/album/{{album.id}}/edit" method="post" enctype="multipart/form-data">
+<form action="/editalbum/{{album.id}}" method="post" enctype="multipart/form-data">
 
     <p>Artist:</p>
     <input type="text" id="artist" name="artist" value="{{#album.artist}}{{.}}{{/album.artist}}" required><br>

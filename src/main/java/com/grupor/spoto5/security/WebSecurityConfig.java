@@ -43,11 +43,11 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
 
                         // PUBLIC PAGES
-                        .requestMatchers("/", "/album/*", "/album/{id}/image", "/album/{id}/video", "/css/**", "/login", "/logout", "/loginerror", "/register").permitAll()
+                        .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register", "/register").permitAll()
 
                         // PRIVATE PAGES
-                        .requestMatchers("/album/{id}/comment", "/album/{id}/delete/comment/", "/album/{id}/comment").hasAnyRole("USER")
-                        .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum*").hasAnyRole("ADMIN")
+                        .requestMatchers("/addcomment/*", "/deleteComment/*", "/user").hasAnyRole("USER")
+                        .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage").hasAnyRole("ADMIN")
                 )
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login")

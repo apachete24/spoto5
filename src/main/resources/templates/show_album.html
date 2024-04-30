@@ -50,7 +50,7 @@
                         <strong>Score</strong>: {{score}} <br>
                         <strong>Review</strong>: {{text}} <br>
                         {{#logged}}
-                        <a href="/album/{{album.id}}/delete/comment/{{id}}" class="button delete">Delete comment</a>
+                        <a href="/deleteComment/{idAlbum}/comment/{idComment}" class="button delete">Delete comment</a>
                         {{/logged}}
                     </li>
                 </ul>
@@ -64,9 +64,9 @@
 
     {{#logged}}
     <h1>Add Comment</h1>
-    <form action="/album/{{album.id}}/comment" method="post">
-        <p>Username:</p>
-        <input type="text" id="username" name="username" value="{{#name}}{{.}}{{/name}}" required>
+    <form action="/addcomment/{{album.id}}" method="post">
+
+        <input type="hidden" id="username" name="username" value="{{#currentUser}}{{.}}{{/currentUser}}" required>
 
         <p>Score:</p>
         <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>
