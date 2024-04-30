@@ -28,15 +28,21 @@ public class RestSecurityConfig {
 
 
     @Bean
-    public SecurityFilterChain filterChainRest(HttpSecurity http) throws Exception {
+    public SecurityFilterChain restFilterChain(HttpSecurity http) throws Exception {
 
         http.authenticationProvider(authenticationProvider);
 
         http.authorizeHttpRequests(authorize -> authorize
             // PRIVATE ENDPOINTS
-                .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/api/books/**").hasRole("USER")
-                .requestMatchers(HttpMethod.DELETE,"/api/books/**").hasRole("ADMIN")
+                // Except comments
+                .requestMatchers("/api/comments/**").hasRole("USER")
+                // All modifications are restricted to ADMIN role
+                .requestMatchers(HttpMethod.POST,"/api/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/api/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/api/**").hasRole("ADMIN")
+
+                .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasRole("USER")
+
             // PUBLIC ENDPOINTS
             .anyRequest().permitAll()
         );
@@ -47,6 +53,7 @@ public class RestSecurityConfig {
 
         // Disable CSRF protection (it is difficult to implement in REST APIs)
         http.csrf(csrf -> csrf.disable());
+
         // Enable Basic Authentication
         http.httpBasic(Customizer.withDefaults());
 

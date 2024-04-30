@@ -25,7 +25,7 @@ public class UserRESTController {
     @Autowired
     private AlbumService albumService;
 
-    // Get all users
+    // Get all users (Restricted to ADMIN role)
     @GetMapping("")
     public Collection<User> getAllUsers() {
         return userService.findAll();
