@@ -30,6 +30,8 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
+
     public void saveUser (String username, String password) {
 
         Optional<User> user= userRepository.findByName(username);
@@ -43,28 +45,34 @@ public class UserService {
     }
 
 
-
+    // Save permanently a user in the database
     public void save(User user) {
         userRepository.save(user);
     }
+
 
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
+
     public void deleteById(long id) {
         userRepository.deleteById(id);
     }
 
+
     public List<User> findByIds(List<Long> ids) { return userRepository.findAllById(ids);}
+
 
     public boolean exist(long id) {
         return userRepository.existsById(id);
     }
 
+
     public List<User> findAll() {
         return userRepository.findAll();
     }
+
 
     public List<Album> getUserAlbums(long id) {
         Optional<User> user = userRepository.findById(id);
@@ -75,6 +83,7 @@ public class UserService {
         }
     }
 
+
     @Transactional
     public void addUserToAlbumFavorites(User user, Album album) {
         // Verify if the album and user exist
@@ -82,6 +91,11 @@ public class UserService {
         Optional<Album> existingAlbum = albumRepository.findById(album.getId());
 
         if (existingUser.isPresent() && existingAlbum.isPresent()) {
+
+            // Verify if the relation is not already created
+            if (existingUser.get().getAlbumFavs().contains(album)) {
+                throw new  DuplicateKeyException("The user is already in the album's favorites");
+            }
             // Add the user to the album's favorites
             album.getUserFavs().add(user);
             // Add the album to the user's favorites
