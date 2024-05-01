@@ -52,9 +52,7 @@ public class CommentController {
 
         try {
 
-            Album album = albumService.findById(id).orElseThrow();
-            comment.setAlbum(album);
-            commentService.addComment(comment);
+            commentService.addComment(comment, id);
             return "redirect:/album/" + id;
 
         } catch (IllegalArgumentException ex) {
@@ -73,10 +71,16 @@ public class CommentController {
     }
     */
 
-    @GetMapping("/deleteComment/{idAlbum}/comment/{idComment}")
-    public String deleteComment(Model model, @PathVariable long idAlbum, @PathVariable long idComment) {
+    @GetMapping("/deleteComment/{id}")
+    public String deleteComment(Model model, @PathVariable long id) {
+
+        Long idAlbum;
         try {
-            commentService.deleteComment(idComment);
+            String currentUser = (String) model.getAttribute("currentUser");
+            Boolean isAdmin = (Boolean) model.getAttribute("admin");
+            Comment comm = commentService.getComment(id).orElseThrow();
+            idAlbum = comm.getAlbum().getId();
+            commentService.deleteComment(id, currentUser, isAdmin);
         } catch (IllegalArgumentException ex) {
             return "redirect:/error";
         }

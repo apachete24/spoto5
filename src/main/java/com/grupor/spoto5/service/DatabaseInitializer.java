@@ -120,60 +120,47 @@ public class DatabaseInitializer {
 
 
         Comment comment1 = new Comment("Rodri", 100, "Great Album");
-        comment1.setAlbum(album1);
-        commentService.addComment(comment1);
+        commentService.addComment(comment1, 1L);
 
         Comment comment2 = new Comment("Diego", 90, "Niceeee");
-        comment2.setAlbum(album1);
-        commentService.addComment(comment2);
+        commentService.addComment(comment2, 1L);
 
         Comment comment3 = new Comment("Mario", 95, "Sounds good");
-        comment3.setAlbum(album1);
-        commentService.addComment(comment3);
+        commentService.addComment(comment3, 1L);
 
         Comment comment4 = new Comment("Rodri", 100, "922 928");
-        comment4.setAlbum(album2);
-        commentService.addComment(comment4);
+        commentService.addComment(comment4, 2L);
 
         Comment comment5 = new Comment("Diego", 100, "Fantastic");
-        comment5.setAlbum(album2);
-        commentService.addComment(comment5);
+        commentService.addComment(comment5, 2L);
 
         Comment comment6 = new Comment("Mario", 100, "Album of the year");
-        comment6.setAlbum(album2);
-        commentService.addComment(comment6);
+        commentService.addComment(comment6, 2L);
 
         Comment comment7 = new Comment("Rodri", 100, "Timeless");
-        comment7.setAlbum(album5);
-        commentService.addComment(comment7);
+        commentService.addComment(comment7,5L);
 
         Comment comment8 = new Comment("Diego", 70, "Nice Album");
-        comment8.setAlbum(album8);
-        commentService.addComment(comment8);
+
+        commentService.addComment(comment8, 8L);
 
         Comment comment9 = new Comment("Mario", 100, "Great Album");
-        comment9.setAlbum(album8);
-        commentService.addComment(comment9);
+        commentService.addComment(comment9, 8L);
 
         Comment comment10 = new Comment("Rodri", 100, "Great Album");
-        comment10.setAlbum(album9);
-        commentService.addComment(comment10);
+        commentService.addComment(comment10, 9L);
 
         Comment comment11 = new Comment("Diego", 100, "Great Album");
-        comment11.setAlbum(album4);
-        commentService.addComment(comment11);
+        commentService.addComment(comment11, 4L);
 
         Comment comment12 = new Comment("Mario", 100, "Rookie");
-        comment12.setAlbum(album3);
-        commentService.addComment(comment12);
+        commentService.addComment(comment12, 3L);
 
         Comment comment13 = new Comment("a", 1, "a");
-        comment13.setAlbum(album10);
-        commentService.addComment(comment13);
+        commentService.addComment(comment13, 10L);
 
         Comment comment14 = new Comment("b", 2, "b");
-        comment14.setAlbum(album10);
-        commentService.addComment(comment14);
+        commentService.addComment(comment14, 10L);
     }
 
     public static Blob createBlobFromFile(File file) throws IOException, SQLException {

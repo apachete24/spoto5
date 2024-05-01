@@ -140,7 +140,7 @@ public class UserController {
     public String editUser (Model model, @PathVariable long id, String username, String password) {
         String currentUser = (String) model.getAttribute("currentUser");
         userService.updateUser(id, username, password, currentUser);
-        return "redirect:/user";
+        return "/user";
     }
 }
 

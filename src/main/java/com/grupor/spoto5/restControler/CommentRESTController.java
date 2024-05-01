@@ -6,6 +6,7 @@ import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -65,7 +66,7 @@ public class CommentRESTController {
         Optional<Album> album = albumService.findById(albumId);
         if (album.isPresent()) {
             comment.setAlbum(album.get());
-            commentService.addComment(comment);
+            commentService.addComment(comment, albumId);
             URI location = fromCurrentRequest().path("/{id}").buildAndExpand(comment.getId()).toUri();
             return ResponseEntity.created(location).body(comment);
         } else {
@@ -76,11 +77,13 @@ public class CommentRESTController {
 
     // Delete comment by id
     @DeleteMapping("/{commentId}")
-    public ResponseEntity<Comment> deleteComment(@PathVariable long commentId) {
+    public ResponseEntity<Comment> deleteComment(Model model, @PathVariable long commentId) {
 
         Optional<Comment> comment = commentService.getComment(commentId);
         if (comment.isPresent()) {
-            commentService.deleteComment(commentId);
+            String currentUser = (String) model.getAttribute("currentUser");
+            Boolean isAdmin = (Boolean) model.getAttribute("admin");
+            commentService.deleteComment(commentId, currentUser, isAdmin);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -91,7 +94,7 @@ public class CommentRESTController {
 
     // Update comment
     @PutMapping("/{commentId}")
-    public ResponseEntity<Comment> updateComment(@PathVariable long commentId, @RequestBody Comment updatedComment) {
+    public ResponseEntity<Comment> updateComment(Model model, @PathVariable long commentId, @RequestBody Comment updatedComment) {
 
         Optional<Comment> comment = commentService.getComment(commentId);
 
@@ -99,7 +102,7 @@ public class CommentRESTController {
             // User is not allowed to change the username and id comment
             updatedComment.setId(commentId);
             updatedComment.setUsername(comment.get().getUsername());
-            commentService.addComment(updatedComment);
+            commentService.addComment(updatedComment, null);
 
             return ResponseEntity.ok(updatedComment);
 

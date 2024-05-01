@@ -5,12 +5,14 @@ import com.grupor.spoto5.repository.CommentRepository;
 import com.grupor.spoto5.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -55,33 +57,50 @@ public class CommentService {
 
 
     // New comment
-    public void addComment (Comment comment) {
+    public void addComment (Comment comment, Long idAlbum) {
 
-        // validate userName
-        if (comment.getUsername() == null || comment.getUsername().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be empty.");
+        Optional <Album> albumAux = albumService.findById(idAlbum);
+
+        if (albumAux.isPresent()) {
+
+            comment.setAlbum(albumAux.get());
+            // validate userName
+            if (comment.getUsername() == null || comment.getUsername().isEmpty()) {
+                throw new IllegalArgumentException("Username cannot be empty.");
+            }
+            // validate Score
+            if (comment.getScore() < 0 || comment.getScore() > 100) {
+                throw new IllegalArgumentException("Score must be between 0 and 100.");
+            }
+            // Validate Text
+            if (comment.getText() == null || comment.getText().isEmpty()) {
+                throw new IllegalArgumentException("Comment text cannot be empty.");
+            }
+            // If comment is valid
+            this.commentRepository.save(comment);
+        } else {
+            throw new IllegalArgumentException("Album not found");
         }
-        // validate Score
-        if (comment.getScore() < 0 || comment.getScore() > 100) {
-            throw new IllegalArgumentException("Score must be between 0 and 100.");
-        }
-        // Validate Text
-        if (comment.getText() == null || comment.getText().isEmpty()) {
-            throw new IllegalArgumentException("Comment text cannot be empty.");
-        }
-        // If comment is valid
-        this.commentRepository.save(comment);
     }
 
 
     // Remove comment
-    public void deleteComment (long commentId) {
+    public void deleteComment(long commentId, String currentUser, boolean isAdmin) {
+
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
+
         if (optionalComment.isPresent()) {
-            commentRepository.deleteById(commentId);
+            Comment comment = optionalComment.get();
+            if (comment.getUsername().equals(currentUser) || isAdmin) {
+                commentRepository.deleteById(commentId);
+            } else {
+                throw new AccessDeniedException("Permission Denied");
+            }
         } else {
-            throw new IllegalArgumentException("Comment with id " + commentId + " not found");        }
+            throw new NoSuchElementException("Comment with id " + commentId + " not found");
+        }
     }
+
 
 
     // Find comments by id
