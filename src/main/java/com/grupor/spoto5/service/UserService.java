@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -55,9 +56,17 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public Optional<User> findByName(String username) {
+        return userRepository.findByName(username);
+    }
 
-    public void deleteById(long id) {
-        userRepository.deleteById(id);
+
+    public void deleteUser(long id, boolean isAdmin) throws AccessDeniedException {
+        if (isAdmin) {
+            userRepository.deleteById(id);
+        } else {
+            throw new AccessDeniedException("DENIED ACTION");
+        }
     }
 
 
@@ -116,6 +125,22 @@ public class UserService {
         album.getUserFavs().remove(user);
         user.getAlbumFavs().remove(album);
         userRepository.save(user);
+    }
+
+    public void updateUser (Long id, String username, String password, String currentUser) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            User userAux = user.get();
+            if (currentUser.equals(userAux.getName())) {
+                userAux.setName(username);
+                userAux.setEncodedPassword(passwordEncoder.encode(password));
+                userRepository.save(userAux);
+            } else {
+                throw new AccessDeniedException("Permision denied");
+            }
+        } else {
+            throw new EntityNotFoundException("User not found");
+        }
     }
 
     /*

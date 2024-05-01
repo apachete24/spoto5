@@ -12,10 +12,9 @@
 <div class="album-container">
 
     <div class="album-details">
-        <h1>Album Details</h1>
+        <h1>{{album.title}}</h1>
         <div class="album-info">
             <p><strong>Artist:</strong> {{album.artist}}</p>
-            <p><strong>Title:</strong> {{album.title}}</p>
             <p><strong>Year:</strong> {{album.release_year}}</p>
             <p><strong>Description:</strong> {{{album.text}}}</p>
         </div>
@@ -24,7 +23,7 @@
         </div>
 
         <div class="album-video">
-            <video width="320" height="240" controls>
+            <video width="500" height="375" controls>
                 <source src="/album/{{album.id}}/video" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
@@ -39,17 +38,15 @@
         </div>
     </div>
 
-    <p>
-
     <div class="comments-section">
         {{#comments}}
         <div class="comment-item">
             <div class="comment-info">
                 <ul>
                     <li>
-                        <strong>Username</strong>: {{username}} <br>
-                        <strong>Score</strong>: {{score}} <br>
-                        <strong>Review</strong>: {{text}} <br>
+                        <strong>Username:</strong> {{username}} <br>
+                        <strong>Score:</strong> {{score}} <br>
+                        <strong>Review:</strong> {{text}} <br>
                         {{#logged}}
                         <br>
                         <a href="/deleteComment/{idAlbum}/comment/{idComment}" class="button delete"><i class="fas fa-trash"></i> Comment</a>
@@ -65,37 +62,42 @@
     </div>
 
     {{#logged}}
-    <h1>Add Comment</h1>
-    <form action="/addcomment/{{album.id}}" method="post">
-
-        <input type="hidden" id="username" name="username" value="{{#currentUser}}{{.}}{{/currentUser}}" required>
-
-        <p>Score:</p>
-        <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>
-
-        <p>Comment:</p>
-        <textarea id="text" name="text" rows="5" cols="40" required></textarea>
-
-        <input type="hidden" name="_csrf" value="{{token}}"/>
-
-        <button type="submit" class="button">Save</button>
-    </form>
+    <div class="add-comment-section">
+        <h1>Add Comment</h1>
+        <form action="/addcomment/{{album.id}}" method="post">
+            <input type="hidden" id="username" name="username" value="{{#currentUser}}{{.}}{{/currentUser}}" required>
+            <p>Score:</p>
+            <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>
+            <p>Comment:</p>
+            <textarea id="text" name="text" rows="5" cols="40" required></textarea>
+            <input type="hidden" name="_csrf" value="{{token}}"/>
+            <button type="submit" class="button">Save</button>
+        </form>
+    </div>
     {{/logged}}
 
     {{^logged}}
-    <p>Login to add comments</p>
-    <a href="/login" class="button">Login</a>
+    <div class="login-section">
+        <br>
+        <p>Login to add comments</p>
+        <br>
+        <a href="/login" class="button">Login</a>
+    </div>
     {{/logged}}
 
-    <form action="/album/{{album.id}}/like" method="post">
-        <label for="userIds">Select users to add this album to favorites:</label><br>
-        <select name="userIds" id="userIds" multiple>
-            {{#users}}
-            <option value="{{id}}">{{name}}</option>
-            {{/users}}
-        </select><br><br>
-        <input type="submit" value="Me gusta">
-    </form>
+    <div class="like-section">
+        <br>
+        <form action="/album/{{album.id}}/like" method="post">
+            <label for="userIds">Select users to add this album to favorites:</label><br>
+            <br>
+            <select name="userIds" id="userIds" multiple>
+                {{#users}}
+                <option value="{{id}}">{{name}}</option>
+                {{/users}}
+            </select><br><br>
+            <input type="submit" value="Me gusta" class="button">
+        </form>
+    </div>
 
 </div>
 </body>
