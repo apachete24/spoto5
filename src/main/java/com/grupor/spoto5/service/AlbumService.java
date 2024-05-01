@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 import jakarta.persistence.EntityManager;
@@ -87,45 +89,83 @@ public class AlbumService {
         this.albumRepository.deleteById(id);
     }
 
+    public boolean deleteAlbum (long id, boolean isAdmin) throws AccessDeniedException {
 
+        if (isAdmin) {
+            try {
+                Optional<Album> optionalAlbum = this.findById(id);
+                if (optionalAlbum.isPresent()) {
+                    Album album = optionalAlbum.get();
 
-    public void save(Album album, MultipartFile albumImage, MultipartFile albumVideo) throws IOException {
+                    if (album.getImage() != null && !album.getImage().isEmpty()) {
+                        imageService.deleteImage(album.getImage(), isAdmin);
+                    }
 
-        if (album.getArtist().isEmpty()) {
-            throw new IllegalArgumentException("Artist name cannot be empty");
-        }
+                    if (album.getImageFile() != null) {
+                        album.getImageFile().free();
+                    }
 
-        if (album.getTitle().isEmpty()) {
-            throw new IllegalArgumentException("Title cannot be empty");
-        }
+                    if (album.getVideoPath() != null && !album.getVideoPath().isEmpty()) {
+                        videoService.deleteVideo(album.getVideoPath());
+                    }
 
-        if (album.getRelease_year() < 1000 || album.getRelease_year() > 2024) {
-            throw new IllegalArgumentException("Year must be between 1000 and 2024");
-        }
+                    this.deleteById(id);
 
-        if (album.getText() == null || album.getText().isEmpty()) {
-            throw new IllegalArgumentException("Text cannot be empty");
-        }
-
-        if (albumImage != null && !albumImage.isEmpty()) {
-            String fileImage = imageService.createImage(albumImage);
-            if (!StringUtils.hasText(fileImage) || !isImageFormatValid(fileImage)) {
-                throw new IllegalArgumentException("Invalid image format");
+                    return true;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return false;
             }
-            album.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
-            album.setImage(fileImage);
+        } else {
+            throw new AccessDeniedException("Permision Denied");
         }
-
-        if (albumVideo != null && !albumVideo.isEmpty()) {
-            String fileVideo = videoService.createVideo(albumVideo);
-            album.setVideoPath(fileVideo);
-        }
-
-        String escapedText = HtmlUtils.htmlEscape(album.getText());
-        album.setText(escapedText);
-
-        albumRepository.save(album);
+        return false;
     }
+
+
+    public void save(Album album, MultipartFile albumImage, MultipartFile albumVideo, Boolean isAdmin) throws IOException {
+
+        if (isAdmin) {
+            if (album.getArtist().isEmpty()) {
+                throw new IllegalArgumentException("Artist name cannot be empty");
+            }
+
+            if (album.getTitle().isEmpty()) {
+                throw new IllegalArgumentException("Title cannot be empty");
+            }
+
+            if (album.getRelease_year() < 1000 || album.getRelease_year() > 2024) {
+                throw new IllegalArgumentException("Year must be between 1000 and 2024");
+            }
+
+            if (album.getText() == null || album.getText().isEmpty()) {
+                throw new IllegalArgumentException("Text cannot be empty");
+            }
+
+            if (albumImage != null && !albumImage.isEmpty()) {
+                String fileImage = imageService.createImage(albumImage);
+                if (!StringUtils.hasText(fileImage) || !isImageFormatValid(fileImage)) {
+                    throw new IllegalArgumentException("Invalid image format");
+                }
+                album.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
+                album.setImage(fileImage);
+            }
+
+            if (albumVideo != null && !albumVideo.isEmpty()) {
+                String fileVideo = videoService.createVideo(albumVideo);
+                album.setVideoPath(fileVideo);
+            }
+
+            String escapedText = HtmlUtils.htmlEscape(album.getText());
+            album.setText(escapedText);
+
+            albumRepository.save(album);
+        } else {
+            throw new AccessDeniedException("Permision Denied");
+        }
+    }
+
 
 
     public void save (Album album) throws  IOException {
@@ -150,42 +190,61 @@ public class AlbumService {
 
     }
 
-    public void updateAlbum(Long id, Album updatedAlbum) {
 
-        Optional<Album> existingAlbum = findById(id);
+    public void updateAlbum(Long id, Album updatedAlbum, boolean isAdmin, MultipartFile albumImage, MultipartFile albumVideo) throws IOException {
 
-        if (!existingAlbum.isPresent()) {
-            throw new EntityNotFoundException("Album not found");
-        }
+        if (isAdmin) {
 
-        if (existingAlbum.isPresent()) {
-            Album al = existingAlbum.get();
-            if (! al.getArtist().equals(updatedAlbum.getArtist()) && !updatedAlbum.getArtist().isEmpty() && updatedAlbum.getArtist()!=null) {
-                al.setArtist(updatedAlbum.getArtist());
-            } if (! al.getRelease_year().equals(updatedAlbum.getRelease_year()) && updatedAlbum.getRelease_year() != null) {
-                al.setRelease_year(updatedAlbum.getRelease_year());
-            } if (! al.getTitle().equals(updatedAlbum.getTitle()) && updatedAlbum.getTitle() != null && !updatedAlbum.getTitle().isEmpty()) {
-                al.setTitle(updatedAlbum.getTitle());
-            }
-            if (! updatedAlbum.getText().equals(al.getText())) {
-                String escapedText = HtmlUtils.htmlEscape(updatedAlbum.getText());
-                al.setText(escapedText);
+            Optional<Album> existingAlbum = findById(id);
+
+            if (albumImage != null && !albumImage.isEmpty()) {
+                String fileImage = imageService.createImage(albumImage);
+                updatedAlbum.setImage(fileImage);
+                updatedAlbum.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
             }
 
-            if (updatedAlbum.getImage() != null && !updatedAlbum.getImage().isEmpty()) {
-                al.setImage(updatedAlbum.getImage());
-            } if (updatedAlbum.getImageFile() != null) {
-                al.setImageFile(updatedAlbum.getImageFile());
+            if (albumVideo != null && !albumVideo.isEmpty()) {
+                String fileVideo = videoService.createVideo(albumVideo);
+                updatedAlbum.setVideoPath(fileVideo);
+            }
+            if (!existingAlbum.isPresent()) {
+                throw new EntityNotFoundException("Album not found");
             }
 
-            if (updatedAlbum.getVideoPath() != null && !updatedAlbum.getVideoPath().isEmpty()) {
-                al.setVideoPath(updatedAlbum.getVideoPath());
-            } if (updatedAlbum.getVideoFile() != null) {
-                al.setVideoFile(updatedAlbum.getVideoFile());
+            if (existingAlbum.isPresent()) {
+                Album al = existingAlbum.get();
+                if (!al.getArtist().equals(updatedAlbum.getArtist()) && !updatedAlbum.getArtist().isEmpty() && updatedAlbum.getArtist() != null) {
+                    al.setArtist(updatedAlbum.getArtist());
+                }
+                if (!al.getRelease_year().equals(updatedAlbum.getRelease_year()) && updatedAlbum.getRelease_year() != null) {
+                    al.setRelease_year(updatedAlbum.getRelease_year());
+                }
+                if (!al.getTitle().equals(updatedAlbum.getTitle()) && updatedAlbum.getTitle() != null && !updatedAlbum.getTitle().isEmpty()) {
+                    al.setTitle(updatedAlbum.getTitle());
+                }
+                if (!updatedAlbum.getText().equals(al.getText())) {
+                    String escapedText = HtmlUtils.htmlEscape(updatedAlbum.getText());
+                    al.setText(escapedText);
+                }
+
+                if (updatedAlbum.getImage() != null && !updatedAlbum.getImage().isEmpty()) {
+                    al.setImage(updatedAlbum.getImage());
+                }
+                if (updatedAlbum.getImageFile() != null) {
+                    al.setImageFile(updatedAlbum.getImageFile());
+                }
+
+                if (updatedAlbum.getVideoPath() != null && !updatedAlbum.getVideoPath().isEmpty()) {
+                    al.setVideoPath(updatedAlbum.getVideoPath());
+                }
+                if (updatedAlbum.getVideoFile() != null) {
+                    al.setVideoFile(updatedAlbum.getVideoFile());
+                }
+
+                albumRepository.save(al);
             }
-
-            albumRepository.save(al);
-
+        } else {
+            throw new AccessDeniedException("Permision Denied");
         }
     }
 

@@ -43,12 +43,12 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
 
                     // PUBLIC PAGES
-                    .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register").permitAll()
-
+                    .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register", "/denied").permitAll()
 
                     // PRIVATE PAGES
-                    .requestMatchers("/addcomment/*", "/deleteComment/*", "/user").hasAnyRole("USER")
-                    .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage").hasAnyRole("ADMIN")
+                    .requestMatchers("/addcomment/*", "/deleteComment/*", "/user", "edituser/*").hasAnyRole("USER")
+                    .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage", "/deleteuser/*").hasAnyRole("ADMIN")
+
                 )
 
                 .formLogin(formLogin -> formLogin
@@ -63,6 +63,7 @@ public class WebSecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 );
+
 
 // Disable CSRF at the moment
         return http.build();

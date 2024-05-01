@@ -2,16 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/style2.css">
+    <script src="https://kit.fontawesome.com/cce8b43a59.js" crossorigin="anonymous"></script>
     <title>USERS</title>
 </head>
 <body>
-    {{#users}}
-    <li class="album-item">
-        <div class="album-info">
-            <h2>{{name}}</h2>
-        </div>
-    </li>
-    {{/users}}
+<div class="album-container">
+    <ul class="album-list">
+        {{#users}}
+        <li class="album-item">
+            <div class="album-info">
+                <h2>{{name}}</h2>
+                <a href="/deleteuser/{{id}}" class="button delete"><i class="fas fa-trash"></i> Delete User</a>
+            </div>
+        </li>
+        {{/users}}
+    </ul>
+    <a href="/" class="button"><i class="fas fa-arrow-left"></i> Back</a>
+</div>
 </body>
 </html>

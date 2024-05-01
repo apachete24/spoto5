@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.nio.file.AccessDeniedException;
 import java.security.Principal;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -34,12 +36,6 @@ public class AlbumController {
     private static final String ALBUMS_FOLDER = "albums";
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private AlbumService albumService;
-
-    @Autowired
     private ImageService imageService;
 
     @Autowired
@@ -47,6 +43,12 @@ public class AlbumController {
 
     @Autowired
     private VideoService videoService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private AlbumService albumService;
 
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
@@ -98,30 +100,22 @@ public class AlbumController {
         }
     }
 
+
     @GetMapping("/newalbum")
     public String newAlbumForm(Model model) {
-        boolean isAdmin = (boolean) model.getAttribute("admin");
-
-        if (isAdmin) {
-            return "new_album";
-        } else {
-            return "denied";
-        }
-
+        return "new_album";
     }
 
 
     @PostMapping("/newalbum")
     public String newAlbum(Model model, Album album, @RequestParam MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
         boolean isAdmin = (boolean) model.getAttribute("admin");
-
-        if (isAdmin) {
-            albumService.save(album, albumImage, albumVideo);
+        try {
+            albumService.save(album, albumImage, albumVideo, isAdmin);
             return "saved_album";
-        } else {
+        } catch (AccessDeniedException ex) {
             return "denied";
         }
-
     }
 
 
@@ -164,83 +158,49 @@ public class AlbumController {
 
     @GetMapping("/deletealbum/{id}")
     public String deleteAlbum(Model model, @PathVariable long id) {
+
         boolean isAdmin = (boolean) model.getAttribute("admin");
 
-        if (isAdmin) {
-            try {
-                Optional<Album> optionalAlbum = albumService.findById(id);
-                if (optionalAlbum.isPresent()) {
-                    Album album = optionalAlbum.get();
+        try {
+            albumService.deleteAlbum(id, isAdmin);
 
-                    if (album.getImage() != null && !album.getImage().isEmpty()) {
-                        imageService.deleteImage(album.getImage(), isAdmin);
-                    }
-
-                    if (album.getImageFile() != null) {
-                        album.getImageFile().free();
-                    }
-
-                    if (album.getVideoPath() != null && !album.getVideoPath().isEmpty()) {
-                        videoService.deleteVideo(album.getVideoPath());
-                    }
-
-                    albumService.deleteById(id);
-                    return "deleted_album";
-                } else {
-                    return "error";
-                }
-            } catch (SQLException e) {
-                // Manejar la excepción de SQL adecuadamente
-                return "error";
-            }
-        } else {
+            return "deleted_album";
+        } catch (AccessDeniedException ex) {
             return "denied";
         }
+
     }
 
 
     @GetMapping("/editalbum/{id}")
     public String updateAlbum(Model model, @PathVariable long id) {
 
-        boolean isAdmin = (boolean) model.getAttribute("admin");
+        Optional<Album> optionalAlbum = albumService.findById(id);
 
-        if (isAdmin) {
+        if (optionalAlbum.isPresent()) {
 
-            Optional<Album> optionalAlbum = albumService.findById(id);
+            Album album = optionalAlbum.get();
+            model.addAttribute("album", album);
 
-            if (optionalAlbum.isPresent()) {
-                Album album = optionalAlbum.get();
-                model.addAttribute("album", album);
+            model.addAttribute("imageFileName", album.getImage());
 
-                model.addAttribute("imageFileName", album.getImage());
-
-                return "edit_album";
-            } else {
-                return "error";
-            }
+            return "edit_album";
         } else {
-            return "denied";
+            return "error";
         }
 
     }
 
+
     @PostMapping("/editalbum/{id}")
     public String updateAlbum(Model model, @PathVariable Long id, Album updatedAlbum, @RequestParam(required = false) MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
+
         boolean isAdmin = (boolean) model.getAttribute("admin");
 
-        if (isAdmin) {
-            if (albumImage != null && !albumImage.isEmpty()) {
-                String fileImage = imageService.createImage(albumImage);
-                updatedAlbum.setImage(fileImage);
-                updatedAlbum.setImageFile(BlobProxy.generateProxy(albumImage.getInputStream(), albumImage.getSize()));
-            }
-            if (albumVideo != null && !albumVideo.isEmpty()) {
-                String fileVideo = videoService.createVideo(albumVideo);
-                updatedAlbum.setVideoPath(fileVideo);
-            }
-            albumService.updateAlbum(id, updatedAlbum);
+        try {
+            albumService.updateAlbum(id, updatedAlbum, isAdmin, albumImage, albumVideo);
             return "redirect:/album/" + id;
-        } else {
+        } catch (AccessDeniedException exception) {
             return "denied";
         }
     }

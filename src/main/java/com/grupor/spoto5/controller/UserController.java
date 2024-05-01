@@ -12,9 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.nio.file.AccessDeniedException;
 import java.security.Principal;
+import java.util.Optional;
 
 @Controller
 public class UserController {
@@ -79,10 +82,17 @@ public class UserController {
     @GetMapping("/user")
     public String currentUser (Model model) {
         boolean logged = (boolean) model.getAttribute("logged");
-        if (logged) {
-            return "user";
+        Optional<User> user = userService.findByName((String) model.getAttribute("currentUser"));
+        if (user.isPresent()) {
+            User userAux = user.get();
+            model.addAttribute("userID", userAux.getId());
+            if (logged) {
+                return "user";
+            } else {
+                return "denied";
+            }
         } else {
-            return "denied";
+            return "error";
         }
     }
 
@@ -97,6 +107,41 @@ public class UserController {
         }
     }
 
+    @GetMapping("/deleteuser/{id}")
+    public String deleteUser(Model model, @PathVariable long id) {
+
+        boolean isAdmin = (boolean) model.getAttribute("admin");
+
+        userService.deleteUser(id, isAdmin);
+        return"redirect:/adminpage";
+
+    }
+
+    @GetMapping("/edituser/{id}")
+    public String editUser (Model model, @PathVariable Long id) {
+
+        Optional<User> userAux = userService.findById(id);
+
+        if (userAux.isPresent()) {
+            User user = userAux.get();
+            if (user.getName().equals(model.getAttribute("currentUser"))) {
+                model.addAttribute("userID", user.getId());
+                return "edit_user";
+            } else {
+                return "denied";
+            }
+        } else {
+            return "error";
+        }
+
+    }
+
+    @PostMapping("/edituser/{id}")
+    public String editUser (Model model, @PathVariable long id, String username, String password) {
+        String currentUser = (String) model.getAttribute("currentUser");
+        userService.updateUser(id, username, password, currentUser);
+        return "redirect:/user";
+    }
 }
 
 
