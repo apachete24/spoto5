@@ -6,6 +6,7 @@ import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class CommentController {
     }
     */
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @PostMapping("/addcomment/{id}")
     public String newComment(Comment comment, @PathVariable long id, Model model) {
 
@@ -71,6 +73,7 @@ public class CommentController {
     }
     */
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/deleteComment/{id}")
     public String deleteComment(Model model, @PathVariable long id) {
 

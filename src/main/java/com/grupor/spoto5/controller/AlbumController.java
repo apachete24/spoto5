@@ -9,6 +9,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -102,11 +103,12 @@ public class AlbumController {
 
 
     @GetMapping("/newalbum")
+    @PreAuthorize("hasRole('ADMIN')")
     public String newAlbumForm(Model model) {
         return "new_album";
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/newalbum")
     public String newAlbum(Model model, Album album, @RequestParam MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
         boolean isAdmin = (boolean) model.getAttribute("admin");
@@ -155,7 +157,7 @@ public class AlbumController {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Video not found");
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/deletealbum/{id}")
     public String deleteAlbum(Model model, @PathVariable long id) {
 
@@ -171,7 +173,7 @@ public class AlbumController {
 
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/editalbum/{id}")
     public String updateAlbum(Model model, @PathVariable long id) {
 
@@ -191,7 +193,7 @@ public class AlbumController {
 
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/editalbum/{id}")
     public String updateAlbum(Model model, @PathVariable Long id, Album updatedAlbum, @RequestParam(required = false) MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
 

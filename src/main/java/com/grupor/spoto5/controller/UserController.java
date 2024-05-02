@@ -6,6 +6,7 @@ import com.grupor.spoto5.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -62,6 +63,7 @@ public class UserController {
         return "register";
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/user/{id}")
     public String user () {
         return "user";
@@ -71,7 +73,7 @@ public class UserController {
     public String newUser(String username, String password, Model model) {
         try {
             userService.saveUser(username, password);
-            return "redirect:/index";
+            return "saved_user";
         } catch (DuplicateKeyException ex) {
             String errorMessage = ex.getMessage();
             model.addAttribute("errorMessage", errorMessage);
@@ -79,6 +81,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/user")
     public String currentUser (Model model) {
         boolean logged = (boolean) model.getAttribute("logged");
@@ -96,6 +99,7 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/adminpage")
     public String adminPage (Model model) {
         boolean isAdmin = (boolean) model.getAttribute("admin");
@@ -107,14 +111,20 @@ public class UserController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/deleteuser/{id}")
     public String deleteUser(Model model, @PathVariable long id) {
 
+        String currentUser = (String)model.getAttribute("currentUser");
         boolean isAdmin = (boolean) model.getAttribute("admin");
 
-        userService.deleteUser(id, isAdmin);
-        return"redirect:/adminpage";
+        userService.deleteUser(id, isAdmin, currentUser);
 
+        if (isAdmin) {
+            return "redirect:/adminpage";
+        } else {
+            return "deleted_user";
+        }
     }
 
     @GetMapping("/edituser/{id}")
@@ -140,7 +150,7 @@ public class UserController {
     public String editUser (Model model, @PathVariable long id, String username, String password) {
         String currentUser = (String) model.getAttribute("currentUser");
         userService.updateUser(id, username, password, currentUser);
-        return "/user";
+        return "saved_user";
     }
 }
 

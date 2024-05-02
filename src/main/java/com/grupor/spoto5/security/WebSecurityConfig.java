@@ -46,8 +46,8 @@ public class WebSecurityConfig {
                     .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register", "/denied").permitAll()
 
                     // PRIVATE PAGES
-                    .requestMatchers("/addcomment/*", "/deleteComment/*", "/user", "edituser/*").hasAnyRole("USER")
-                    .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage", "/deleteuser/*").hasAnyRole("ADMIN")
+                    .requestMatchers("/addcomment/*", "/deleteComment/*", "/user", "/edituser/*", "/deleteuser/*").hasAnyRole("USER")
+                    .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage").hasAnyRole("ADMIN")
 
                 )
 

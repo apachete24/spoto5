@@ -22,11 +22,10 @@ public class VideoService {
     public String createVideo(MultipartFile multiPartFile) {
         String originalName = multiPartFile.getOriginalFilename();
 
+        // Validación del nombre del archivo y su extensión
         if (!originalName.matches(".*\\.(mp4|avi|mov|mkv)")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The file is not a valid video format");
         }
-
-        //String fileName = "video_" + UUID.randomUUID() + "_" + originalName;
 
         Path videoPath = VIDEOS_FOLDER.resolve(originalName);
 
@@ -40,11 +39,16 @@ public class VideoService {
         return originalName;
     }
 
-
     public Resource getVideo(String videoName) {
         Path videoPath = VIDEOS_FOLDER.resolve(videoName);
+
+        // Restricción del acceso a archivos dentro del directorio permitido
+        if (!videoPath.startsWith(VIDEOS_FOLDER)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access to the requested video is forbidden");
+        }
+
         try {
-            return new UrlResource(videoPath.toUri()); // No es necesario hacer casting
+            return new UrlResource(videoPath.toUri());
         } catch (MalformedURLException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get local video");
         }
@@ -57,5 +61,4 @@ public class VideoService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't delete local video");
         }
     }
-
 }

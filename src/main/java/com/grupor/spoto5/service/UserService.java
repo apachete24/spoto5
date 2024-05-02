@@ -61,8 +61,11 @@ public class UserService {
     }
 
 
-    public void deleteUser(long id, boolean isAdmin) throws AccessDeniedException {
+    public void deleteUser(long id, boolean isAdmin, String currentUser) throws AccessDeniedException {
+        User user = userRepository.findById(id).orElseThrow();
         if (isAdmin) {
+            userRepository.deleteById(id);
+        } else if (currentUser.equals(user.getName())) {
             userRepository.deleteById(id);
         } else {
             throw new AccessDeniedException("DENIED ACTION");
