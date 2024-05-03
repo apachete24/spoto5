@@ -16,13 +16,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.grupor.spoto5.security.jwt.UnauthorizedHandlerJwt;
+import com.grupor.spoto5.security.jwt.JwtRequestFilter;
+
+
+
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 
+
+    @Autowired
+    private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
+
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
+
+
     @Autowired
     public RepositoryUserDetailsService userDetailsService;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder();
@@ -38,20 +53,27 @@ public class WebSecurityConfig {
         return authProvider;
     }
 
+
+
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
 
-        http.authenticationProvider(authenticationProvider());
 
-        http.authorizeHttpRequests(authorize -> authorize
+        http.authenticationProvider(authenticationProvider());
+        http
+                .securityMatcher("/api/**")
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
+
+        http
+                .authorizeHttpRequests(authorize -> authorize
                 // PRIVATE ENDPOINTS
                 // Except comments
-                .requestMatchers("/api/comments/**").hasRole("USER")
+                .requestMatchers("/api/comments/").hasRole("USER")
                 // All modifications are restricted to ADMIN role
-                .requestMatchers(HttpMethod.POST,"/api/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/api/**").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/api/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST,"/api/").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/api/").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/api/").hasRole("ADMIN")
                 // Get all users restricted to ADMIN role
                 .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN")
 
@@ -68,10 +90,16 @@ public class WebSecurityConfig {
         // Disable CSRF protection (it is difficult to implement in REST APIs)
         http.csrf(csrf -> csrf.disable());
 
-        // Enable Basic Authentication
-        http.httpBasic(Customizer.withDefaults());
+        // Disable Basic Authentication
+        http.httpBasic(httpBasic -> httpBasic.disable());
 
+        // Stateless session
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        // Add JWT Token filter
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+
         return http.build();
     }
 
