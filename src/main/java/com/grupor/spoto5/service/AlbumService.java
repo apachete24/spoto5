@@ -106,7 +106,7 @@ public class AlbumService {
                     }
 
                     if (album.getVideoPath() != null && !album.getVideoPath().isEmpty()) {
-                        videoService.deleteVideo(album.getVideoPath());
+                        videoService.deleteVideo(album.getVideoPath(), isAdmin);
                     }
 
                     this.deleteById(id);

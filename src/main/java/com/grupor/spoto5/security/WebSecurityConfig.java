@@ -18,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.grupor.spoto5.security.jwt.UnauthorizedHandlerJwt;
-import com.grupor.spoto5.security.jwt.JwtRequestFilter;
 
 
 
@@ -31,8 +30,7 @@ public class WebSecurityConfig {
     @Autowired
     private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+
 
 
     @Autowired
@@ -55,6 +53,7 @@ public class WebSecurityConfig {
 
 
 
+    /*
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
@@ -102,7 +101,7 @@ public class WebSecurityConfig {
 
         return http.build();
     }
-
+    */
 
     @Bean
     @Order(2)
