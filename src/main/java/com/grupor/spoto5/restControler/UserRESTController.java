@@ -3,6 +3,7 @@ package com.grupor.spoto5.restControler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.grupor.spoto5.model.*;
@@ -16,14 +17,14 @@ import java.util.Optional;
 @RequestMapping("/api/users")
 public class UserRESTController {
 
+
     @Autowired
     private UserService userService;
-
     @Autowired
     private CommentService commentService;
-
     @Autowired
     private AlbumService albumService;
+
 
     // Get all users (Restricted to ADMIN role)
     @GetMapping("")
@@ -31,16 +32,18 @@ public class UserRESTController {
         return userService.findAll();
     }
 
+
     // Get user by id
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable long id) {
+    public ResponseEntity<User> getUser(@PathVariable long id, Model model) {
+            // we need to change this code: check the id is equal to the current user id
+            Optional<User> user = userService.findById(id);
+            if (user.isPresent()) {
+                return ResponseEntity.ok(user.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
 
-        Optional<User> user = userService.findById(id);
-        if (user.isPresent()) {
-            return ResponseEntity.ok(user.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 
 

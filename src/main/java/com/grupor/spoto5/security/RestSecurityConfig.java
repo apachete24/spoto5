@@ -40,6 +40,8 @@ public class RestSecurityConfig {
                 .requestMatchers(HttpMethod.POST,"/api/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.PUT,"/api/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/api/**").hasRole("ADMIN")
+                // Get all users restricted to ADMIN role
+                .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN")
 
                 .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasRole("USER")
 
