@@ -9,12 +9,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class CommentService {
@@ -65,7 +63,7 @@ public class CommentService {
 
             comment.setAlbum(albumAux.get());
             // validate userName
-            if (comment.getUsername() == null || comment.getUsername().isEmpty()) {
+            if (comment.getUser() == null) {
                 throw new IllegalArgumentException("Username cannot be empty.");
             }
             // validate Score
@@ -78,20 +76,23 @@ public class CommentService {
             }
             // If comment is valid
             this.commentRepository.save(comment);
+
         } else {
+
             throw new IllegalArgumentException("Album not found");
         }
     }
 
 
     // Remove comment
-    public void deleteComment(long commentId, String currentUser, boolean isAdmin) {
+    public void deleteComment(long commentId, User currentUser, boolean isAdmin) {
 
         Optional<Comment> optionalComment = commentRepository.findById(commentId);
 
         if (optionalComment.isPresent()) {
             Comment comment = optionalComment.get();
-            if (comment.getUsername().equals(currentUser) || isAdmin) {
+            User userComment = comment.getUser();
+            if (currentUser.equals(userComment) || isAdmin) {
                 commentRepository.deleteById(commentId);
             } else {
                 throw new AccessDeniedException("Permission Denied");
@@ -116,5 +117,6 @@ public class CommentService {
 
         return commentRepository.findAllById(ids);
     }
+
 
 }

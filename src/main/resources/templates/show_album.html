@@ -44,7 +44,7 @@
             <div class="comment-info">
                 <ul>
                     <li>
-                        <strong>Username:</strong> {{username}} <br>
+                        <strong>Username:</strong> {{user.name}} <br>
                         <strong>Score:</strong> {{score}} <br>
                         <strong>Review:</strong> {{text}} <br>
                         {{#logged}}
@@ -65,7 +65,6 @@
     <div class="add-comment-section">
         <h1>Add Comment</h1>
         <form action="/addcomment/{{album.id}}" method="post">
-            <input type="hidden" id="username" name="username" value="{{#currentUser}}{{.}}{{/currentUser}}" required>
             <p>Score:</p>
             <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>
             <p>Comment:</p>

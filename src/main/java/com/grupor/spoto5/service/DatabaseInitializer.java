@@ -112,54 +112,54 @@ public class DatabaseInitializer {
         albumService.save(album9);
         albumService.save(album10);
 
-        userRepository.save(new User("Rodri", passwordEncoder.encode("1234"), "USER"));
-        userRepository.save(new User("Diego", passwordEncoder.encode("1234"), "USER"));
-        userRepository.save(new User("Mario", passwordEncoder.encode("1234"), "USER"));
-        userRepository.save(new User("admin", passwordEncoder.encode("admin"), "USER", "ADMIN"));
-        userRepository.save(new User("user1", passwordEncoder.encode("user1"), "USER"));
+        User Rodri = userRepository.save(new User("Rodri", passwordEncoder.encode("1234"), "USER"));
+        User Diego = userRepository.save(new User("Diego", passwordEncoder.encode("1234"), "USER"));
+        User Mario = userRepository.save(new User("Mario", passwordEncoder.encode("1234"), "USER"));
+        User admin = userRepository.save(new User("admin", passwordEncoder.encode("admin"), "USER", "ADMIN"));
+        User user1 = userRepository.save(new User("user1", passwordEncoder.encode("user1"), "USER"));
 
 
-        Comment comment1 = new Comment("Rodri", 100, "Great Album");
+        Comment comment1 = new Comment(Rodri, 100, "Great Album");
         commentService.addComment(comment1, 1L);
 
-        Comment comment2 = new Comment("Diego", 90, "Niceeee");
+        Comment comment2 = new Comment(Diego, 90, "Niceeee");
         commentService.addComment(comment2, 1L);
 
-        Comment comment3 = new Comment("Mario", 95, "Sounds good");
+        Comment comment3 = new Comment(Mario, 95, "Sounds good");
         commentService.addComment(comment3, 1L);
 
-        Comment comment4 = new Comment("Rodri", 100, "922 928");
+        Comment comment4 = new Comment(Rodri, 100, "922 928");
         commentService.addComment(comment4, 2L);
 
-        Comment comment5 = new Comment("Diego", 100, "Fantastic");
+        Comment comment5 = new Comment(Diego, 100, "Fantastic");
         commentService.addComment(comment5, 2L);
 
-        Comment comment6 = new Comment("Mario", 100, "Album of the year");
+        Comment comment6 = new Comment(Mario, 100, "Album of the year");
         commentService.addComment(comment6, 2L);
 
-        Comment comment7 = new Comment("Rodri", 100, "Timeless");
+        Comment comment7 = new Comment(Rodri, 100, "Timeless");
         commentService.addComment(comment7,5L);
 
-        Comment comment8 = new Comment("Diego", 70, "Nice Album");
+        Comment comment8 = new Comment(Diego, 70, "Nice Album");
 
         commentService.addComment(comment8, 8L);
 
-        Comment comment9 = new Comment("Mario", 100, "Great Album");
+        Comment comment9 = new Comment(Mario, 100, "Great Album");
         commentService.addComment(comment9, 8L);
 
-        Comment comment10 = new Comment("Rodri", 100, "Great Album");
+        Comment comment10 = new Comment(Rodri, 100, "Great Album");
         commentService.addComment(comment10, 9L);
 
-        Comment comment11 = new Comment("Diego", 100, "Great Album");
+        Comment comment11 = new Comment(Diego, 100, "Great Album");
         commentService.addComment(comment11, 4L);
 
-        Comment comment12 = new Comment("Mario", 100, "Rookie");
+        Comment comment12 = new Comment(Mario, 100, "Rookie");
         commentService.addComment(comment12, 3L);
 
-        Comment comment13 = new Comment("a", 1, "a");
+        Comment comment13 = new Comment(admin, 1, "a");
         commentService.addComment(comment13, 10L);
 
-        Comment comment14 = new Comment("b", 2, "b");
+        Comment comment14 = new Comment(user1, 2, "b");
         commentService.addComment(comment14, 10L);
     }
 

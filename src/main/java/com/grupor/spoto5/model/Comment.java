@@ -10,8 +10,9 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne
+    private User user;
 
-    private String username;
     private int score;
     private String text;
 
@@ -23,9 +24,9 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment (String username, int score, String text) {
+    public Comment (User user, int score, String text) {
         super();
-        this.username = username;
+        this.user = user;
         this.score = score;
         this.text = text;
     }
@@ -34,8 +35,8 @@ public class Comment {
         return id;
     }
 
-    public String getUsername() {
-        return username;
+    public User getUser() {
+        return user;
     }
 
     public int getScore() {
@@ -50,8 +51,8 @@ public class Comment {
         this.id = id;
     }
 
-    public void setUsername(String user) {
-        this.username = user;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public void setScore(int score) {

@@ -2,14 +2,18 @@ package com.grupor.spoto5.restControler;
 
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.Comment;
+import com.grupor.spoto5.model.User;
+import com.grupor.spoto5.repository.UserRepository;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -25,6 +29,26 @@ public class CommentRESTController {
     @Autowired
     private AlbumService albumService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+
+        if(principal != null) {
+
+            model.addAttribute("logged", true);
+            model.addAttribute("currentUser", principal.getName());
+            model.addAttribute("admin", request.isUserInRole("ADMIN"));
+            User user = userRepository.findByName(principal.getName()).orElseThrow();
+            model.addAttribute("user", user);
+
+        } else {
+            model.addAttribute("logged", false);
+        }
+    }
 
     // Get all comments
     @GetMapping("")
@@ -81,9 +105,8 @@ public class CommentRESTController {
 
         Optional<Comment> comment = commentService.getComment(commentId);
         if (comment.isPresent()) {
-            String currentUser = (String) model.getAttribute("currentUser");
-            Boolean isAdmin = (Boolean) model.getAttribute("admin");
-            commentService.deleteComment(commentId, currentUser, isAdmin);
+            User user = (User) model.getAttribute("user");Boolean isAdmin = (Boolean) model.getAttribute("admin");
+            commentService.deleteComment(commentId, user, isAdmin);
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -101,7 +124,7 @@ public class CommentRESTController {
         if (comment.isPresent()) {
             // User is not allowed to change the username and id comment
             updatedComment.setId(commentId);
-            updatedComment.setUsername(comment.get().getUsername());
+            updatedComment.setUser(comment.get().getUser());
             commentService.addComment(updatedComment, null);
 
             return ResponseEntity.ok(updatedComment);

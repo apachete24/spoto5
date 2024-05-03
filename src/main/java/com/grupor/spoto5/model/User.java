@@ -18,6 +18,9 @@ public class User {
 
     private String encodedPassword;
 
+    @OneToMany(mappedBy= "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles;
 
@@ -77,6 +80,14 @@ public class User {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     /*

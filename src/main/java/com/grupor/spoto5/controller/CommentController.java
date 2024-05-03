@@ -2,6 +2,8 @@ package com.grupor.spoto5.controller;
 
 import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.model.Album;
+import com.grupor.spoto5.model.User;
+import com.grupor.spoto5.repository.UserRepository;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +23,9 @@ public class CommentController {
     private AlbumService albumService;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private CommentService commentService;
 
     @ModelAttribute
@@ -33,8 +38,11 @@ public class CommentController {
             model.addAttribute("logged", true);
             model.addAttribute("currentUser", principal.getName());
             model.addAttribute("admin", request.isUserInRole("ADMIN"));
+            User user = userRepository.findByName(principal.getName()).orElseThrow();
+            model.addAttribute("user", user);
 
         } else {
+
             model.addAttribute("logged", false);
         }
     }
@@ -50,11 +58,11 @@ public class CommentController {
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @PostMapping("/addcomment/{id}")
-    public String newComment(Comment comment, @PathVariable long id, Model model) {
+    public String newComment(@RequestParam int score, @RequestParam String text, @PathVariable long id, Model model) {
 
         try {
-
-            commentService.addComment(comment, id);
+            Comment newComment = new Comment((User) model.getAttribute("user"), score, text);
+            commentService.addComment(newComment, id);
             return "redirect:/album/" + id;
 
         } catch (IllegalArgumentException ex) {
@@ -77,16 +85,17 @@ public class CommentController {
     @GetMapping("/deleteComment/{id}")
     public String deleteComment(Model model, @PathVariable long id) {
 
-        Long idAlbum;
+        Comment comm = commentService.getComment(id).orElseThrow();
+        Long idAlbum = comm.getAlbum().getId();
+
         try {
-            String currentUser = (String) model.getAttribute("currentUser");
+            User user = (User) model.getAttribute("user");
             Boolean isAdmin = (Boolean) model.getAttribute("admin");
-            Comment comm = commentService.getComment(id).orElseThrow();
-            idAlbum = comm.getAlbum().getId();
-            commentService.deleteComment(id, currentUser, isAdmin);
+            commentService.deleteComment(id, user, isAdmin);
         } catch (IllegalArgumentException ex) {
             return "redirect:/error";
         }
+
         return "redirect:/album/" + idAlbum;
     }
 

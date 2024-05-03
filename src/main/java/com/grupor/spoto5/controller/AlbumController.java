@@ -2,6 +2,7 @@ package com.grupor.spoto5.controller;
 
 import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.User;
+import com.grupor.spoto5.repository.UserRepository;
 import com.grupor.spoto5.service.*;
 import org.hibernate.engine.jdbc.BlobProxy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,9 @@ public class AlbumController {
     @Autowired
     private AlbumService albumService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
 
@@ -61,6 +65,8 @@ public class AlbumController {
             model.addAttribute("logged", true);
             model.addAttribute("currentUser", principal.getName());
             model.addAttribute("admin", request.isUserInRole("ADMIN"));
+            User user = userRepository.findByName(principal.getName()).orElseThrow();
+            model.addAttribute("user", user);
 
         } else {
             model.addAttribute("logged", false);

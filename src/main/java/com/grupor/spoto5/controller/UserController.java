@@ -2,11 +2,13 @@ package com.grupor.spoto5.controller;
 
 import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.UserRepository;
+import com.grupor.spoto5.service.CommentService;
 import com.grupor.spoto5.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
@@ -31,6 +33,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private CommentService commentService;
 
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
@@ -123,6 +127,7 @@ public class UserController {
         if (isAdmin) {
             return "redirect:/adminpage";
         } else {
+            SecurityContextHolder.getContext().setAuthentication(null);
             return "deleted_user";
         }
     }
@@ -150,6 +155,7 @@ public class UserController {
     public String editUser (Model model, @PathVariable long id, String username, String password) {
         String currentUser = (String) model.getAttribute("currentUser");
         userService.updateUser(id, username, password, currentUser);
+        SecurityContextHolder.getContext().setAuthentication(null);
         return "saved_user";
     }
 }
