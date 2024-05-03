@@ -207,7 +207,7 @@ public class AlbumController {
         }
     }
 
-
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/album/{id}/like")
     public String likeAlbum(Model model, @PathVariable Long id, @RequestParam("userIds") List<Long> userIds, RedirectAttributes redirectAttributes) {
         Optional<Album> albumOptional = albumService.findById(id);

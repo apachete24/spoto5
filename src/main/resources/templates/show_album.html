@@ -82,9 +82,10 @@
         <p>Login to add comments</p>
         <br>
         <a href="/login" class="button">Login</a>
+        <br>
     </div>
     {{/logged}}
-
+    {{#logged}}
     <div class="like-section">
         <br>
         <form action="/album/{{album.id}}/like" method="post">
@@ -98,6 +99,16 @@
             <input type="submit" value="Me gusta" class="button">
         </form>
     </div>
+    {{/logged}}
+
+    {{^logged}}
+    <div class="like-section">
+        <br>
+        <p>Must be logged</p>
+        <br>
+        <a href="/login" class="button">Login</a>
+    </div>
+    {{/logged}}
 
 </div>
 </body>
