@@ -119,6 +119,7 @@ public class DatabaseInitializer {
         User user1 = userRepository.save(new User("user1", passwordEncoder.encode("user1"), "USER"));
 
 
+
         Comment comment1 = new Comment(Rodri, 100, "Great Album");
         commentService.addComment(comment1, 1L);
 

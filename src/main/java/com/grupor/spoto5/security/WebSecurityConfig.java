@@ -50,7 +50,7 @@ public class WebSecurityConfig {
 
         return authProvider;
     }
-
+/*
 
 
     /*
@@ -116,8 +116,8 @@ public class WebSecurityConfig {
 
                     // PRIVATE PAGES
                     .requestMatchers("/addcomment/*", "/deleteComment/*", "/user", "/edituser/*", "/deleteuser/*").hasAnyRole("USER")
-                    .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage").hasAnyRole("ADMIN")
 
+                    .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage").hasAnyRole("ADMIN")
                 )
 
                 .formLogin(formLogin -> formLogin

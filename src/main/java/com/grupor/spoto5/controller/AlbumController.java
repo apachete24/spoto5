@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Optional;
 import jakarta.servlet.http.HttpServletRequest;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
-
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 
 @Controller
@@ -214,13 +215,13 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @PostMapping("/album/{id}/like")
+    @GetMapping("/album/{id}/like")
     public String likeAlbum(Model model, @PathVariable Long id, @RequestParam("userIds") List<Long> userIds, RedirectAttributes redirectAttributes) {
         Optional<Album> albumOptional = albumService.findById(id);
         if (albumOptional.isPresent()) {
             Album album = albumOptional.get();
-            for (Long userId : userIds) {
-                Optional<User> userOptional = userService.findById(userId);
+
+            Optional<User> userOptional = userService.findByName((String) model.getAttribute("currentUser"));
                 if (userOptional.isPresent()) {
                     User user = userOptional.get();
                     // Verificar si el usuario ya ha marcado este álbum como favorito
@@ -231,7 +232,7 @@ public class AlbumController {
                         // Si no lo ha marcado, agregarlo a la lista de favoritos
                         userService.addUserToAlbumFavorites(user, album);
                     }
-                }
+
             }
             redirectAttributes.addFlashAttribute("message", "Action performed successfully");
             return "redirect:/album/" + id;
@@ -241,12 +242,14 @@ public class AlbumController {
         }
     }
 
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/users")
     public String showUsers(Model model) {
         List<User> users = userService.findAll();
         model.addAttribute("users", users);
         return "users"; // Aquí debes tener una vista llamada "users.html" para mostrar los usuarios como botones
     }
+
 
     @GetMapping("/user/{userId}/favorites")
     public String showUserFavoriteAlbums(@PathVariable Long userId, Model model) {

@@ -75,6 +75,8 @@
     </div>
     {{/logged}}
 
+
+
     {{^logged}}
     <div class="login-section">
         <br>
@@ -87,16 +89,8 @@
     {{#logged}}
     <div class="like-section">
         <br>
-        <form action="/album/{{album.id}}/like" method="post">
-            <label for="userIds">Select users to add this album to favorites:</label><br>
-            <br>
-            <select name="userIds" id="userIds" multiple>
-                {{#users}}
-                <option value="{{id}}">{{name}}</option>
-                {{/users}}
-            </select><br><br>
-            <input type="submit" value="Me gusta" class="button">
-        </form>
+        <a href="/" class="button"><i class="fa-solid fa-heart"></i></a>
+        <br>
     </div>
     {{/logged}}
 
