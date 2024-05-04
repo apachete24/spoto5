@@ -44,6 +44,9 @@ public class DatabaseInitializer {
     private CommentService commentService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
@@ -118,7 +121,20 @@ public class DatabaseInitializer {
         User admin = userRepository.save(new User("admin", passwordEncoder.encode("admin"), "USER", "ADMIN"));
         User user1 = userRepository.save(new User("user1", passwordEncoder.encode("user1"), "USER"));
 
-
+        /*
+        userService.addUserToAlbumFavorites(Rodri, album1);
+        userRepository.save(Rodri);
+        albumRepository.save(album1);
+        userService.addUserToAlbumFavorites(Mario, album2);
+        userRepository.save(Mario);
+        albumRepository.save(album2);
+        userService.addUserToAlbumFavorites(admin, album3);
+        userRepository.save(admin);
+        albumRepository.save(album3);
+        userService.addUserToAlbumFavorites(Rodri, album3);
+        userRepository.save(Rodri);
+        albumRepository.save(album3);
+        */
 
         Comment comment1 = new Comment(Rodri, 100, "Great Album");
         commentService.addComment(comment1, 1L);
