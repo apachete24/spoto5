@@ -4,6 +4,7 @@ import com.grupor.spoto5.model.Album;
 import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.AlbumRepository;
 import com.grupor.spoto5.repository.UserRepository;
+import com.grupor.spoto5.security.HtmlFilter;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
@@ -157,8 +158,8 @@ public class AlbumService {
                 album.setVideoPath(fileVideo);
             }
 
-            String escapedText = HtmlUtils.htmlEscape(album.getText());
-            album.setText(escapedText);
+            String filteredText = HtmlFilter.filter(album.getText());
+            album.setText(filteredText);
 
             albumRepository.save(album);
         } else {
