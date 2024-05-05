@@ -1,45 +1,44 @@
 
 package com.grupor.spoto5.security;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.grupor.spoto5.security.jwt.JwtRequestFilter;
 import com.grupor.spoto5.security.jwt.UnauthorizedHandlerJwt;
-
-
-
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig {
+public class SecurityConfig {
 
+    @Autowired
+    public RepositoryUserDetailsService userDetailsService;
+
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;
 
     @Autowired
     private UnauthorizedHandlerJwt unauthorizedHandlerJwt;
 
 
-
-
-    @Autowired
-    public RepositoryUserDetailsService userDetailsService;
-
-
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -50,38 +49,33 @@ public class WebSecurityConfig {
 
         return authProvider;
     }
-/*
 
 
-    /*
+    //Expose AuthenticationManager as a Bean to be used in other services
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+
+
     @Bean
     @Order(1)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
 
-
         http.authenticationProvider(authenticationProvider());
+
         http
                 .securityMatcher("/api/**")
                 .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandlerJwt));
 
         http
                 .authorizeHttpRequests(authorize -> authorize
-                // PRIVATE ENDPOINTS
-                // Except comments
-                .requestMatchers("/api/comments/").hasRole("USER")
-                // All modifications are restricted to ADMIN role
-                .requestMatchers(HttpMethod.POST,"/api/").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.PUT,"/api/").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE,"/api/").hasRole("ADMIN")
-                // Get all users restricted to ADMIN role
-                .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN")
-
-                .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasRole("USER")
-
-                // PUBLIC ENDPOINTS
-                .anyRequest().permitAll()
-        );
-
+                        // PRIVATE ENDPOINTS
+                        .requestMatchers(HttpMethod.PUT,"/api/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/**").hasRole("ADMIN")
+                        // PUBLIC ENDPOINTS
+                        .anyRequest().permitAll()
+                );
 
         // Disable Form login Authentication
         http.formLogin(formLogin -> formLogin.disable());
@@ -98,10 +92,8 @@ public class WebSecurityConfig {
         // Add JWT Token filter
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
-
         return http.build();
     }
-    */
 
     @Bean
     @Order(2)
@@ -112,12 +104,12 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
 
                     // PUBLIC PAGES
-                    .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register", "/denied", "/favorites*").permitAll()
+                    .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register", "/denied").permitAll()
 
                     // PRIVATE PAGES
                     .requestMatchers("/addcomment/*", "/deleteComment/*", "/user", "/edituser/*", "/deleteuser/*").hasAnyRole("USER")
-
                     .requestMatchers("/newalbum", "/deletealbum/*", "/editalbum/*", "/adminpage").hasAnyRole("ADMIN")
+
                 )
 
                 .formLogin(formLogin -> formLogin
