@@ -1,6 +1,7 @@
 package com.grupor.spoto5.restControler;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.grupor.spoto5.model.*;
 import com.grupor.spoto5.service.*;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
 
@@ -25,6 +27,17 @@ public class UserRESTController {
     @Autowired
     private AlbumService albumService;
 
+    @GetMapping("/me")
+    public ResponseEntity<User> me(HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+
+        if(principal != null) {
+            return ResponseEntity.ok(userService.findByName(principal.getName()).orElseThrow());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     // Get all users (Restricted to ADMIN role)
     @GetMapping("")

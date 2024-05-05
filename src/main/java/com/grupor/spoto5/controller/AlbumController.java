@@ -56,6 +56,7 @@ public class AlbumController {
     @Autowired
     private UserRepository userRepository;
 
+
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
 
