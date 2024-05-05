@@ -1,5 +1,6 @@
 package com.grupor.spoto5.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class User {
     private List<String> roles;
 
     // Favorites albums
+
     @ManyToMany (mappedBy = "userFavs")
     private List<Album> albumFavs;
 
@@ -90,18 +92,5 @@ public class User {
         this.comments = comments;
     }
 
-    /*
-    public void addAlbumFav(Album newAlbum) {
-        albumFavs.add(newAlbum);
-
-
-    public void removeAlbumFav(Album album) {
-        albumFavs.remove(album);
-    }
-
-    public boolean isAlbumFav(Album album) {
-        return albumFavs.contains(album);
-    }
-    */
 
 }

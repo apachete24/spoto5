@@ -39,20 +39,15 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
 
-    // GETTERS
 
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
 
+
     public Collection<User> findAll() {
         return userRepository.findAll();
     }
-
-    public Optional<User> findByName(String username) {
-        return userRepository.findByName(username);
-    }
-
 
     public void saveUser (String username, String password) {
 
@@ -73,6 +68,13 @@ public class UserService {
     }
 
 
+
+
+    public Optional<User> findByName(String username) {
+        return userRepository.findByName(username);
+    }
+
+
     public void updateUser (Long id, String username, String password, String currentUser) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
@@ -89,6 +91,7 @@ public class UserService {
         }
     }
 
+
     public void deleteUser(long id, boolean isAdmin, String currentUser) throws AccessDeniedException {
         User user = userRepository.findById(id).orElseThrow();
         if (isAdmin) {
@@ -101,7 +104,6 @@ public class UserService {
     }
 
 
-    // Operations with Albums
 
     public List<Album> getUserAlbums(long id) {
         Optional<User> user = userRepository.findById(id);
@@ -148,14 +150,5 @@ public class UserService {
     }
 
 
-
-    /*
-    public void update(User updatedUser) {
-        User user = userRepository.findById(updatedUser.getId()).orElseThrow();
-        user.setUserName(updatedUser.getUserName());
-        user.getAlbumFavs().forEach(updatedUser::addAlbumFav);
-        userRepository.save(user);
-    }
-    */
 
 }
