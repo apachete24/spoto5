@@ -25,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import jakarta.servlet.http.HttpServletRequest;
@@ -97,7 +98,7 @@ public class AlbumController {
             if (album.isPresent()) {
                 model.addAttribute("album", album.get());
                 model.addAttribute("comments", commentService.getComments(id));
-                List<User> users = userService.findAll();
+                Collection<User> users = userService.findAll();
                 model.addAttribute("users", users);
                 return "show_album";
             } else {
@@ -267,7 +268,7 @@ public class AlbumController {
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/users")
     public String showUsers(Model model) {
-        List<User> users = userService.findAll();
+        Collection<User> users = userService.findAll();
         model.addAttribute("users", users);
         return "users"; // Aquí debes tener una vista llamada "users.html" para mostrar los usuarios como botones
     }

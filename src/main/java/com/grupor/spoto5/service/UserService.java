@@ -14,13 +14,19 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
+
+
+
 @Service
 public class UserService {
+
+
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     @Autowired
@@ -28,11 +34,14 @@ public class UserService {
 
     @Autowired
     private AlbumRepository albumRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
 
-
+    public Collection<User> findAll() {
+        return userRepository.findAll();
+    }
     public void saveUser (String username, String password) {
 
         Optional<User> user= userRepository.findByName(username);
@@ -81,9 +90,7 @@ public class UserService {
     }
 
 
-    public List<User> findAll() {
-        return userRepository.findAll();
-    }
+
 
 
     public List<Album> getUserAlbums(long id) {

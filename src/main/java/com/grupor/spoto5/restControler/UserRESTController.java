@@ -12,6 +12,7 @@ import com.grupor.spoto5.service.*;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -27,6 +28,31 @@ public class UserRESTController {
     @Autowired
     private AlbumService albumService;
 
+
+    // OPERATIONS RESTRICTED TO ADMIN ROLE
+
+    // Get all users
+    @GetMapping("")
+    public ResponseEntity<Collection<User>> getAllUsers(HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+        if (principal == null){ // not user logged
+            return ResponseEntity.notFound().build();
+
+        } else {
+            // If the user is an admin, return all users
+            User user = userService.findByName(principal.getName()).get();
+            if(user.getRoles().contains("ADMIN")){
+                return ResponseEntity.ok(userService.findAll());
+            }
+        }
+        // In any other case, return not found
+        return ResponseEntity.notFound().build();
+    }
+
+
+
+    // Get current user
     @GetMapping("/me")
     public ResponseEntity<User> me(HttpServletRequest request) {
 
@@ -37,12 +63,6 @@ public class UserRESTController {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
-
-    // Get all users (Restricted to ADMIN role)
-    @GetMapping("")
-    public Collection<User> getAllUsers() {
-        return userService.findAll();
     }
 
 
