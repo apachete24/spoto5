@@ -257,7 +257,7 @@ public class AlbumController {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             List<Album> favoriteAlbums = user.getAlbumFavs();
-            model.addAttribute("user", user);
+            model.addAttribute("user", user.getName());
             model.addAttribute("favoriteAlbums", favoriteAlbums);
             return "user_favorite_albums";
         } else {
