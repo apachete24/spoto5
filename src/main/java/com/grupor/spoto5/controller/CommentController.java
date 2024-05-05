@@ -60,6 +60,13 @@ public class CommentController {
     @PostMapping("/addcomment/{id}")
     public String newComment(@RequestParam int score, @RequestParam String text, @PathVariable long id, Model model) {
 
+        boolean isAdmin = (boolean) model.getAttribute("admin");
+        boolean logged = (boolean) model.getAttribute("logged");
+
+        if (!logged) {
+            return "denied";
+        }
+
         try {
             Comment newComment = new Comment((User) model.getAttribute("user"), score, text);
             commentService.addComment(newComment, id);
@@ -89,9 +96,16 @@ public class CommentController {
         Long idAlbum = comm.getAlbum().getId();
 
         try {
+
             User user = (User) model.getAttribute("user");
             Boolean isAdmin = (Boolean) model.getAttribute("admin");
+
+            if (!isAdmin && !user.equals(comm.getUser())) {
+                return "denied";
+            }
+
             commentService.deleteComment(id, user, isAdmin);
+
         } catch (IllegalArgumentException ex) {
             return "redirect:/error";
         }

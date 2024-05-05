@@ -113,6 +113,10 @@ public class AlbumController {
     @GetMapping("/newalbum")
     @PreAuthorize("hasRole('ADMIN')")
     public String newAlbumForm(Model model) {
+        boolean isAdmin = (boolean) model.getAttribute("admin");
+        if (!isAdmin) {
+            return "denied";
+        }
         return "new_album";
     }
 
@@ -120,6 +124,9 @@ public class AlbumController {
     @PostMapping("/newalbum")
     public String newAlbum(Model model, Album album, @RequestParam MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
         boolean isAdmin = (boolean) model.getAttribute("admin");
+        if (!isAdmin) {
+            return "denied";
+        }
         try {
             albumService.save(album, albumImage, albumVideo, isAdmin);
             return "saved_album";
@@ -171,6 +178,10 @@ public class AlbumController {
 
         boolean isAdmin = (boolean) model.getAttribute("admin");
 
+        if (!isAdmin) {
+            return "denied";
+        }
+
         try {
             albumService.deleteAlbum(id, isAdmin);
 
@@ -184,6 +195,12 @@ public class AlbumController {
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/editalbum/{id}")
     public String updateAlbum(Model model, @PathVariable long id) {
+
+        boolean isAdmin = (boolean) model.getAttribute("admin");
+
+        if (!isAdmin) {
+            return "denied";
+        }
 
         Optional<Album> optionalAlbum = albumService.findById(id);
 
@@ -206,6 +223,10 @@ public class AlbumController {
     public String updateAlbum(Model model, @PathVariable Long id, Album updatedAlbum, @RequestParam(required = false) MultipartFile albumImage, @RequestParam(required = false) MultipartFile albumVideo) throws IOException {
 
         boolean isAdmin = (boolean) model.getAttribute("admin");
+
+        if (!isAdmin) {
+            return "denied";
+        }
 
         try {
             albumService.updateAlbum(id, updatedAlbum, isAdmin, albumImage, albumVideo);

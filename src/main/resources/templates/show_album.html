@@ -34,6 +34,13 @@
             <a href="/deletealbum/{{album.id}}" class="button delete"><i class="fas fa-trash"></i> Album</a>
             <a href="/editalbum/{{album.id}}" class="button edit"><i class="fas fa-pencil-alt"></i> Album</a>
             {{/admin}}
+            <br>
+            {{#logged}}
+            <div class="like-section">
+                <a href="/album/{{id}}/like" class="button"><i class="fa-solid fa-heart"></i></a>
+            </div>
+            {{/logged}}
+            <br>
             <a href="/" class="button"><i class="fas fa-arrow-left"></i> Back</a>
         </div>
     </div>
@@ -80,19 +87,13 @@
     {{^logged}}
     <div class="login-section">
         <br>
-        <p>Login to add comments and add to favourites</p>
+        <p>Login to add comments</p>
         <br>
         <a href="/login" class="button">Login</a>
         <br>
     </div>
     {{/logged}}
-    {{#logged}}
-    <div class="like-section">
-        <br>
-        <a href="/album/{{id}}/like" class="button"><i class="fa-solid fa-heart"></i></a>
-        <br>
-    </div>
-    {{/logged}}
+
 
 </div>
 </body>
