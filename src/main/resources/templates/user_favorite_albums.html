@@ -14,10 +14,8 @@
     <div class="album-list">
         {{#favoriteAlbums}}
         <div class="album-item">
-            <a href="/album/{{id}}">
-                <img src="/album/{{id}}/image" alt="{{title}}" class="album-image">
-            </a>
-            <div class="album-details">
+            <a href="/album/{{id}}"><img src="/album/{{id}}/image" alt="{{title}}"></a>
+            <div class="album-info">
                 <h2>{{title}}</h2>
                 <h3>{{artist}}</h3>
                 <p>Released in {{release_year}}</p>
