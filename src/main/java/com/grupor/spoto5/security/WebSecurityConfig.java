@@ -112,7 +112,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
 
                     // PUBLIC PAGES
-                    .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register", "/denied").permitAll()
+                    .requestMatchers("/", "/album/{id}", "/album/*", "/album/{id}/*", "/css/**", "/login", "/logout", "/loginerror", "/register", "/denied", "/favorites*").permitAll()
 
                     // PRIVATE PAGES
                     .requestMatchers("/addcomment/*", "/deleteComment/*", "/user", "/edituser/*", "/deleteuser/*").hasAnyRole("USER")

@@ -251,9 +251,9 @@ public class AlbumController {
     }
 
 
-    @GetMapping("/user/{userId}/favorites")
-    public String showUserFavoriteAlbums(@PathVariable Long userId, Model model) {
-        Optional<User> userOptional = userService.findById(userId);
+    @GetMapping("/favorites")
+    public String showUserFavoriteAlbums(Model model) {
+        Optional<User> userOptional = userService.findByName((String) model.getAttribute("currentUser"));
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             List<Album> favoriteAlbums = user.getAlbumFavs();

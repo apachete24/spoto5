@@ -2,30 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Favorite Albums</title>
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 
 <div class="container">
-
     <h1>User Favorite Albums</h1>
 
-    <ul class="album-list">
+    <div class="album-list">
         {{#favoriteAlbums}}
-        <li class="album-item">
-            <a href="/album/{{id}}"><img src="/album/{{id}}/image" alt="{{title}}"></a>
-            <div class="album-info">
+        <div class="album-item">
+            <a href="/album/{{id}}">
+                <img src="/album/{{id}}/image" alt="{{title}}" class="album-image">
+            </a>
+            <div class="album-details">
                 <h2>{{title}}</h2>
                 <h3>{{artist}}</h3>
                 <p>Released in {{release_year}}</p>
             </div>
-        </li>
+        </div>
         {{/favoriteAlbums}}
         {{^favoriteAlbums}}
-        <li>No favorite albums yet</li>
+        <p>No favorite albums yet</p>
         {{/favoriteAlbums}}
-    </ul>
+    </div>
 
     {{#errorMessage}}
     <div class="error-message">
@@ -38,5 +40,6 @@
     <a href="/" class="button">Back to Home</a>
 
 </div>
+
 </body>
 </html>
