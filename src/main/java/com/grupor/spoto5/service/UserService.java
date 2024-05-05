@@ -39,9 +39,21 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
 
+    // GETTERS
+
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
     public Collection<User> findAll() {
         return userRepository.findAll();
     }
+
+    public Optional<User> findByName(String username) {
+        return userRepository.findByName(username);
+    }
+
+
     public void saveUser (String username, String password) {
 
         Optional<User> user= userRepository.findByName(username);
@@ -61,14 +73,21 @@ public class UserService {
     }
 
 
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    public void updateUser (Long id, String username, String password, String currentUser) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            User userAux = user.get();
+            if (currentUser.equals(userAux.getName())) {
+                userAux.setName(username);
+                userAux.setEncodedPassword(passwordEncoder.encode(password));
+                userRepository.save(userAux);
+            } else {
+                throw new AccessDeniedException("Permision denied");
+            }
+        } else {
+            throw new EntityNotFoundException("User not found");
+        }
     }
-
-    public Optional<User> findByName(String username) {
-        return userRepository.findByName(username);
-    }
-
 
     public void deleteUser(long id, boolean isAdmin, String currentUser) throws AccessDeniedException {
         User user = userRepository.findById(id).orElseThrow();
@@ -82,16 +101,7 @@ public class UserService {
     }
 
 
-    public List<User> findByIds(List<Long> ids) { return userRepository.findAllById(ids);}
-
-
-    public boolean exist(long id) {
-        return userRepository.existsById(id);
-    }
-
-
-
-
+    // Operations with Albums
 
     public List<Album> getUserAlbums(long id) {
         Optional<User> user = userRepository.findById(id);
@@ -137,21 +147,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUser (Long id, String username, String password, String currentUser) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            User userAux = user.get();
-            if (currentUser.equals(userAux.getName())) {
-                userAux.setName(username);
-                userAux.setEncodedPassword(passwordEncoder.encode(password));
-                userRepository.save(userAux);
-            } else {
-                throw new AccessDeniedException("Permision denied");
-            }
-        } else {
-            throw new EntityNotFoundException("User not found");
-        }
-    }
+
 
     /*
     public void update(User updatedUser) {

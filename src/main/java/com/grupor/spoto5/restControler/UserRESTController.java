@@ -29,25 +29,40 @@ public class UserRESTController {
     private AlbumService albumService;
 
 
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+
+        if (principal != null) {
+
+            model.addAttribute("logged", true);
+            model.addAttribute("currentUser", principal.getName());
+            model.addAttribute("admin", request.isUserInRole("ADMIN"));
+
+        } else {
+            model.addAttribute("logged", false);
+        }
+    }
     // OPERATIONS RESTRICTED TO ADMIN ROLE
+    private boolean isAdmin(Model model){
+
+        if ( (boolean)model.getAttribute("logged") && model.getAttribute("admin") != null ){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     // Get all users
     @GetMapping("")
-    public ResponseEntity<Collection<User>> getAllUsers(HttpServletRequest request) {
+    public ResponseEntity<Collection<User>> getAllUsers(Model model) {
 
-        Principal principal = request.getUserPrincipal();
-        if (principal == null){ // not user logged
+        if (isAdmin(model)){
+            return ResponseEntity.ok(userService.findAll());
+        }else{
             return ResponseEntity.notFound().build();
-
-        } else {
-            // If the user is an admin, return all users
-            User user = userService.findByName(principal.getName()).get();
-            if(user.getRoles().contains("ADMIN")){
-                return ResponseEntity.ok(userService.findAll());
-            }
         }
-        // In any other case, return not found
-        return ResponseEntity.notFound().build();
     }
 
 
@@ -66,18 +81,7 @@ public class UserRESTController {
     }
 
 
-    // Get user by id
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable long id, Model model) {
-            // we need to change this code: check the id is equal to the current user id
-            Optional<User> user = userService.findById(id);
-            if (user.isPresent()) {
-                return ResponseEntity.ok(user.get());
-            } else {
-                return ResponseEntity.notFound().build();
-            }
 
-    }
 
 
     // Get user albums favorites
