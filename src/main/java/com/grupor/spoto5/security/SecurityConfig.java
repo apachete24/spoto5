@@ -77,6 +77,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/albums/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/albums/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/api/albums/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/comments/albums/{albumId}/comments").hasRole("USER")
+                        .requestMatchers(HttpMethod.DELETE,"/api/comments/{commentId}").hasRole("USER")
+                        .requestMatchers(HttpMethod.PUT,"/api/comments/{commentId}").hasRole("USER")
+
 
                         // PUBLIC ENDPOINTS
                         .anyRequest().permitAll()

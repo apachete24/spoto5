@@ -6,9 +6,11 @@ import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.repository.UserRepository;
 import com.grupor.spoto5.service.AlbumService;
 import com.grupor.spoto5.service.CommentService;
+import com.grupor.spoto5.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +33,10 @@ public class CommentRESTController {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private UserRESTController userRESTController;
 
     @ModelAttribute
     public void addAttributes(Model model, HttpServletRequest request) {
@@ -84,12 +90,15 @@ public class CommentRESTController {
 
 
     // Add comment to album
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/albums/{albumId}/comments")
-    public ResponseEntity<Comment> addComment(@PathVariable long albumId, @RequestBody Comment comment) {
+    public ResponseEntity<Comment> addComment(@PathVariable long albumId, @RequestBody Comment comment, Model model) {
 
         Optional<Album> album = albumService.findById(albumId);
         if (album.isPresent()) {
             comment.setAlbum(album.get());
+            User autor = (userService.findByName((String)model.getAttribute("currentUser"))).get();
+            comment.setUser(autor);
             commentService.addComment(comment, albumId);
             URI location = fromCurrentRequest().path("/{id}").buildAndExpand(comment.getId()).toUri();
             return ResponseEntity.created(location).body(comment);
@@ -100,14 +109,18 @@ public class CommentRESTController {
 
 
     // Delete comment by id
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @DeleteMapping("/{commentId}")
     public ResponseEntity<Comment> deleteComment(Model model, @PathVariable long commentId) {
 
         Optional<Comment> comment = commentService.getComment(commentId);
         if (comment.isPresent()) {
             User user = (User) model.getAttribute("user");Boolean isAdmin = (Boolean) model.getAttribute("admin");
-            commentService.deleteComment(commentId, user, isAdmin);
-            return ResponseEntity.ok().build();
+            try{commentService.deleteComment(commentId, user, isAdmin);} catch (Exception e){
+                return ResponseEntity.status(405).build();
+            }
+                return ResponseEntity.ok().build();
+
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -116,18 +129,34 @@ public class CommentRESTController {
 
 
     // Update comment
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @PutMapping("/{commentId}")
     public ResponseEntity<Comment> updateComment(Model model, @PathVariable long commentId, @RequestBody Comment updatedComment) {
 
-        Optional<Comment> comment = commentService.getComment(commentId);
 
-        if (comment.isPresent()) {
-            // User is not allowed to change the username and id comment
-            updatedComment.setId(commentId);
-            updatedComment.setUser(comment.get().getUser());
-            commentService.addComment(updatedComment, null);
+        Optional<Comment> isComment = commentService.getComment(commentId);
 
-            return ResponseEntity.ok(updatedComment);
+        if (isComment.isPresent()) {
+
+            Comment comment = isComment.get();
+            User autor = comment.getUser();
+
+            // Validate if the current user is Admin or the comment's autor
+            if ( (boolean) model.getAttribute("admin") ||
+                    autor.getId() == userService.findByName((String)model.getAttribute("currentUser")).get().getId() ){
+
+                // User is not allowed to change the username and id comment
+                updatedComment.setId(commentId);
+                updatedComment.setUser(comment.getUser());
+                try { commentService.addComment(updatedComment, null);} catch (Exception e){
+                    ResponseEntity.status(405).build();
+                }
+
+                return ResponseEntity.ok(updatedComment);
+
+            } else{
+                return ResponseEntity.status(405).build();
+            }
 
         } else {
             return ResponseEntity.notFound().build();
