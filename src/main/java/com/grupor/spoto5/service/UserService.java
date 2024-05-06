@@ -114,6 +114,7 @@ public class UserService {
             } else {
                 throw new AccessDeniedException("Permision denied");
             }
+
         } else {
             throw new EntityNotFoundException("User not found");
         }

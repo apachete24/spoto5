@@ -133,23 +133,36 @@ public class UserRESTController {
 
     }
 
-/*
-    // Update User (Only user can update itself)
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody Collection<String> newUserdetails, Model model) {
 
-        if ((boolean) model.getAttribute("logged")) {
+    // Update User (Only user can update itself)
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/me")
+    public ResponseEntity<User> updateUser(@RequestBody LoginRequest credentials, Model model) {
+
+        String newUsername = credentials.getUsername();
+        String newPassword = credentials.getPassword();
+
+        // Check if user is logged
+        if ((boolean) model.getAttribute("logged")){
+
+            String currentUsername = (String)model.getAttribute("currentUser");
             try {
-                updateUser(id, newUserdetails.g, newPassword, model);
-                return ResponseEntity.ok(userService.findById(id).get());
-            } catch (Exception e) {
-                return ResponseEntity.status(405).build();
+                Long userId = userService.findByName(currentUsername).get().getId();
+                userService.updateUser(userId, newUsername, newPassword, currentUsername);
+
+                return ResponseEntity.ok(userService.findById(userId).get());
+
+            } catch (Exception e){
+                return ResponseEntity.badRequest().build();
             }
-        }
-        return ResponseEntity.status(405).build();
+
+        } else {return ResponseEntity.status(405).build();}
+
+
     }
 
-*/
+
+    // Delete User (Only admin can delete users and user can delete itself)
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable long id, Model model) {

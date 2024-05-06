@@ -71,8 +71,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         // PRIVATE ENDPOINTS
-                        .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN")
                         .requestMatchers("/api/users/me").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/api/users/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,"/api/albums").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST,"/api/albums/**").hasRole("ADMIN")
