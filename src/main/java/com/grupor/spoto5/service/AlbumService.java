@@ -224,8 +224,8 @@ public class AlbumService {
                     al.setTitle(updatedAlbum.getTitle());
                 }
                 if (!updatedAlbum.getText().equals(al.getText())) {
-                    String escapedText = HtmlUtils.htmlEscape(updatedAlbum.getText());
-                    al.setText(escapedText);
+                    String filteredText = HtmlFilter.filter(updatedAlbum.getText());
+                    al.setText(filteredText);
                 }
 
                 if (updatedAlbum.getImage() != null && !updatedAlbum.getImage().isEmpty()) {
