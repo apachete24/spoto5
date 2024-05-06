@@ -220,6 +220,7 @@ public class AlbumRESTController{
 
 
     // Operations with album videos
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/video")
     public ResponseEntity<Object> downloadVideo(@PathVariable long id) throws IOException {
@@ -233,6 +234,7 @@ public class AlbumRESTController{
             return ResponseEntity.notFound().build();
         }
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/video")
@@ -251,17 +253,18 @@ public class AlbumRESTController{
         }
     }
 
-/*
+
     // Delete album video
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/video")
-    public ResponseEntity<Object> deleteVideo(@PathVariable long id) throws IOException {
+    public ResponseEntity<Object> deleteVideo(@PathVariable long id, Model model) throws IOException {
 
         Optional<Album> isAlbum = albumService.findById(id);
         if (isAlbum.isPresent()) {
             Album album = isAlbum.get();
-            videoService.deleteVideo(album.getVideoPath());
+            videoService.deleteVideo(album.getVideoPath(), isAdmin(model));
             album.setVideoPath(null);
+            album.setVideoFile(null);
             albumService.save(album);
             return ResponseEntity.ok().build();
         } else {
@@ -269,5 +272,5 @@ public class AlbumRESTController{
         }
     }
 
-*/
+
 }

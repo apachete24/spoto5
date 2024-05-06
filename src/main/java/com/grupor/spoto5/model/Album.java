@@ -59,6 +59,7 @@ public class Album {
         this.release_year = release_year;
         this.text = text;
         this.comments = new ArrayList<Comment>();
+        this.videoFile = null;
     }
 
     public Long getId() {

@@ -249,29 +249,7 @@ public class AlbumService {
         }
     }
 
-    public void addAlbumToFavorites(User user, Album album) {
-        user.getAlbumFavs().add(album);
-        album.getUserFavs().add(user);
-        albumRepository.save(album);
-    }
 
-    public void removeAlbumFromFavorites(User user, Album album) {
-        user.getAlbumFavs().remove(album);
-        album.getUserFavs().remove(user);
-        albumRepository.save(album);
-    }
-
-    public void addUsersToFavorites(Long albumId, List<Long> userIds) {
-        Optional<Album> albumOptional = albumRepository.findById(albumId);
-        if (albumOptional.isPresent()) {
-            Album album = albumOptional.get();
-            List<User> users = userRepository.findAllById(userIds);
-            for (User user : users) {
-                user.getAlbumFavs().add(album);
-            }
-            userRepository.saveAll(users);
-        }
-    }
 
     private boolean isImageFormatValid(String fileName) {
         String extension = StringUtils.getFilenameExtension(fileName);

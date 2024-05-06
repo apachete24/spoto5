@@ -21,8 +21,11 @@ import org.springframework.core.io.Resource;
 @Service
 public class VideoService {
 
+
+
     private static final Path VIDEOS_FOLDER = Paths.get(System.getProperty("user.dir"), "videos");
     private static final List<String> ALLOWED_EXTENSIONS = Arrays.asList("mp4", "avi", "mov", "mkv");
+
 
     public String createVideo(MultipartFile multiPartFile) {
         String originalName = multiPartFile.getOriginalFilename();
@@ -44,6 +47,8 @@ public class VideoService {
         return originalName;
     }
 
+
+
     public Resource getVideo(String videoName) {
         Path videoPath = VIDEOS_FOLDER.resolve(videoName);
         verifyVideoPath(videoPath);
@@ -58,6 +63,8 @@ public class VideoService {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Can't get local video");
         }
     }
+
+
 
     public void deleteVideo(String videoName, Boolean admin) {
 
@@ -79,6 +86,7 @@ public class VideoService {
         }
     }
 
+
     private boolean isValidVideoFile(String fileName) {
         if (!StringUtils.hasText(fileName)) {
             return false;
@@ -87,6 +95,8 @@ public class VideoService {
         return StringUtils.hasText(extension) && ALLOWED_EXTENSIONS.contains(extension.toLowerCase());
     }
 
+
+
     private void verifyVideoPath(Path videoPath) {
         var pathVideo = videoPath.normalize().toAbsolutePath().toString();
         var pathFolder = VIDEOS_FOLDER.toAbsolutePath().toString();
@@ -94,4 +104,6 @@ public class VideoService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid video path");
         }
     }
+
+
 }
