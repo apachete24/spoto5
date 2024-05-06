@@ -238,7 +238,7 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/album/{id}/like")
+    @GetMapping("/like/{id}")
     public String likeAlbum(HttpServletRequest request, @PathVariable Long id, RedirectAttributes redirectAttributes) {
         // Verificar si el usuario está autenticado
         if (request.getUserPrincipal() == null) {
