@@ -4,17 +4,20 @@ import com.grupor.spoto5.model.User;
 import com.grupor.spoto5.service.*;
 import  com.grupor.spoto5.model.Album;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,12 +43,38 @@ public class AlbumRESTController{
     @Autowired
     private VideoService videoService;
 
-    /*
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+
+        if (principal != null) {
+
+            model.addAttribute("logged", true);
+            model.addAttribute("currentUser", principal.getName());
+            model.addAttribute("admin", request.isUserInRole("ADMIN"));
+
+        } else {
+            model.addAttribute("logged", false);
+        }
+    }
+
+
+    private boolean isAdmin(Model model){
+
+        if ( (boolean)model.getAttribute("logged") && (boolean) (model.getAttribute("admin")) ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
     // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("")
-    public Collection<Album> getAlbums(Model model, @RequestBody(required = false) Integer from, @RequestBody(required = false) Integer to, @RequestBody(required = false) String artistName) {
+    public Collection<Album> getAlbums() {
 
-        return albumService.findAll(from, to, artistName);
+        return albumService.findAll(null, null, null);
 
     }
 
@@ -61,20 +90,30 @@ public class AlbumRESTController{
         }
     }
 
-    // Create album (RESTRICTED to roll admin)
+
+    // Restricted to admin
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("")
-    public ResponseEntity<Album> createAlbum(@RequestBody Album album) throws IOException {
+    public ResponseEntity<Album> createAlbum(@RequestBody Album album, Model model) throws IOException {
 
-        albumService.save(album);
-        if (album.getId() != null) { // if it was created successfully
+        if (isAdmin(model)) {
+
+            try { albumService.save(album);} catch (Exception e){
+                ResponseEntity.badRequest().build();
+            }
             return ResponseEntity.ok(album);
-        } else {
-            return ResponseEntity.badRequest().build();
-        }
 
+        } else {
+
+            return ResponseEntity.status(405).build();
+        }
     }
 
+
+
     // Update album
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Album> updateAlbum(@PathVariable long id, @RequestBody Album newAlbum) {
 
@@ -100,6 +139,7 @@ public class AlbumRESTController{
 
 
     // Delete album
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Album> deleteAlbum(@PathVariable long id) throws IOException {
 
@@ -111,6 +151,8 @@ public class AlbumRESTController{
             return ResponseEntity.notFound().build();
         }
     }
+
+
 
     // Get comments
     @GetMapping("/{id}/comments")
@@ -124,6 +166,7 @@ public class AlbumRESTController{
         }
     }
 
+/*
 // Operations with album images
 
     @GetMapping("/{id}/image")

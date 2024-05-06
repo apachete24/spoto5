@@ -73,7 +73,9 @@ public class SecurityConfig {
                         // PRIVATE ENDPOINTS
                         .requestMatchers("/api/users").hasRole("ADMIN")
                         .requestMatchers("/api/users/**").hasRole("USER")
-
+                        .requestMatchers(HttpMethod.POST,"/api/albums").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/albums/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/albums/{id}").hasRole("ADMIN")
 
                         // PUBLIC ENDPOINTS
                         .anyRequest().permitAll()

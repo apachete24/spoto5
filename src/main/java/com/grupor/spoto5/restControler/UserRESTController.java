@@ -4,6 +4,7 @@ package com.grupor.spoto5.restControler;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -57,6 +58,7 @@ public class UserRESTController {
     }
 
     // Get all users by admin
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("")
     public ResponseEntity<Collection<User>> getAllUsers(Model model) {
 
@@ -67,6 +69,7 @@ public class UserRESTController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserbyId(@PathVariable long id, Model model) {
 
@@ -78,14 +81,14 @@ public class UserRESTController {
         }
 
         // In any other case, return "Not found"
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(405).build();
     }
 
 
 
     // Operations logged required
 
-
+    @PreAuthorize("hasRole('USER')")
     // Get current user
     @GetMapping("/me")
     public ResponseEntity<User> me(Model model) {
@@ -122,7 +125,7 @@ public class UserRESTController {
     }
 
 */
-
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable long id, Model model) {
 
@@ -133,10 +136,10 @@ public class UserRESTController {
         } catch (Exception e) {
             return ResponseEntity.status(405).build();
         }
-        
+
     }
 
-
+    @PreAuthorize("hasRole('USER')")
     // Get user albums favorites
     @GetMapping("/{id}/albums")
     public ResponseEntity<List<Album>> getUserAlbums(@PathVariable long id, Model model) {
@@ -163,7 +166,7 @@ public class UserRESTController {
     }
 
 
-
+    @PreAuthorize("hasRole('USER')")
     // Add user album favorite
     @PostMapping("/{id}/albums")
     public ResponseEntity<Album> addUserAlbum(@PathVariable long id, @RequestParam long albumId, Model model) {
@@ -202,6 +205,7 @@ public class UserRESTController {
 
     }
 
+    @PreAuthorize("hasRole('USER')")
     // Remove user album favorite
     @DeleteMapping("/{id}/albums")
     public ResponseEntity<Album> removeUserAlbum(@PathVariable long id, @RequestParam long albumId, Model model) {
