@@ -239,23 +239,27 @@ public class AlbumController {
 
     @PreAuthorize("hasRole('USER')")
     @GetMapping("/album/{id}/like")
-    public String likeAlbum(Model model, @PathVariable Long id, RedirectAttributes redirectAttributes) {
+    public String likeAlbum(HttpServletRequest request, @PathVariable Long id, RedirectAttributes redirectAttributes) {
+        // Verificar si el usuario está autenticado
+        if (request.getUserPrincipal() == null) {
+            // Si el usuario no está autenticado, redirigir a la página de error
+            return "redirect:/error";
+        }
+
         Optional<Album> albumOptional = albumService.findById(id);
         if (albumOptional.isPresent()) {
             Album album = albumOptional.get();
-
-            Optional<User> userOptional = userService.findByName((String) model.getAttribute("currentUser"));
-                if (userOptional.isPresent()) {
-                    User user = userOptional.get();
-                    // Verificar si el usuario ya ha marcado este álbum como favorito
-                    if (user.getAlbumFavs().contains(album)) {
-                        // Si ya lo ha marcado, eliminarlo de la lista de favoritos
-                        userService.removeUserFromAlbumFavorites(user, album);
-                    } else {
-                        // Si no lo ha marcado, agregarlo a la lista de favoritos
-                        userService.addUserToAlbumFavorites(user, album);
-                    }
-
+            Optional<User> userOptional = userService.findByName(request.getUserPrincipal().getName());
+            if (userOptional.isPresent()) {
+                User user = userOptional.get();
+                // Verificar si el usuario ya ha marcado este álbum como favorito
+                if (user.getAlbumFavs().contains(album)) {
+                    // Si ya lo ha marcado, eliminarlo de la lista de favoritos
+                    userService.removeUserFromAlbumFavorites(user, album);
+                } else {
+                    // Si no lo ha marcado, agregarlo a la lista de favoritos
+                    userService.addUserToAlbumFavorites(user, album);
+                }
             }
             redirectAttributes.addFlashAttribute("message", "Action performed successfully");
             return "redirect:/album/" + id;
