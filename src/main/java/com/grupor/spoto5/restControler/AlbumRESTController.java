@@ -166,7 +166,7 @@ public class AlbumRESTController{
         }
     }
 
-/*
+
 // Operations with album images
 
     @GetMapping("/{id}/image")
@@ -182,6 +182,7 @@ public class AlbumRESTController{
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/image")
     public ResponseEntity<Object> uploadImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {
 
@@ -200,14 +201,15 @@ public class AlbumRESTController{
 
 
     // Delete album image
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/image")
-    public ResponseEntity<Object> deleteImage(@PathVariable long id) throws IOException {
+    public ResponseEntity<Object> deleteImage(@PathVariable long id, Model model) throws IOException {
 
 
         Optional<Album> isAlbum = albumService.findById(id);
         if (isAlbum.isPresent()) {
             Album album = isAlbum.get();
-            imageService.deleteImage(album.getImage(), isAdmin);
+            imageService.deleteImage(album.getImage(), isAdmin(model));
             album.setImage(null);
             albumService.save(album);
             return ResponseEntity.ok().build();
@@ -218,7 +220,7 @@ public class AlbumRESTController{
 
 
     // Operations with album videos
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/video")
     public ResponseEntity<Object> downloadVideo(@PathVariable long id) throws IOException {
 
@@ -232,6 +234,7 @@ public class AlbumRESTController{
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/video")
     public ResponseEntity<Object> uploadVideo(@PathVariable long id, @RequestParam MultipartFile videoFile) throws IOException {
 
@@ -248,7 +251,9 @@ public class AlbumRESTController{
         }
     }
 
+/*
     // Delete album video
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/video")
     public ResponseEntity<Object> deleteVideo(@PathVariable long id) throws IOException {
 
