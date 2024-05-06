@@ -28,10 +28,20 @@ body {
 .album-image img {
     max-width: 100%;
     height: auto;
+    display: block; /* Para centrar la imagen */
+    margin: 0 auto 20px; /* Centrar la imagen y agregar margen inferior */
+}
+
+.album-video video {
+    max-width: 100%;
+    height: auto;
+    display: block; /* Para centrar el video */
+    margin: 0 auto 20px; /* Centrar el video y agregar margen inferior */
 }
 
 .album-actions {
     margin-top: 20px;
+    text-align: center; /* Centrar los botones */
 }
 
 .button {
@@ -87,4 +97,5 @@ body {
 
 h1 {
     margin-top: 20px;
+    text-align: center; /* Centrar el título */
 }

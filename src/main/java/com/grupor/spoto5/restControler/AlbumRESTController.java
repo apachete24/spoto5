@@ -1,20 +1,25 @@
 package com.grupor.spoto5.restControler;
+import com.grupor.spoto5.model.Comment;
 import com.grupor.spoto5.model.User;
-import  com.grupor.spoto5.service.AlbumService;
+import com.grupor.spoto5.service.*;
 import  com.grupor.spoto5.model.Album;
 
-import com.grupor.spoto5.service.ImageService;
-import com.grupor.spoto5.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.Banner;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URI;
+import java.security.Principal;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequest;
@@ -23,71 +28,139 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @RequestMapping("/api/albums")
 public class AlbumRESTController{
 
+    @Autowired
+    private UserService userService;
 
     @Autowired
-    private AlbumService albums;
-    @Autowired
-    private ImageService images;
-    @Autowired
-    private UserService users;
+    private AlbumService albumService;
 
-    // Get all albums
+    @Autowired
+    private ImageService imageService;
+
+    @Autowired
+    private CommentService commentService;
+
+    @Autowired
+    private VideoService videoService;
+
+    @ModelAttribute
+    public void addAttributes(Model model, HttpServletRequest request) {
+
+        Principal principal = request.getUserPrincipal();
+
+        if (principal != null) {
+
+            model.addAttribute("logged", true);
+            model.addAttribute("currentUser", principal.getName());
+            model.addAttribute("admin", request.isUserInRole("ADMIN"));
+
+        } else {
+            model.addAttribute("logged", false);
+        }
+    }
+
+
+    private boolean isAdmin(Model model){
+
+        if ( (boolean)model.getAttribute("logged") && (boolean) (model.getAttribute("admin")) ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
+    // Get all albums if no parameters are passed, or get albums between from and to years.
     @GetMapping("")
     public Collection<Album> getAlbums() {
-        return albums.findAll();
+
+        return albumService.findAll(null, null, null);
 
     }
+
+
     // Get album by id
     @GetMapping("/{id}")
     public ResponseEntity<Album> getAlbum(@PathVariable long id){
-
-        Album album = albums.findById(id);
-        if (album != null) {
-            return ResponseEntity.ok(album);
-        } else {
+        Optional<Album> album = albumService.findById(id);
+        if (album.isPresent()) { // album found
+            return ResponseEntity.ok(album.get());
+        } else { // album not found
             return ResponseEntity.notFound().build();
         }
-        
     }
 
-    // Create album
+
+    // Restricted to admin
+
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("")
-    public ResponseEntity<Album> createAlbum(@RequestBody Album album) throws IOException {
+    public ResponseEntity<Album> createAlbum(@RequestBody Album album, Model model) throws IOException {
 
-        albums.save(album);
-        // images.saveImage("albums", album.getId(), imageFile); I don't know if the image and the JSON data can be sent in the same request
-        URI location = fromCurrentRequest().path("/{id}").buildAndExpand(album.getId()).toUri();
+        if (isAdmin(model)) {
 
-        return ResponseEntity.created(location).body(album);
+            try { albumService.save(album);} catch (Exception e){
+                ResponseEntity.badRequest().build();
+            }
+            return ResponseEntity.ok(album);
+
+        } else {
+
+            return ResponseEntity.status(405).build();
+        }
     }
+
+
 
     // Update album
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Album> updateAlbum(@PathVariable long id, @RequestBody Album newAlbum) {
 
-        Album album = albums.findById(id);
+        Optional<Album> album = albumService.findById(id);
+        if (album.isPresent()) {
+            album.get().setArtist(newAlbum.getArtist());
+            album.get().setTitle(newAlbum.getTitle());
+            album.get().setRelease_year(newAlbum.getRelease_year());
+            album.get().setText(newAlbum.getText());
+            try {
+                albumService.save(album.get());
+            } catch (IOException e) { // 500 internall error
+                throw new RuntimeException(e);
+            }
+            // Saved successfully
+            return ResponseEntity.ok(album.get());
 
-        if (album != null) {
-            newAlbum.setId(id);
-            albums.save(newAlbum);
+        } else { // album not found
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-            return ResponseEntity.ok(newAlbum);
 
+
+    // Delete album
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Album> deleteAlbum(@PathVariable long id) throws IOException {
+
+        Optional<Album> album = albumService.findById(id);
+        if (album.isPresent()) {
+            albumService.deleteById(id);
+            return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // Delete album
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Album> deleteAlbum(@PathVariable long id) throws IOException {
 
-        Album album = albums.findById(id);
 
-        if (album != null) {
-            albums.deleteById(id);
-            images.deleteImage("albums", id);
-            return ResponseEntity.ok(album);
+    // Get comments
+    @GetMapping("/{id}/comments")
+    public ResponseEntity<Collection<Comment>> getComments(@PathVariable long id) {
+
+        Optional<Album> album = albumService.findById(id);
+        if (album.isPresent()) {
+            return ResponseEntity.ok(album.get().getComments());
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -95,94 +168,107 @@ public class AlbumRESTController{
 
 
 // Operations with album images
+
     @GetMapping("/{id}/image")
     public ResponseEntity<Object> downloadImage(@PathVariable long id) throws IOException {
 
-        if (albums.findById(id)!=null) {
-            return images.createResponseFromImage("albums", id);
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()){
+            Album album = isAlbum.get();
+            Resource poster = imageService.getImage(album.getImage());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpg").body(poster);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/{id}/image")
     public ResponseEntity<Object> uploadImage(@PathVariable long id, @RequestParam MultipartFile imageFile) throws IOException {
 
-        if (albums.findById(id)!=null) {
-            images.saveImage("albums", id, imageFile);
-
-            return ResponseEntity.ok().build();
-
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()) {
+            Album album = isAlbum.get();
+            String imageName = imageService.createImage(imageFile);
+            album.setImage(imageName);
+            albumService.save(album);
+            URI location = fromCurrentRequest().path("/{id}").buildAndExpand(album.getId()).toUri();
+            return ResponseEntity.created(location).body(album);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
+
+    // Delete album image
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/image")
-    public ResponseEntity<Object> deleteImage(@PathVariable long id) throws IOException {
+    public ResponseEntity<Object> deleteImage(@PathVariable long id, Model model) throws IOException {
 
-        if (albums.findById(id)!=null) {
-            images.deleteImage("albums", id);
 
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()) {
+            Album album = isAlbum.get();
+            imageService.deleteImage(album.getImage(), isAdmin(model));
+            album.setImage(null);
+            albumService.save(album);
             return ResponseEntity.ok().build();
-
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // Operations with album favorites
 
-    @GetMapping("/{id}/userFavorites")
-    public ResponseEntity<Object> getAlbumFavorites(@PathVariable long id) throws IOException {
+    // Operations with album videos
 
-        if (albums.findById(id) != null) {
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{id}/video")
+    public ResponseEntity<Object> downloadVideo(@PathVariable long id) throws IOException {
 
-            return ResponseEntity.ok(albums.findById(id).getUserFavs());
-
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()){
+            Album album = isAlbum.get();
+            Resource video = videoService.getVideo(album.getVideoPath());
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "video/mp4").body(video);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-    // Add user to album favs
-    @PostMapping("/{id}/userFavorites/{userId}")
-    public ResponseEntity<Object> addAlbumFavorite(@PathVariable long id, @PathVariable long userId) throws IOException {
 
-        Album album = albums.findById(id);
-        User user = users.findById(userId);
-        if (album != null && user != null) {
-            if(album.isUserFav(userId) && user.isAlbumFav(id)){ // if favorite already exists
-                return ResponseEntity.ok(user);
-            }
-            // Add user to album favs
-            album.addUserFav(userId);
-            // Add album to user favs
-            user.addAlbumFav(id);
-            URI location = fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
-            return ResponseEntity.created(location).body(user);
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/{id}/video")
+    public ResponseEntity<Object> uploadVideo(@PathVariable long id, @RequestParam MultipartFile videoFile) throws IOException {
+
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()) {
+            Album album = isAlbum.get();
+            String videoPath = videoService.createVideo(videoFile);
+            album.setVideoPath(videoPath);
+            albumService.save(album);
+            URI location = fromCurrentRequest().path("/{id}").buildAndExpand(album.getId()).toUri();
+            return ResponseEntity.created(location).body(album);
         } else {
             return ResponseEntity.notFound().build();
         }
-
     }
-    // Remove user from album favs
-    @DeleteMapping("/{id}/userFavorites/{userId}")
-    public ResponseEntity<Object> deleteAlbumFavorite(@PathVariable long id, @PathVariable long userId) throws IOException {
 
-        Album album = albums.findById(id);
-        User user = users.findById(userId);
-        // If album and user don't exist or user is not in album favs
-        if ( (album == null || user == null) || !(album.isUserFav(userId) && user.isAlbumFav(id)) ) {
 
+    // Delete album video
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}/video")
+    public ResponseEntity<Object> deleteVideo(@PathVariable long id, Model model) throws IOException {
+
+        Optional<Album> isAlbum = albumService.findById(id);
+        if (isAlbum.isPresent()) {
+            Album album = isAlbum.get();
+            videoService.deleteVideo(album.getVideoPath(), isAdmin(model));
+            album.setVideoPath(null);
+            album.setVideoFile(null);
+            albumService.save(album);
+            return ResponseEntity.ok().build();
+        } else {
             return ResponseEntity.notFound().build();
-
-        } else{
-            // Remove user from album favs
-            album.removeUserFav(userId);
-            // Remove album from user favs
-            user.removeAlbumFav(id);
-            return ResponseEntity.ok(album.getUserFavs());
         }
     }
 

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Favorite Albums</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>{{user}} Favorite Albums</h1>
+
+    <div class="album-list">
+        {{#favoriteAlbums}}
+        <div class="album-item">
+            <a href="/album/{{id}}"><img src="/album/{{id}}/image" alt="{{title}}"></a>
+            <div class="album-info">
+                <h2>{{title}}</h2>
+                <h3>{{artist}}</h3>
+                <p>Released in {{release_year}}</p>
+            </div>
+        </div>
+        {{/favoriteAlbums}}
+        {{^favoriteAlbums}}
+        <p>No favorite albums yet</p>
+        {{/favoriteAlbums}}
+    </div>
+
+    {{#errorMessage}}
+    <div class="error-message">
+        {{errorMessage}}
+    </div>
+    {{/errorMessage}}
+
+    <br>
+
+    <a href="/" class="button">Back to Home</a>
+
+</div>
+
+</body>
+</html>

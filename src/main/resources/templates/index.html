@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <script src="https://kit.fontawesome.com/cce8b43a59.js" crossorigin="anonymous"></script>
     <title>Spoto5</title>
 </head>
 <body>
@@ -10,6 +11,23 @@
 <div class="container">
 
     <h1>Spoto5</h1>
+
+
+    <form class="row" action="/">
+        <div class="col">
+            <input name="from" type="number" class="form-control" placeholder="From year">
+        </div>
+        <div class="col">
+            <input name="to" type="number" class="form-control" placeholder="To year">
+        </div>
+        <div class="col">
+            <input name="artistName" type="text" class="form-control" placeholder="Artist">
+        </div>
+        <div class="col">
+            <input class="btn btn-outline-primary" type="submit" value="Search">
+        </div>
+    </form>
+
     <ul class="album-list">
         {{#albums}}
         <li class="album-item">
@@ -17,7 +35,7 @@
             <div class="album-info">
                 <h2>{{title}}</h2>
                 <h3>{{artist}}</h3>
-                <p>Released in {{year}}</p>
+                <p>Released in {{release_year}}</p>
             </div>
         </li>
         {{/albums}}
@@ -26,9 +44,31 @@
         {{/albums}}
     </ul>
 
-    <br>
+    {{#errorMessage}}
+    <div class="error-message">
+        {{errorMessage}}
+    </div>
+    {{/errorMessage}}
 
-    <a href="/album/new" class="button">Add Album</a>
+    <div class="button-container">
+        {{^logged}}
+        <a href="/login" class="button"><i class="fa-regular fa-user"></i> Login</a>
+        <a href="/register" class="button"><i class="fa-solid fa-user"></i> Register</a>
+        {{/logged}}
+        {{#logged}}
+        <a href="/user" class="button"><i class="fa-regular fa-circle-user"></i> {{currentUser}}</a>
+        <form action="/logout" method="post">
+            <button type="submit" class="button"><i class="fa-regular fa-user"></i> Log Out</button>
+            <input type="hidden" name="_csrf" value="{{token}}">
+        </form>
+        <a href="/favorites" class="button"><i class="fa-solid fa-heart"></i></a>
+        {{/logged}}
+
+        {{#admin}}
+        <a href="/newalbum" class="button">Add Album</a>
+        <a href="/adminpage" class="button"><i class="fa-solid fa-users"></i> Users</a>
+        {{/admin}}
+    </div>
 </div>
 </body>
 </html>

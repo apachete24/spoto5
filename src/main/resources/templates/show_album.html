@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/css/style2.css">
+    <script src="https://kit.fontawesome.com/cce8b43a59.js" crossorigin="anonymous"></script>
     <title>{{album.title}} {{album.artist}}</title>
 </head>
 
@@ -11,25 +12,38 @@
 <div class="album-container">
 
     <div class="album-details">
-        <h1>Album Details</h1>
+        <h1>{{album.title}}</h1>
         <div class="album-info">
             <p><strong>Artist:</strong> {{album.artist}}</p>
-            <p><strong>Title:</strong> {{album.title}}</p>
-            <p><strong>Year:</strong> {{album.year}}</p>
-            <p><strong>Description:</strong> {{album.text}}</p>
+            <p><strong>Year:</strong> {{album.release_year}}</p>
+            <p><strong>Description:</strong> {{{album.text}}}</p>
         </div>
         <div class="album-image">
             <img src="/album/{{album.id}}/image" alt="Album Image">
         </div>
+
+        <div class="album-video">
+            <video width="500" height="375" controls>
+                <source src="/album/{{album.id}}/video" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+
         <div class="album-actions">
-            <a href="/album/{{album.id}}/delete" class="button delete">Delete album</a>
-            <a href="/album/{{album.id}}/edit" class="button edit">Edit</a>
-            <a href="/" class="button favorite">Add to Favorites</a>
-            <a href="/" class="button">Back</a>
+            {{#admin}}
+            <a href="/deletealbum/{{album.id}}" class="button delete"><i class="fas fa-trash"></i> Album</a>
+            <a href="/editalbum/{{album.id}}" class="button edit"><i class="fas fa-pencil-alt"></i> Album</a>
+            {{/admin}}
+            <br>
+            {{#logged}}
+            <div class="like-section">
+                <a href="/album/{{id}}/like" class="button"><i class="fa-solid fa-heart"></i></a>
+            </div>
+            {{/logged}}
+            <br>
+            <a href="/" class="button"><i class="fas fa-arrow-left"></i> Back</a>
         </div>
     </div>
-
-    <p>
 
     <div class="comments-section">
         {{#comments}}
@@ -37,10 +51,13 @@
             <div class="comment-info">
                 <ul>
                     <li>
-                        <strong>Username</strong>: {{user}} <br>
-                        <strong>Score</strong>: {{score}} <br>
-                        <strong>Review</strong>: {{text}} <br>
-                        <a href="/album/{{album.id}}/delete/comment/{{id}}" class="button delete">Delete comment</a>
+                        <strong>Username:</strong> {{user.name}} <br>
+                        <strong>Score:</strong> {{score}} <br>
+                        <strong>Review:</strong> {{text}} <br>
+                        {{#logged}}
+                        <br>
+                        <a href="/deleteComment/{{id}}" class="button delete"><i class="fas fa-trash"></i> Comment</a>
+                        {{/logged}}
                     </li>
                 </ul>
             </div>
@@ -51,19 +68,33 @@
         {{/comments}}
     </div>
 
-    <h1>Add Comment</h1>
-    <form action="/album/{{album.id}}/comment" method="post">
-        <p>Username:</p>
-        <input type="text" id="user" name="user" value="{{#user}}{{.}}{{/user}}" required>
+    {{#logged}}
+    <div class="add-comment-section">
+        <h1>Add Comment</h1>
+        <form action="/addcomment/{{album.id}}" method="post">
+            <p>Score:</p>
+            <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>
+            <p>Comment:</p>
+            <textarea id="text" name="text" rows="5" cols="40" required></textarea>
+            <input type="hidden" name="_csrf" value="{{token}}"/>
+            <button type="submit" class="button">Save</button>
+        </form>
+    </div>
+    {{/logged}}
 
-        <p>Score:</p>
-        <input type="number" id="score" name="score" placeholder="(0-100)" min="0" max="100" required>
 
-        <p>Comment:</p>
-        <textarea id="text" name="text" rows="5" cols="40" required></textarea>
 
-        <button type="submit" class="button">Save</button>
-    </form>
+    {{^logged}}
+    <div class="login-section">
+        <br>
+        <p>Login to add comments</p>
+        <br>
+        <a href="/login" class="button">Login</a>
+        <br>
+    </div>
+    {{/logged}}
+
+
 </div>
 </body>
 

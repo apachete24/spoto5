@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/css/style2.css">
+    <script src="https://kit.fontawesome.com/cce8b43a59.js" crossorigin="anonymous"></script>
+    <title>{{currentUser}}</title>
+</head>
+<body>
+<div class="album-container">
+    <p1>User: {{currentUser}}</p1>
+    <a href="/edituser/{{userID}}" class="button edit"><i class="fas fa-pencil-alt"></i> Edit</a>
+    <a href="/deleteuser/{{userID}}" class="button delete"><i class="fas fa-trash"></i> Delete User</a>
+    <a href="/" class="button"><i class="fas fa-arrow-left"></i> Back</a>
+</div>
+</body>
+</html>

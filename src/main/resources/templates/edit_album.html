@@ -4,34 +4,73 @@
     <meta charset="UTF-8">
     <title>EDIT ALBUM</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
 
 <body>
 
-    <h1>Edit Album</h1>
+<h1>Edit Album</h1>
 
-    <form action="/album/{{album.id}}/edit" method="post" enctype="multipart/form-data">
+<form action="/editalbum/{{album.id}}" method="post" enctype="multipart/form-data">
 
-        <p>Artist:</p>
-        <input type="text" id="artist" name="artist" value="{{#album.artist}}{{.}}{{/album.artist}}" required><br>
+    <p>Artist:</p>
+    <input type="text" id="artist" name="artist" value="{{#album.artist}}{{.}}{{/album.artist}}" required><br>
 
-        <p>Title:</p>
-        <input type="text" id="title" name="title" value="{{#album.title}}{{.}}{{/album.title}}" required><br>
+    <p>Title:</p>
+    <input type="text" id="title" name="title" value="{{#album.title}}{{.}}{{/album.title}}" required><br>
 
-        <p>Year:</p>
-        <input type="number" id="year" name="year" value="{{#album.year}}{{.}}{{/album.year}}" min="1000" max="2024" required><br>
+    <p>Release Year:</p>
+    <input type="number" id="release_year" name="release_year" value="{{#album.release_year}}{{.}}{{/album.release_year}}" min="1000" max="2024" required><br>
 
-        <p>Comment:</p>
-        <textarea id="text" name="text" rows="5" cols="40">{{#album.text}}{{.}}{{/album.text}}</textarea><br>
+    <p>Description:</p>
+    <div id="editor-container" style="height: 200px;">{{{album.text}}}</div>
+    <input type="hidden" id="text" name="text" value="{{{album.text}}}" placeholder="Provide a brief description of the album">
 
-        <p>Image:</p>
-        <input type="file" id="image" name="image" accept=".jpg, .jpeg" value="/album/{{album.id}}/image"><br>
+    <p>Current Image:</p>
+    <img id="current-image" src="/album/{{album.id}}/image" alt="Current Album Image"><br>
 
-        <input type="submit" value="Save" class="button">
-        <a href="/album/{{album.id}}" class="button">Cancel</a>
+    <p>Upload New Image:</p>
+    <input type="file" id="image" name="albumImage" accept=".jpg, .jpeg, .png"><br>
 
-    </form>
+    <p>Current Video:</p>
+    <video id="current-video" width="320" height="240" controls>
+        <source src="/album/{{album.id}}/video" type="video/mp4">
+        Your browser does not support the video tag.
+    </video><br>
+
+    <p>Upload New Video:</p>
+    <input type="file" id="video" name="albumVideo" accept=".mp4, .avi, .mov, .mkv"><br>
+
+    <input type="hidden" name="_csrf" value="{{token}}"/>
+
+    <input type="submit" value="Save" class="button">
+    <a href="/album/{{album.id}}" class="button cancel">Cancel</a>
+
+</form>
 
 </body>
+
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.0-rc.2/dist/quill.js"></script>
+<script>
+    var quill = new Quill('#editor-container', {
+        theme: 'snow'
+    });
+    quill.on('text-change', function () {
+        document.getElementById('text').value = quill.root.innerHTML;
+    });
+
+    // Obtener el campo de entrada de archivo
+    var fileInput = document.getElementById('image');
+    // Escuchar el evento 'change' en el campo de entrada de archivo
+    fileInput.addEventListener('change', function(event) {
+        // Obtener el archivo seleccionado
+        var file = event.target.files[0];
+        // Crear un objeto de URL para el archivo seleccionado
+        var imageURL = URL.createObjectURL(file);
+        // Obtener la imagen actual y establecer su src en la URL del archivo seleccionado
+        var currentImage = document.getElementById('current-image');
+        currentImage.src = imageURL;
+    });
+</script>
 
 </html>
