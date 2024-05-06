@@ -73,10 +73,12 @@ public class UserController {
         return "user";
     }
 
+
     @PostMapping("/register")
     public String newUser(String username, String password, Model model) {
+
         if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-            // Si el nombre de usuario o la contraseña están vacíos, muestra un mensaje de error
+            // If the username or password are empty, show an error message
             String errorMessage = "El nombre de usuario y la contraseña son obligatorios";
             model.addAttribute("errorMessage", errorMessage);
             return "register";

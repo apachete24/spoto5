@@ -51,13 +51,22 @@ public class UserService {
 
     public void saveUser (String username, String password) {
 
+        // Avoid empty or null values
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            throw new DuplicateKeyException("Username and password must not be empty");
+        }
+
         Optional<User> user= userRepository.findByName(username);
 
+        // Create if the user is not already created
         if (user.isEmpty()) {
             userRepository.save(new User(username, passwordEncoder.encode(password), "USER"));
         } else {
             throw new DuplicateKeyException("El nombre de usuario '" + username + "' ya está en uso.");
         }
+
+
+
 
     }
 

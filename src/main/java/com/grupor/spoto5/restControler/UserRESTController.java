@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.grupor.spoto5.security.jwt.LoginRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -47,6 +48,22 @@ public class UserRESTController {
     }
 
 
+
+    // Create new user
+    @PostMapping("")
+    public ResponseEntity<User> createUser(@RequestBody LoginRequest credentials) {
+
+        try {
+            userService.saveUser(credentials.getUsername(), credentials.getPassword());
+            return ResponseEntity.ok(userService.findByName(credentials.getUsername()).get());
+        } catch (Exception e) {
+            return ResponseEntity.status(405).build();
+        }
+
+    }
+
+
+
     // OPERATIONS RESTRICTED TO ADMIN ROLE
     private boolean isAdmin(Model model){
 
@@ -56,6 +73,8 @@ public class UserRESTController {
             return false;
         }
     }
+
+
 
     // Get all users by admin
     @PreAuthorize("hasRole('ADMIN')")
@@ -69,19 +88,25 @@ public class UserRESTController {
         }
     }
 
+
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserbyId(@PathVariable long id, Model model) {
 
         if (isAdmin(model)){
+
             Optional<User> optionalUser = userService.findById(id);
             if (optionalUser.isPresent()){ // if user exists
                 return ResponseEntity.ok(optionalUser.get());
+            } else{
+                return ResponseEntity.badRequest().build();
             }
-        }
 
-        // In any other case, return "Not found"
-        return ResponseEntity.status(405).build();
+        } else {
+            // In any other case, return "Not found"
+            return ResponseEntity.status(405).build();
+        }
     }
 
 
