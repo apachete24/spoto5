@@ -64,8 +64,17 @@ public class UserService {
 
     // Save permanently a user in the database
     public void save(User user) {
+        if (user.getName() == null || user.getName().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del usuario no puede estar vacío");
+        }
+
+        if (user.getEncodedPassword() == null || user.getEncodedPassword().isEmpty()) {
+            throw new IllegalArgumentException("La contraseña del usuario no puede estar vacía");
+        }
+
         userRepository.save(user);
     }
+
 
 
 
@@ -77,8 +86,18 @@ public class UserService {
 
     public void updateUser (Long id, String username, String password, String currentUser) {
         Optional<User> user = userRepository.findById(id);
+
         if (user.isPresent()) {
+            if (username == null || username.isEmpty()) {
+                throw new IllegalArgumentException("El nombre del usuario no puede estar vacío");
+            }
+
+            if (password == null || password.isEmpty()) {
+                throw new IllegalArgumentException("La contraseña del usuario no puede estar vacía");
+            }
+
             User userAux = user.get();
+
             if (currentUser.equals(userAux.getName())) {
                 userAux.setName(username);
                 userAux.setEncodedPassword(passwordEncoder.encode(password));
@@ -89,6 +108,7 @@ public class UserService {
         } else {
             throw new EntityNotFoundException("User not found");
         }
+
     }
 
 

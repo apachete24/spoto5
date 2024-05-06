@@ -75,6 +75,13 @@ public class UserController {
 
     @PostMapping("/register")
     public String newUser(String username, String password, Model model) {
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            // Si el nombre de usuario o la contraseña están vacíos, muestra un mensaje de error
+            String errorMessage = "El nombre de usuario y la contraseña son obligatorios";
+            model.addAttribute("errorMessage", errorMessage);
+            return "register";
+        }
+
         try {
             userService.saveUser(username, password);
             return "saved_user";
@@ -84,6 +91,7 @@ public class UserController {
             return "register";
         }
     }
+
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     @GetMapping("/user")
@@ -153,10 +161,19 @@ public class UserController {
 
     @PostMapping("/edituser/{id}")
     public String editUser (Model model, @PathVariable long id, String username, String password) {
+
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            // Si el nombre de usuario o la contraseña están vacíos, muestra un mensaje de error
+            String errorMessage = "El nombre de usuario y la contraseña son obligatorios";
+            model.addAttribute("errorMessage", errorMessage);
+            return "edit_user";
+        }
+
         String currentUser = (String) model.getAttribute("currentUser");
         userService.updateUser(id, username, password, currentUser);
         SecurityContextHolder.getContext().setAuthentication(null);
         return "saved_user";
+
     }
 }
 

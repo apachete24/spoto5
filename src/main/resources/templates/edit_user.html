@@ -70,10 +70,10 @@
 </html>
 <h1>Edit user {{currentUser}}. </h1>
 <form action="/edituser/{{userID}}" method="post">
-    <label for="username" value="{{currentUser}}">Username:</label>
-    <input type="text" id="username" name="username"/>
+    <label for="username" value="{{#currentUser}}{{.}}{{/currentUser}}">Username:</label>
+    <input type="text" id="username" name="username" value="{{#currentUser}}{{.}}{{/currentUser}}" required/>
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password"/>
+    <input type="password" id="password" name="password" required/>
     <input type="hidden" name="_csrf" value="{{token}}"/>
     <input type="submit" value="Submit"/>
 </form>
