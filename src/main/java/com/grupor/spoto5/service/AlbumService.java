@@ -187,6 +187,9 @@ public class AlbumService {
             throw new IllegalArgumentException("Year must be between 1000 and 2024");
         }
 
+        String filteredText = HtmlFilter.filter(album.getText());
+        album.setText(filteredText);
+
         albumRepository.save(album);
 
     }
