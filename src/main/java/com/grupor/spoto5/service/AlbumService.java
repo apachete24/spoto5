@@ -49,26 +49,39 @@ public class AlbumService {
         }
 
         String query = "SELECT * FROM album";
-        boolean hasWhereClause = false; // Flag to determinate if we had added WHERE clause to the query jet
+        boolean hasWhereClause = false; // Flag to determinate if we had added WHERE clause to the query yet
 
+        if (from != null || to != null || (artistName != null && !artistName.isEmpty())) {
+            query += " WHERE";
 
-        if (from != null && to != null) {
-            query += " WHERE release_year BETWEEN ? AND ?";
-            hasWhereClause = true;
-        }
+            if (from != null && to != null) {
+                query += " release_year BETWEEN ? AND ?";
+                hasWhereClause = true;
+            } else {
+                if (from != null) {
+                    query += " release_year >= ?";
+                    hasWhereClause = true;
+                }
+                if (to != null) {
+                    query += hasWhereClause ? " AND release_year <= ?" : " release_year <= ?";
+                    hasWhereClause = true;
+                }
+            }
 
-        if (artistName != null && !artistName.isEmpty()) {
-            query += hasWhereClause ? " AND artist = ?" : " WHERE artist = ?";
+            if (artistName != null && !artistName.isEmpty()) {
+                query += hasWhereClause ? " AND artist = ?" : " artist = ?";
+            }
         }
 
         Query nativeQuery = entityManager.createNativeQuery(query, Album.class);
 
         int parameterIndex = 1; // Index to set parameters in the query
-        if (from != null && to != null) {
+        if (from != null) {
             nativeQuery.setParameter(parameterIndex++, from);
+        }
+        if (to != null) {
             nativeQuery.setParameter(parameterIndex++, to);
         }
-
         if (artistName != null && !artistName.isEmpty()) {
             nativeQuery.setParameter(parameterIndex, artistName);
         }
