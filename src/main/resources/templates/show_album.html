@@ -33,11 +33,12 @@
             {{#admin}}
             <a href="/deletealbum/{{album.id}}" class="button delete"><i class="fas fa-trash"></i> Album</a>
             <a href="/editalbum/{{album.id}}" class="button edit"><i class="fas fa-pencil-alt"></i> Album</a>
+            <br>
             {{/admin}}
             <br>
             {{#logged}}
             <div class="like-section">
-                <a href="/album/{{id}}/like" class="button"><i class="fa-solid fa-heart"></i></a>
+                <a href="/like/{{id}}" class="button"><i class="fa-solid fa-heart"></i></a>
             </div>
             {{/logged}}
             <br>

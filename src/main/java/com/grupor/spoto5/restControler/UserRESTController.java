@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import com.grupor.spoto5.security.jwt.LoginRequest;
 
 @RestController
 @RequestMapping("/api/users")
@@ -47,6 +48,22 @@ public class UserRESTController {
     }
 
 
+
+    // Create new user
+    @PostMapping("")
+    public ResponseEntity<User> createUser(@RequestBody LoginRequest credentials) {
+
+        try {
+            userService.saveUser(credentials.getUsername(), credentials.getPassword());
+            return ResponseEntity.ok(userService.findByName(credentials.getUsername()).get());
+        } catch (Exception e) {
+            return ResponseEntity.status(405).build();
+        }
+
+    }
+
+
+
     // OPERATIONS RESTRICTED TO ADMIN ROLE
     private boolean isAdmin(Model model){
 
@@ -56,6 +73,8 @@ public class UserRESTController {
             return false;
         }
     }
+
+
 
     // Get all users by admin
     @PreAuthorize("hasRole('ADMIN')")
@@ -69,19 +88,25 @@ public class UserRESTController {
         }
     }
 
+
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserbyId(@PathVariable long id, Model model) {
 
         if (isAdmin(model)){
+
             Optional<User> optionalUser = userService.findById(id);
             if (optionalUser.isPresent()){ // if user exists
                 return ResponseEntity.ok(optionalUser.get());
+            } else{
+                return ResponseEntity.badRequest().build();
             }
-        }
 
-        // In any other case, return "Not found"
-        return ResponseEntity.status(405).build();
+        } else {
+            // In any other case, return "Not found"
+            return ResponseEntity.status(405).build();
+        }
     }
 
 
@@ -108,23 +133,36 @@ public class UserRESTController {
 
     }
 
-/*
-    // Update User (Only user can update itself)
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody Collection<String> newUserdetails, Model model) {
 
-        if ((boolean) model.getAttribute("logged")) {
+    // Update User (Only user can update itself)
+    @PreAuthorize("hasRole('USER')")
+    @PutMapping("/me")
+    public ResponseEntity<User> updateUser(@RequestBody LoginRequest credentials, Model model) {
+
+        String newUsername = credentials.getUsername();
+        String newPassword = credentials.getPassword();
+
+        // Check if user is logged
+        if ((boolean) model.getAttribute("logged")){
+
+            String currentUsername = (String)model.getAttribute("currentUser");
             try {
-                updateUser(id, newUserdetails.g, newPassword, model);
-                return ResponseEntity.ok(userService.findById(id).get());
-            } catch (Exception e) {
-                return ResponseEntity.status(405).build();
+                Long userId = userService.findByName(currentUsername).get().getId();
+                userService.updateUser(userId, newUsername, newPassword, currentUsername);
+
+                return ResponseEntity.ok(userService.findById(userId).get());
+
+            } catch (Exception e){
+                return ResponseEntity.badRequest().build();
             }
-        }
-        return ResponseEntity.status(405).build();
+
+        } else {return ResponseEntity.status(405).build();}
+
+
     }
 
-*/
+
+    // Delete User (Only admin can delete users and user can delete itself)
     @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable long id, Model model) {
