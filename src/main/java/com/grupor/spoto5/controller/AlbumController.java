@@ -174,7 +174,7 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/deletealbum/{id}")
+    @PostMapping("/deletealbum/{id}")
     public String deleteAlbum(Model model, @PathVariable long id) {
 
         boolean isAdmin = (boolean) model.getAttribute("admin");

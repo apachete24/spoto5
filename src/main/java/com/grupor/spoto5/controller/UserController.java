@@ -126,7 +126,7 @@ public class UserController {
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    @GetMapping("/deleteuser/{id}")
+    @PostMapping("/deleteuser/{id}")
     public String deleteUser(Model model, @PathVariable long id) {
 
         String currentUser = (String)model.getAttribute("currentUser");
