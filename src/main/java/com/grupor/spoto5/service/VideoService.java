@@ -36,6 +36,7 @@ public class VideoService {
         }
 
         Path videoPath = VIDEOS_FOLDER.resolve(originalName);
+        verifyVideoPath(videoPath);
 
         try {
             multiPartFile.transferTo(videoPath);
