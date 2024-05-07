@@ -47,9 +47,13 @@
             {{/admin}}
             <br>
             {{#logged}}
-            <div class="like-section">
-                <a href="/like/{{id}}" class="button"><i class="fa-solid fa-heart"></i></a>
-            </div>
+            <form id="Like" action="/like/{{id}}" method="post">
+                <input type="hidden" name="_csrf" value="{{token}}" />
+                <button type="submit" class="button like">
+                     <i class="fa-solid fa-heart"></i> Like
+                </button>
+            </form>
+
             {{/logged}}
             <br>
             <a href="/" class="button"><i class="fas fa-arrow-left"></i> Back</a>
