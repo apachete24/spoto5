@@ -31,15 +31,29 @@
 
         <div class="album-actions">
             {{#admin}}
-            <a href="/deletealbum/{{album.id}}" class="button delete"><i class="fas fa-trash"></i> Album</a>
+            <!--<a href="/deletealbum/{{album.id}}" class="button delete"><i class="fas fa-trash"></i> Album</a>-->
+            <form id="deleteAlbumForm" action="/deletealbum/{{album.id}}" method="post">
+                <input type="hidden" name="_csrf" value="{{token}}" />
+                <button type="submit" class="button delete">
+                    <i class="fas fa-trash"></i> Album
+                </button>
+            </form>
+
+            <br>
+
             <a href="/editalbum/{{album.id}}" class="button edit"><i class="fas fa-pencil-alt"></i> Album</a>
+
             <br>
             {{/admin}}
             <br>
             {{#logged}}
-            <div class="like-section">
-                <a href="/like/{{id}}" class="button"><i class="fa-solid fa-heart"></i></a>
-            </div>
+            <form id="Like" action="/like/{{id}}" method="post">
+                <input type="hidden" name="_csrf" value="{{token}}" />
+                <button type="submit" class="button like">
+                     <i class="fa-solid fa-heart"></i> Like
+                </button>
+            </form>
+
             {{/logged}}
             <br>
             <a href="/" class="button"><i class="fas fa-arrow-left"></i> Back</a>
@@ -57,7 +71,13 @@
                         <strong>Review:</strong> {{text}} <br>
                         {{#logged}}
                         <br>
-                        <a href="/deleteComment/{{id}}" class="button delete"><i class="fas fa-trash"></i> Comment</a>
+                        <!--<a href="/deleteComment/{{id}}" class="button delete"><i class="fas fa-trash"></i> Comment</a>-->
+                        <form id="deleteCommentForm" action="/deleteComment/{{id}}" method="post">
+                            <input type="hidden" name="_csrf" value="{{token}}" />
+                            <button type="submit" class="button delete">
+                                <i class="fas fa-trash"></i> Comment
+                            </button>
+                        </form>
                         {{/logged}}
                     </li>
                 </ul>

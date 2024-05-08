@@ -89,7 +89,7 @@ public class CommentController {
     */
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
-    @GetMapping("/deleteComment/{id}")
+    @PostMapping("/deleteComment/{id}")
     public String deleteComment(Model model, @PathVariable long id) {
 
         Comment comm = commentService.getComment(id).orElseThrow();

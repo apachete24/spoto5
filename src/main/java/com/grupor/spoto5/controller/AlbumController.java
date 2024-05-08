@@ -174,7 +174,7 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/deletealbum/{id}")
+    @PostMapping("/deletealbum/{id}")
     public String deleteAlbum(Model model, @PathVariable long id) {
 
         boolean isAdmin = (boolean) model.getAttribute("admin");
@@ -238,7 +238,7 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/like/{id}")
+    @PostMapping("/like/{id}")
     public String likeAlbum(HttpServletRequest request, @PathVariable Long id, RedirectAttributes redirectAttributes) {
         // Verificar si el usuario está autenticado
         if (request.getUserPrincipal() == null) {
@@ -277,7 +277,7 @@ public class AlbumController {
         return "users"; // Aquí debes tener una vista llamada "users.html" para mostrar los usuarios como botones
     }
 
-
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/favorites")
     public String showUserFavoriteAlbums(Model model) {
         Optional<User> userOptional = userService.findByName((String) model.getAttribute("currentUser"));

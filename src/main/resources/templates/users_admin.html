@@ -13,7 +13,13 @@
         <li class="album-item">
             <div class="album-info">
                 <h2>{{name}}</h2>
-                <a href="/deleteuser/{{id}}" class="button delete"><i class="fas fa-trash"></i> Delete User</a>
+                <!--<a href="/deleteuser/{{id}}" class="button delete"><i class="fas fa-trash"></i> User</a>-->
+                <form id="deleteUserForm" action="/deleteuser/{{id}}" method="post">
+                    <input type="hidden" name="_csrf" value="{{token}}" />
+                    <button type="submit" class="button delete">
+                        <i class="fas fa-trash"></i> Comment
+                    </button>
+                </form>
             </div>
         </li>
         {{/users}}
